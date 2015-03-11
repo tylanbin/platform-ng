@@ -1,0 +1,1 @@
+package me.lb.controller.admin.common;import org.springframework.stereotype.Controller;import org.springframework.web.bind.annotation.RequestMapping;@Controller@RequestMapping(value = "/admin/common")public class MainController {	/**	 * 跳转到后台管理主页面	 */	@RequestMapping(value = "/main")	public String mainPage() {		return "admin/common/main";	}}

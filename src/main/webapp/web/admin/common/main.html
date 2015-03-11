@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>后台管理</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<!-- ico -->
+<link rel="shortcut icon" href="../../../../assets/common/favicon.ico">
+<!-- styles -->
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui-custom/easyui.custom.css">
+<!-- scripts -->
+<script type="text/javascript" src="../../../assets/common/jquery-easyui/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../../../assets/common/jquery-easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../../../assets/common/jquery-easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../../../assets/common/jquery-easyui-custom/easyui.custom.js"></script>
+<!-- page scripts -->
+<script type="text/javascript">
+	$(function() {
+		$('.menu .easyui-panel').each(function(i, dom) {
+			$(dom).panel({
+				onBeforeExpand : function() {
+					$('.menu .easyui-panel').each(function(j, elem) {
+						if (j != i) {
+							$(elem).panel('collapse', true);
+						}
+					});
+				}
+			});
+		})
+		$('.menu .panel-title').each(function(i, dom) {
+			$(dom).css('cursor', 'pointer');
+			$(dom).click(function() {
+				$(dom).next('.panel-tool').children('a').click();
+			});
+		})
+	});
+	function addTab(title, url) {
+		if ($('#tabs').tabs('exists', title)) {
+			$('#tabs').tabs('select', title);
+			$('#tabs').tabs('getSelected').panel('refresh');
+		} else {
+			var content = '<iframe scrolling="auto" frameborder="0" src="'
+					+ url + '" style="width:100%; height:100%;"></iframe>';
+			$('#tabs').tabs('add', {
+				title : title,
+				content : content,
+				closable : true
+			});
+		}
+	}
+</script>
+</head>
+
+<body class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'north'" style="height:80px; overflow: hidden;"></div>
+	<div data-options="region:'west',title:'菜单栏'" style="width:180px;">
+		<div class="menu" style="width:160px; height:auto; padding:20px 8px 8px 8px;">
+			<div class="easyui-panel" data-options="title:'系统管理',collapsible:true,collapsed:false"
+				style="width:160px; height:auto; padding:10px; line-height: 25px;">
+				<a style="text-decoration:none;" href="javascript:void(0)" onclick="addTab('组织机构管理','../system/org/list.html')">组织机构管理</a><br />
+				<a style="text-decoration:none;" href="javascript:void(0)" onclick="addTab('人员用户管理','../system/emp/list.html')">人员用户管理</a><br />
+				<a style="text-decoration:none;" href="javascript:void(0)" onclick="addTab('权限资源管理','../system/perm/list.html')">权限资源管理</a><br />
+				<a style="text-decoration:none;" href="javascript:void(0)" onclick="addTab('系统角色管理','../system/role/list.html')">系统角色管理</a>
+			</div>
+		</div>
+	</div>
+	<div data-options="region:'center'">
+		<div data-options="fit:true" class="easyui-tabs" id="tabs">
+			<div title="主页"></div>
+		</div>
+	</div>
+</body>
+</html>
