@@ -50,17 +50,15 @@ public abstract class GenericDaoImpl<T, PK extends Serializable> implements
 			List<Object> objs = new ArrayList<Object>();
 			Iterator<Map.Entry<String, Object>> it = params.entrySet()
 					.iterator();
-			// 为避免Hibernate4.1后占位符警告，使用jpa方式
-			int index = 0;
 			while (it.hasNext()) {
 				Map.Entry<String, Object> me = it.next();
-				sb.append(" and o." + me.getKey() + " = ?" + index++);
+				sb.append(" and o." + me.getKey() + " = ?");
 				objs.add(me.getValue());
 			}
 			Query q = sessionFactory.getCurrentSession().createQuery(
 					sb.toString());
 			for (int i = 0; i < objs.size(); i++) {
-				q.setParameter("" + i, objs.get(i));
+				q.setParameter(i, objs.get(i));
 			}
 			return q.list();
 		} else {
