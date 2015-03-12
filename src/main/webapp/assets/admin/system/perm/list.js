@@ -41,13 +41,17 @@ $(function() {
 			// 处理右侧大小超出页面范围的问题
 			$('#dg-list').datagrid('resize');
 		},
-		onClick : function(node) {
+		onSelect : function(node) {
+			var json = '{ "perm.id" : ' + node.id + ' }';
+			$('#dg-list').datagrid('load', {
+				"params" : json
+			});
 		}
 	});
 });
 
 function search(value, name) {
-	var json = '{"' + name + '" : "' + value + '"}';
+	var json = '{ "' + name + '" : "' + value + '" }';
 	$('#dg').datagrid({
 		queryParams : {
 			"params" : json
