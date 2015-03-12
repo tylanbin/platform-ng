@@ -33,7 +33,6 @@
 	<!-- 资源路径映射 -->
 	<mvc:resources mapping="/web/**" location="/web/" />
 	<mvc:resources mapping="/assets/**" location="/assets/" />
-	<mvc:resources mapping="/favicon.ico" location="/assets/common/favicon.ico" />
 
 	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
