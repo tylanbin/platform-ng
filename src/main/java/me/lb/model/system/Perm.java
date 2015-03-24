@@ -16,10 +16,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "ng_sys_perm")
+@JsonIgnoreProperties({ "perm", "roles" })
 public class Perm implements java.io.Serializable {
 
 	// Fields
@@ -30,7 +31,6 @@ public class Perm implements java.io.Serializable {
 	private String name;
 	private String token;
 	private String url;
-	@JsonIgnore
 	private Set<Role> roles = new HashSet<Role>(0);
 	private Set<Perm> perms = new HashSet<Perm>(0);
 

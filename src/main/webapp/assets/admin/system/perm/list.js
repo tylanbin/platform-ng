@@ -1,4 +1,20 @@
 $(function() {
+	$('#tree').tree({
+		url : 'admin/system/perm/tree',
+		method : 'get',
+		onLoadSuccess : function(node, data) {
+			// 处理右侧大小超出页面范围的问题
+			$('#dg-list').datagrid('resize');
+		},
+		onSelect : function(node) {
+			var json = '{ "perm.id" : ' + node.id + ' }';
+			$('#dg-list').datagrid('load', {
+				params : json
+			});
+			// 保留parentId信息
+			$('#pid-add').val(node.id);
+		}
+	});
 	$('#dg-list').datagrid({
 		fit : true,
 		striped : true,
@@ -34,27 +50,13 @@ $(function() {
 		afterPageText : '页    共 {pages} 页',
 		displayMsg : '当前显示 {from} - {to} 条记录    共 {total} 条记录'
 	});
-	$('#tree').tree({
-		url : 'admin/system/perm/tree',
-		method : 'get',
-		onLoadSuccess : function(node, data) {
-			// 处理右侧大小超出页面范围的问题
-			$('#dg-list').datagrid('resize');
-		},
-		onSelect : function(node) {
-			var json = '{ "perm.id" : ' + node.id + ' }';
-			$('#dg-list').datagrid('load', {
-				"params" : json
-			});
-		}
-	});
 });
 
 function search(value, name) {
 	var json = '{ "' + name + '" : "' + value + '" }';
-	$('#dg').datagrid({
+	$('#dg-list').datagrid({
 		queryParams : {
-			"params" : json
+			params : json
 		}
 	});
 }
@@ -154,11 +156,12 @@ function func_add() {
 	if (endEditing()) {
 		$('#dg-add').datagrid('acceptChanges');
 		// 数据处理
-		var data = jQuery('#dg-add').datagrid('getData');
+		var data = $('#dg-add').datagrid('getData');
 		$.ajax({
 			type : 'post',
 			url : 'admin/system/perm/batch',
 			data : {
+				id : $('#pid-add').val(),
 				objs : JSON.stringify(data.rows)
 			},
 			dataType : 'json',
@@ -279,4 +282,12 @@ function func_del() {
 	} else {
 		$.messager.alert('提示', '请选择要删除的条目！', 'info');
 	}
+}
+
+function func_reload() {
+	$('#searchbox').searchbox('setValue', '');
+	$('#dg-list').datagrid('clearSelections');
+	$('#dg-list').datagrid({
+		queryParams : {}
+	});
 }

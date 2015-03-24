@@ -32,7 +32,7 @@ public class PermDaoImpl extends GenericDaoImpl<Perm, Integer> implements
 			// 需要额外处理模糊查询的参数
 			if ("name".equals(me.getKey()) || "token".equals(me.getKey())
 					|| "url".equals(me.getKey())) {
-				sb.append(" and o." + me.getKey() + " = ?");
+				sb.append(" and o." + me.getKey() + " like ?");
 				objs.add("%" + me.getValue() + "%");
 			} else {
 				sb.append(" and o." + me.getKey() + " = ?");

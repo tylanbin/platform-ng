@@ -36,8 +36,9 @@
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="dlg_add()">新增</a>
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="dlg_edit()">修改</a>
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="func_del()">删除</a>
+				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="func_reload()">刷新</a>
 				<!-- 搜索框 -->
-				<input class="easyui-searchbox" data-options="searcher:search,prompt:'请输入查询内容',menu:'#searchMenu'">
+				<input id="searchbox" class="easyui-searchbox" data-options="searcher:search,prompt:'请输入查询内容',menu:'#searchMenu'">
 				<div id="searchMenu">
 					<div data-options="name:'name'">权限名称</div>
 					<div data-options="name:'token'">权限标识</div>
@@ -50,6 +51,7 @@
 	<div id="dlg-add" class="easyui-dialog" style="width:600px;height:320px;top:80px;overflow-y:scroll;"
 		data-options="title:'新增',closed:true,buttons:'#dlg-btn-add',resizable:true,maximizable:true">
 		<div style="margin:5px;">
+			<input type="hidden" id="pid-add" />
 			<table id="dg-add" data-options="title:'新增',toolbar:'#tb-add'"></table>
 			<div id="tb-add">
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="appendLine()">新增</a>

@@ -81,7 +81,7 @@ public class PermController {
 
 	@ResponseBody
 	@RequestMapping(value = "/batch", method = RequestMethod.POST)
-	public String batch_add(String objs) {
+	public String batch_add(Perm par, String objs) {
 		ObjectMapper om = new ObjectMapper();
 		try {
 			List<Perm> list = om.readValue(objs,
@@ -89,7 +89,9 @@ public class PermController {
 					});
 			Iterator<Perm> it = list.iterator();
 			while (it.hasNext()) {
-				permService.save(it.next());
+				Perm obj = it.next();
+				obj.setPerm(par);
+				permService.save(obj);
 			}
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
@@ -138,6 +140,7 @@ public class PermController {
 				Map<String, Object> map = om.readValue(params,
 						new TypeReference<Map<String, Object>>() {
 						});
+				System.out.println(map);
 				pm = permService.pagingQuery(map);
 			} else {
 				pm = permService.pagingQuery();
