@@ -8,6 +8,7 @@ import java.util.Map;
 import me.lb.model.pagination.Pagination;
 import me.lb.model.system.Perm;
 import me.lb.service.system.PermService;
+import me.lb.support.jackson.JsonWriter;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -38,13 +39,18 @@ public class PermController {
 
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
-	public String edit(@PathVariable int id, Perm temp) {
+	public String edit(@PathVariable int id, Perm temp, Integer pid) {
 		try {
 			Perm obj = permService.findById(id);
 			obj.setPerm(temp.getPerm());
 			obj.setName(temp.getName());
 			obj.setToken(temp.getToken());
 			obj.setUrl(temp.getUrl());
+			if (pid != null) {
+				// 修改父对象
+				Perm par = permService.findById(pid);
+				obj.setPerm(par);
+			}
 			permService.update(obj);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
@@ -71,8 +77,8 @@ public class PermController {
 		try {
 			Perm temp = permService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			ObjectMapper om = new ObjectMapper();
-			return om.writeValueAsString(temp);
+			return JsonWriter.getWriter("perms", "children")
+					.writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -90,7 +96,9 @@ public class PermController {
 			Iterator<Perm> it = list.iterator();
 			while (it.hasNext()) {
 				Perm obj = it.next();
-				obj.setPerm(par);
+				if (par.getId() != null) {
+					obj.setPerm(par);
+				}
 				permService.save(obj);
 			}
 			return "{ \"success\" : true }";
@@ -121,8 +129,8 @@ public class PermController {
 		try {
 			List<Perm> list = permService.findTopPerms();
 			// 将查询出的结果序列化为JSON并返回
-			ObjectMapper om = new ObjectMapper();
-			return om.writeValueAsString(list);
+			return JsonWriter.getWriter("perm", "perms", "roles")
+					.writeValueAsString(list);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "[]";
@@ -140,7 +148,6 @@ public class PermController {
 				Map<String, Object> map = om.readValue(params,
 						new TypeReference<Map<String, Object>>() {
 						});
-				System.out.println(map);
 				pm = permService.pagingQuery(map);
 			} else {
 				pm = permService.pagingQuery();
@@ -149,7 +156,8 @@ public class PermController {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			return om.writeValueAsString(result);
+			return JsonWriter.getWriter("perms", "roles", "children")
+					.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

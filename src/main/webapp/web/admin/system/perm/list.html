@@ -49,7 +49,7 @@
 	</div>
 	<!-- 新增 -->
 	<div id="dlg-add" class="easyui-dialog" style="width:600px;height:320px;top:80px;overflow-y:scroll;"
-		data-options="title:'新增',closed:true,buttons:'#dlg-btn-add',resizable:true,maximizable:true">
+		data-options="title:'新增',closed:true,buttons:'#dlg-btn-add',resizable:true,maximizable:true,modal:true">
 		<div style="margin:5px;">
 			<input type="hidden" id="pid-add" />
 			<table id="dg-add" data-options="title:'新增',toolbar:'#tb-add'"></table>
@@ -68,8 +68,13 @@
 		data-options="title:'修改',closed:true,buttons:'#dlg-btn-edit'">
 		<form id="fm-edit" method="post">
 			<input type="hidden" id="id-edit" />
+			<input type="hidden" id="pid-edit" name="pid" />
 			<div style="text-align: center;">
 				<table style="border-width:0;">
+					<tr>
+						<td style="text-align: right;">权限名称：</td>
+						<td><input id="pname-edit" disabled="disabled" /></td>
+					</tr>
 					<tr>
 						<td style="text-align: right;">权限名称：</td>
 						<td><input name="name" class="easyui-validatebox" /></td>

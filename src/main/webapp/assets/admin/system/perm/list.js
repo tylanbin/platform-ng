@@ -2,17 +2,16 @@ $(function() {
 	$('#tree').tree({
 		url : 'admin/system/perm/tree',
 		method : 'get',
-		onLoadSuccess : function(node, data) {
-			// 处理右侧大小超出页面范围的问题
-			$('#dg-list').datagrid('resize');
-		},
 		onSelect : function(node) {
 			var json = '{ "perm.id" : ' + node.id + ' }';
-			$('#dg-list').datagrid('load', {
+			$('#dg-list').datagrid('clearSelections');
+			$('#dg-list').datagrid('reload', {
 				params : json
 			});
 			// 保留parentId信息
 			$('#pid-add').val(node.id);
+			$('#pid-edit').val(node.id);
+			$('#pname-edit').val(node.text);
 		}
 	});
 	$('#dg-list').datagrid({
@@ -27,6 +26,9 @@ $(function() {
 		pageSize : 15,
 		pageList : [10, 15, 20],
 		url : 'admin/system/perm/data',
+		queryParams : {
+			params : '{ "perm.id" : -1 }'
+		},
 		method : 'get',
 		frozenColumns : [[{
 					field : 'ck',
@@ -42,7 +44,6 @@ $(function() {
 					field : 'url',
 					title : '链接地址'
 				}]],
-		// queryParams:{},
 		loadMsg : '数据载入中...'
 	});
 	$('#dg-list').datagrid('getPager').pagination({
@@ -53,11 +54,9 @@ $(function() {
 });
 
 function search(value, name) {
-	var json = '{ "' + name + '" : "' + value + '" }';
-	$('#dg-list').datagrid({
-		queryParams : {
-			params : json
-		}
+	$('#dg-list').datagrid('clearSelections');
+	$('#dg-list').datagrid('reload', {
+		params : '{ "' + name + '" : "' + value + '" }'
 	});
 }
 
@@ -135,6 +134,9 @@ function dlg_add() {
 					editor : {
 						type : 'validatebox'
 					}
+				}, {
+					field : 'perm',
+					hidden : true
 				}]],
 		loadMsg : '数据载入中...',
 		onClickRow : onClickRow
@@ -170,6 +172,7 @@ function func_add() {
 				if (data.success) {
 					$('#tree').tree('reload');
 					$('#dg-list').datagrid('reload');
+					$('#dg-list').datagrid('clearSelections');
 					$('#dlg-add').dialog('close');
 				} else {
 					$.messager.show({
@@ -203,6 +206,11 @@ function dlg_edit() {
 	if (rows.length == 0) {
 		$.messager.alert('提示', '请选择要修改的条目！', 'info');
 	} else if (rows.length == 1) {
+		if (rows[0].perm) {
+			$('#pname-edit').val(rows[0].perm.name);
+		} else {
+			$('#pname-edit').val('无');
+		}
 		$('#id-edit').val(rows[0].id);
 		$('#fm-edit').form('load', rows[0]);
 		$('#dlg-edit').dialog('open');
@@ -287,7 +295,7 @@ function func_del() {
 function func_reload() {
 	$('#searchbox').searchbox('setValue', '');
 	$('#dg-list').datagrid('clearSelections');
-	$('#dg-list').datagrid({
-		queryParams : {}
+	$('#dg-list').datagrid('reload', {
+		params : '{ "perm.id" : -1 }'
 	});
 }

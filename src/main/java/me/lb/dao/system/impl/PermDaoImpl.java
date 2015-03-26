@@ -34,6 +34,14 @@ public class PermDaoImpl extends GenericDaoImpl<Perm, Integer> implements
 					|| "url".equals(me.getKey())) {
 				sb.append(" and o." + me.getKey() + " like ?");
 				objs.add("%" + me.getValue() + "%");
+			} else if ("perm.id".equals(me.getKey())) {
+				// 父对象id需要特殊处理非空
+				if ((Integer) me.getValue() == -1) {
+					sb.append(" and o.perm is null");
+				} else {
+					sb.append(" and o.perm.id = ?");
+					objs.add(me.getValue());
+				}
 			} else {
 				sb.append(" and o." + me.getKey() + " = ?");
 				objs.add(me.getValue());

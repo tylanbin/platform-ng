@@ -16,11 +16,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.annotate.JsonFilter;
 
 @Entity
 @Table(name = "ng_sys_perm")
-@JsonIgnoreProperties({ "perm", "roles" })
+// 加入该注解，动态过滤属性
+@JsonFilter("unknown")
 public class Perm implements java.io.Serializable {
 
 	// Fields
@@ -70,7 +71,7 @@ public class Perm implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "parentId")
 	public Perm getPerm() {
 		return this.perm;
@@ -129,6 +130,12 @@ public class Perm implements java.io.Serializable {
 	@Transient
 	public String getText() {
 		return this.name;
+	}
+
+	// 欺骗EasyUI的操作
+	@Transient
+	public Set<Perm> getChildren() {
+		return this.perms;
 	}
 
 }
