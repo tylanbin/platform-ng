@@ -79,7 +79,8 @@ public class RoleController {
 		try {
 			Role temp = roleService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.except("users", "perms").writeValueAsString(temp);
+			return JsonWriter.except(Role.class, "users", "perms")
+					.writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -142,12 +143,12 @@ public class RoleController {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			return JsonWriter.except("users", "perms").writeValueAsString(
-					result);
+			// FIXME: 这里存在json级联序列化的问题，需要处理
+			return JsonWriter.except(Role.class, "users", "perms", "org")
+					.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
 		}
 	}
-
 }

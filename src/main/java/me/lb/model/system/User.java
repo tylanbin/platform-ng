@@ -19,8 +19,8 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 
 @Entity
 @Table(name = "ng_sys_user")
-//加入该注解，动态过滤属性
-@JsonFilter("unknown")
+// 加入该注解，动态过滤属性
+@JsonFilter("User")
 public class User implements java.io.Serializable {
 
 	// Fields

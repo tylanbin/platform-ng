@@ -78,8 +78,8 @@ public class OrgController {
 		try {
 			Org temp = orgService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.except("emps", "roles", "orgs", "children")
-					.writeValueAsString(temp);
+			return JsonWriter.except(Org.class, "emps", "roles", "orgs",
+					"children").writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -129,7 +129,7 @@ public class OrgController {
 		try {
 			List<Org> list = orgService.findTopOrgs();
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.except("org", "emps", "roles", "orgs")
+			return JsonWriter.except(Org.class, "org", "emps", "roles", "orgs")
 					.writeValueAsString(list);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -155,8 +155,8 @@ public class OrgController {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			return JsonWriter.except("emps", "roles", "orgs", "children")
-					.writeValueAsString(result);
+			return JsonWriter.except(Org.class, "emps", "roles", "orgs",
+					"children").writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

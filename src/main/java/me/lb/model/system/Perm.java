@@ -21,7 +21,7 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 @Entity
 @Table(name = "ng_sys_perm")
 // 加入该注解，动态过滤属性
-@JsonFilter("unknown")
+@JsonFilter("Perm")
 public class Perm implements java.io.Serializable {
 
 	// Fields

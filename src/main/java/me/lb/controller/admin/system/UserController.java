@@ -81,7 +81,7 @@ public class UserController {
 		// 用于展示某个员工用户列表的查询
 		Emp emp = empService.findById(empId);
 		Set<User> set = emp.getUsers();
-		return JsonWriter.except("roles").writeValueAsString(set);
+		return JsonWriter.except(User.class, "roles").writeValueAsString(set);
 	}
 
 }

@@ -20,7 +20,7 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 @Entity
 @Table(name = "ng_sys_role")
 // 加入该注解，动态过滤属性
-@JsonFilter("unknown")
+@JsonFilter("Role")
 public class Role implements java.io.Serializable {
 
 	// Fields

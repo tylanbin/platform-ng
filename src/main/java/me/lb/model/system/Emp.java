@@ -22,7 +22,7 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 @Entity
 @Table(name = "ng_sys_emp")
 // 加入该注解，动态过滤属性
-@JsonFilter("unknown")
+@JsonFilter("Emp")
 public class Emp implements java.io.Serializable {
 
 	// Fields

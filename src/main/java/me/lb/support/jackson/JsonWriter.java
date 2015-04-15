@@ -13,10 +13,11 @@ import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
  */
 public class JsonWriter {
 
-	public static ObjectWriter except(String... arr) {
+	public static ObjectWriter except(Class<?> clazz, String... arr) {
 		ObjectMapper om = new ObjectMapper();
 		SimpleFilterProvider sfp = new SimpleFilterProvider();
-		sfp.setDefaultFilter(SimpleBeanPropertyFilter.serializeAllExcept(arr));
+		sfp.addFilter(clazz.getSimpleName(),
+				SimpleBeanPropertyFilter.serializeAllExcept(arr));
 		return om.writer(sfp);
 	}
 
