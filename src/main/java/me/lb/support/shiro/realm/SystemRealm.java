@@ -63,7 +63,7 @@ public class SystemRealm extends AuthorizingRealm {
 		User loginUser = userService.findByLoginName(loginName);
 		if (loginUser != null) {
 			return new SimpleAuthenticationInfo(loginUser.getLoginName(),
-					loginUser.getLoginPwd(), getName());
+					loginUser.getLoginPass(), getName());
 		} else {
 			return null;
 		}

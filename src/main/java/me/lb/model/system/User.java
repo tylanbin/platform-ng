@@ -15,8 +15,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.map.annotate.JsonFilter;
+
 @Entity
 @Table(name = "ng_sys_user")
+//加入该注解，动态过滤属性
+@JsonFilter("unknown")
 public class User implements java.io.Serializable {
 
 	// Fields
@@ -25,7 +29,7 @@ public class User implements java.io.Serializable {
 	private Integer id;
 	private Emp emp;
 	private String loginName;
-	private String loginPwd;
+	private String loginPass;
 	private Integer enabled;
 	private Timestamp createDate;
 	private Integer loginRange;
@@ -38,17 +42,17 @@ public class User implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public User(String loginName, String loginPwd) {
+	public User(String loginName, String loginPass) {
 		this.loginName = loginName;
-		this.loginPwd = loginPwd;
+		this.loginPass = loginPass;
 	}
 
 	/** full constructor */
-	public User(Emp emp, String loginName, String loginPwd, Integer enabled,
+	public User(Emp emp, String loginName, String loginPass, Integer enabled,
 			Timestamp createDate, Integer loginRange, Set<Role> roles) {
 		this.emp = emp;
 		this.loginName = loginName;
-		this.loginPwd = loginPwd;
+		this.loginPass = loginPass;
 		this.enabled = enabled;
 		this.createDate = createDate;
 		this.loginRange = loginRange;
@@ -86,13 +90,13 @@ public class User implements java.io.Serializable {
 		this.loginName = loginName;
 	}
 
-	@Column(name = "loginPwd", nullable = false)
-	public String getLoginPwd() {
-		return this.loginPwd;
+	@Column(name = "loginPass", nullable = false)
+	public String getLoginPass() {
+		return this.loginPass;
 	}
 
-	public void setLoginPwd(String loginPwd) {
-		this.loginPwd = loginPwd;
+	public void setLoginPass(String loginPass) {
+		this.loginPass = loginPass;
 	}
 
 	@Column(name = "enabled")

@@ -10,6 +10,7 @@ import me.lb.model.system.Emp;
 import me.lb.model.system.User;
 import me.lb.service.system.EmpService;
 import me.lb.service.system.UserService;
+import me.lb.support.jackson.JsonWriter;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -48,7 +49,7 @@ public class UserController {
 				} else {
 					// id不存在，需要存储
 					// 判断用户名的重复问题
-					if (userService.validateLoginName(u.getLoginName())) {
+					if (userService.validate(u.getLoginName())) {
 						u.setEmp(empService.findById(empId));
 						u.setCreateDate(new Timestamp(new Date().getTime()));
 						userService.save(u);
@@ -78,10 +79,9 @@ public class UserController {
 	@RequestMapping(value = "/{empId}/user/data", method = RequestMethod.GET)
 	public String data(@PathVariable int empId) throws Exception {
 		// 用于展示某个员工用户列表的查询
-		ObjectMapper om = new ObjectMapper();
 		Emp emp = empService.findById(empId);
 		Set<User> set = emp.getUsers();
-		return om.writeValueAsString(set);
+		return JsonWriter.except("roles").writeValueAsString(set);
 	}
 
 }

@@ -74,9 +74,9 @@ public class CommonDaoTest {
 	public void testUpdate() {
 		User u = new User("test", "test");
 		int id = commonDao.save(u);
-		u.setLoginPwd("null");
+		u.setLoginPass("null");
 		commonDao.update(u);
-		Assert.assertEquals("null", commonDao.findById(id).getLoginPwd());
+		Assert.assertEquals("null", commonDao.findById(id).getLoginPass());
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class CommonDaoTest {
 		users.add(u2);
 		commonDao.deleteAll(users);
 		Assert.assertEquals(1, commonDao.findAll().size());
-		Assert.assertEquals("null", commonDao.findAll().get(0).getLoginPwd());
+		Assert.assertEquals("null", commonDao.findAll().get(0).getLoginPass());
 	}
 
 	@Test

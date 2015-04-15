@@ -3,6 +3,7 @@ package me.lb.model.system;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,10 +17,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonFilter;
 
 @Entity
 @Table(name = "ng_sys_emp")
+// 加入该注解，动态过滤属性
+@JsonFilter("unknown")
 public class Emp implements java.io.Serializable {
 
 	// Fields
@@ -33,13 +36,12 @@ public class Emp implements java.io.Serializable {
 	private String education;
 	private Date birthday;
 	private String contact;
-	private String idNumber;
+	private String idCard;
 	private String email;
 	private Integer isOnJob;
 	private Date dateOfEntry;
 	private Date dateOfConfirm;
 	private Date dateOfLeave;
-	@JsonIgnore
 	private Set<User> users = new HashSet<User>(0);
 
 	// Constructors
@@ -50,7 +52,7 @@ public class Emp implements java.io.Serializable {
 
 	/** full constructor */
 	public Emp(Org org, String name, String gender, String job,
-			String education, Date birthday, String contact, String idNumber,
+			String education, Date birthday, String contact, String idCard,
 			String email, Integer isOnJob, Date dateOfEntry,
 			Date dateOfConfirm, Date dateOfLeave, Set<User> users) {
 		this.org = org;
@@ -60,7 +62,7 @@ public class Emp implements java.io.Serializable {
 		this.education = education;
 		this.birthday = birthday;
 		this.contact = contact;
-		this.idNumber = idNumber;
+		this.idCard = idCard;
 		this.email = email;
 		this.isOnJob = isOnJob;
 		this.dateOfEntry = dateOfEntry;
@@ -146,13 +148,13 @@ public class Emp implements java.io.Serializable {
 		this.contact = contact;
 	}
 
-	@Column(name = "idNumber")
-	public String getIdNumber() {
-		return this.idNumber;
+	@Column(name = "idCard")
+	public String getIdCard() {
+		return this.idCard;
 	}
 
-	public void setIdNumber(String idNumber) {
-		this.idNumber = idNumber;
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
 	}
 
 	@Column(name = "email")

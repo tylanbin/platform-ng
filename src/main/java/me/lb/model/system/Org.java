@@ -2,6 +2,7 @@ package me.lb.model.system;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,11 +13,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonFilter;
 
 @Entity
 @Table(name = "ng_sys_org")
+// 加入该注解，动态过滤属性
+@JsonFilter("unknown")
 public class Org implements java.io.Serializable {
 
 	// Fields
@@ -29,9 +33,7 @@ public class Org implements java.io.Serializable {
 	private String workPlace;
 	private String contact;
 	private String leader;
-	@JsonIgnore
 	private Set<Emp> emps = new HashSet<Emp>(0);
-	@JsonIgnore
 	private Set<Role> roles = new HashSet<Role>(0);
 	private Set<Org> orgs = new HashSet<Org>(0);
 
@@ -148,6 +150,18 @@ public class Org implements java.io.Serializable {
 
 	public void setOrgs(Set<Org> orgs) {
 		this.orgs = orgs;
+	}
+
+	// 欺骗EasyUI的操作
+	@Transient
+	public String getText() {
+		return this.name;
+	}
+
+	// 欺骗EasyUI的操作
+	@Transient
+	public Set<Org> getChildren() {
+		return this.orgs;
 	}
 
 }

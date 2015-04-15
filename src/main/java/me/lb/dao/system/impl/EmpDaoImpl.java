@@ -29,8 +29,9 @@ public class EmpDaoImpl extends GenericDaoImpl<Emp, Integer> implements EmpDao {
 			Map.Entry<String, Object> me = it.next();
 			// 需要额外处理模糊查询的参数
 			if ("name".equals(me.getKey()) || "job".equals(me.getKey())
-					|| "contact".equals(me.getKey())) {
-				sb.append(" and o." + me.getKey() + " = ?");
+					|| "contact".equals(me.getKey())
+					|| "idCard".equals(me.getKey())) {
+				sb.append(" and o." + me.getKey() + " like ?");
 				objs.add("%" + me.getValue() + "%");
 			} else {
 				sb.append(" and o." + me.getKey() + " = ?");

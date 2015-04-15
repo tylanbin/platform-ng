@@ -16,8 +16,13 @@ public class UserServiceImpl extends GenericServiceImpl<User, Integer>
 		implements UserService {
 
 	@Override
-	public boolean validateLoginName(String loginName) {
-		return false;
+	public boolean validate(String loginName) {
+		User temp = findByLoginName(loginName);
+		if (temp == null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

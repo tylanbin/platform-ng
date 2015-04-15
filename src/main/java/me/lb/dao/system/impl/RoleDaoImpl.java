@@ -10,7 +10,6 @@ import me.lb.dao.system.RoleDao;
 import me.lb.model.pagination.Pagination;
 import me.lb.model.system.Role;
 
-import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -30,24 +29,16 @@ public class RoleDaoImpl extends GenericDaoImpl<Role, Integer> implements
 		while (it.hasNext()) {
 			Map.Entry<String, Object> me = it.next();
 			// 需要额外处理模糊查询的参数
-			if ("name".equals(me.getKey())) {
-				sb.append(" and o." + me.getKey() + " = ?");
+			if ("name".equals(me.getKey()) || "description".equals(me.getKey())) {
+				sb.append(" and o." + me.getKey() + " like ?");
 				objs.add("%" + me.getValue() + "%");
 			} else {
+				// 即便是org.id这样的参数也能处理
 				sb.append(" and o." + me.getKey() + " = ?");
 				objs.add(me.getValue());
 			}
 		}
 		return getPagination(sb.toString(), objs);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<Role> findTopRoles() {
-		StringBuffer sb = new StringBuffer("from Role as o");
-		sb.append(" where o.role is null");
-		Query q = sessionFactory.getCurrentSession().createQuery(sb.toString());
-		return q.list();
 	}
 
 }

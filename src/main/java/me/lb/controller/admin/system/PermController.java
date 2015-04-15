@@ -42,7 +42,6 @@ public class PermController {
 	public String edit(@PathVariable int id, Perm temp, Integer pid) {
 		try {
 			Perm obj = permService.findById(id);
-			obj.setPerm(temp.getPerm());
 			obj.setName(temp.getName());
 			obj.setToken(temp.getToken());
 			obj.setUrl(temp.getUrl());
@@ -77,7 +76,7 @@ public class PermController {
 		try {
 			Perm temp = permService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.getWriter("perms", "children")
+			return JsonWriter.except("roles", "perms", "children")
 					.writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -129,7 +128,7 @@ public class PermController {
 		try {
 			List<Perm> list = permService.findTopPerms();
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.getWriter("perm", "perms", "roles")
+			return JsonWriter.except("perm", "roles", "perms")
 					.writeValueAsString(list);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -156,7 +155,7 @@ public class PermController {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			return JsonWriter.getWriter("perms", "roles", "children")
+			return JsonWriter.except("roles", "perms", "children")
 					.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
