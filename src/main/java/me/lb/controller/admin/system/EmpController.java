@@ -107,8 +107,8 @@ public class EmpController {
 		try {
 			Emp temp = empService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.except(Emp.class, "users").writeValueAsString(
-					temp);
+			return JsonWriter.getInstance().filter(Emp.class, "users")
+					.getWriter().writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -170,8 +170,8 @@ public class EmpController {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			return JsonWriter.except(Emp.class, "users").writeValueAsString(
-					result);
+			return JsonWriter.getInstance().filter(Emp.class, "users")
+					.getWriter().writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

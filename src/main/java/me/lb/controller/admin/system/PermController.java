@@ -76,8 +76,9 @@ public class PermController {
 		try {
 			Perm temp = permService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.except(Perm.class, "roles", "perms", "children")
-					.writeValueAsString(temp);
+			return JsonWriter.getInstance()
+					.filter(Perm.class, "roles", "perms", "children")
+					.getWriter().writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -128,7 +129,8 @@ public class PermController {
 		try {
 			List<Perm> list = permService.findTopPerms();
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.except(Perm.class, "perm", "roles", "perms")
+			return JsonWriter.getInstance()
+					.filter(Perm.class, "perm", "roles", "perms").getWriter()
 					.writeValueAsString(list);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -155,8 +157,9 @@ public class PermController {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			return JsonWriter.except(Perm.class, "roles", "perms", "children")
-					.writeValueAsString(result);
+			return JsonWriter.getInstance()
+					.filter(Perm.class, "roles", "perms", "children")
+					.getWriter().writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

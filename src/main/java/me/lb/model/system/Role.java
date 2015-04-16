@@ -66,7 +66,7 @@ public class Role implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "orgId")
 	public Org getOrg() {
 		return this.org;

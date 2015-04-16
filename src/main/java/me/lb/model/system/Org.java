@@ -70,7 +70,7 @@ public class Org implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "parentId")
 	public Org getOrg() {
 		return this.org;

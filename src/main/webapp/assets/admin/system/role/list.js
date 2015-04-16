@@ -193,7 +193,7 @@ function dlg_edit() {
 	if (rows.length == 0) {
 		$.messager.alert('提示', '请选择要修改的条目！', 'info');
 	} else if (rows.length == 1) {
-		if (rows[0].perm) {
+		if (rows[0].org) {
 			$('#orgName-edit').val(rows[0].org.name);
 		} else {
 			$('#orgName-edit').val('无');
