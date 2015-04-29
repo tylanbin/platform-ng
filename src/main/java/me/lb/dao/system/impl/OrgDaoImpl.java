@@ -31,6 +31,7 @@ public class OrgDaoImpl extends GenericDaoImpl<Org, Integer> implements OrgDao {
 			// 需要额外处理模糊查询的参数
 			if ("name".equals(me.getKey()) || "serialNum".equals(me.getKey())
 					|| "workPlace".equals(me.getKey())
+					|| "leader".equals(me.getKey())
 					|| "contact".equals(me.getKey())) {
 				sb.append(" and o." + me.getKey() + " like ?");
 				objs.add("%" + me.getValue() + "%");

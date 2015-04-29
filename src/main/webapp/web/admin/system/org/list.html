@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>后台管理</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<!-- styles -->
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui-custom/easyui.custom.css">
+<!-- scripts -->
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui-custom/easyui.custom.js"></script>
+<script type="text/javascript" src="../../../../assets/common/framework.js"></script>
+<!-- JSON2 -->
+<!--[if lt IE 8]>
+<script type="text/javascript" src="../../../../assets/common/json-js/json2.js"></script>
+<![endif]-->
+<!-- page scripts -->
+<script type="text/javascript" src="../../../../assets/admin/system/org/list.js"></script>
+</head>
+
+<body>
+	<!-- 主页面 -->
+	<div class="easyui-layout" data-options="fit:true">
+		<!-- 左树 -->
+		<div data-options="region:'west',title:'组织机构'" style="width:180px;padding: 8px">
+			<ul class="easyui-tree" id="tree"></ul>
+		</div>
+		<!-- 列表 -->
+		<div data-options="region:'center',border:false">
+			<table id="dg-list" data-options="title:'机构信息列表',toolbar:'#tb-list'"></table>
+			<!-- 菜单 -->
+			<div id="tb-list">
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="dlg_add()">新增</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="dlg_edit()">修改</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="func_del()">删除</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="func_reload()">刷新</a>
+				<!-- 搜索框 -->
+				<input id="searchbox" class="easyui-searchbox" data-options="searcher:search,prompt:'请输入查询内容',menu:'#searchMenu'">
+				<div id="searchMenu">
+					<div data-options="name:'name'">机构名称</div>
+					<div data-options="name:'serialNum'">机构编号</div>
+					<div data-options="name:'workPlace'">工作地点</div>
+					<div data-options="name:'leader'">负责人</div>
+					<div data-options="name:'contact'">联系电话</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 新增 -->
+	<div id="dlg-add" class="easyui-dialog" style="width:400px;padding:20px;top:80px;"
+		data-options="title:'新增',closed:true,buttons:'#dlg-btn-add',modal:true">
+		<form id="fm-add" method="post">
+			<input type="hidden" id="pid-add" />
+			<div style="text-align: center;">
+				<table style="border-width:0;" align="center">
+					<tr>
+						<td style="text-align: right;">父机构：</td>
+						<td><input id="pname-add" disabled="disabled" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">机构名称：</td>
+						<td><input name="name" class="easyui-validatebox" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">机构编号：</td>
+						<td><input name="serialNum" class="easyui-validatebox" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">工作地点：</td>
+						<td><input name="workPlace" class="easyui-validatebox" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">负责人：</td>
+						<td><input name="leader" class="easyui-validatebox" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">联系电话：</td>
+						<td><input name="contact" class="easyui-validatebox" /></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+		<div id="dlg-btn-add">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_add()">确定</a>
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-add').dialog('close');">取消</a>
+		</div>
+	</div>
+	<!-- 修改 -->
+	<div id="dlg-edit" class="easyui-dialog" style="width:320px;padding:20px 30px;top:80px"
+		data-options="title:'修改',closed:true,buttons:'#dlg-btn-edit'">
+		<form id="fm-edit" method="post">
+			<input type="hidden" id="id-edit" />
+			<input type="hidden" id="pid-edit" name="pid" />
+			<div style="text-align: center;">
+				<table style="border-width:0;">
+					<tr>
+						<td style="text-align: right;">父机构：</td>
+						<td><input id="pname-edit" disabled="disabled" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">机构名称：</td>
+						<td><input name="name" class="easyui-validatebox" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">机构编号：</td>
+						<td><input name="serialNum" class="easyui-validatebox" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">工作地点：</td>
+						<td><input name="workPlace" class="easyui-validatebox" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">负责人：</td>
+						<td><input name="leader" class="easyui-validatebox" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">联系电话：</td>
+						<td><input name="contact" class="easyui-validatebox" /></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+		<div id="dlg-btn-edit">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_edit()">确定</a>
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-edit').dialog('close');">取消</a>
+		</div>
+	</div> 
+</body>
+</html>
