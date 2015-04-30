@@ -1,7 +1,9 @@
+var initFlag = true;
 $(function() {
 	$('#tree').tree({
 		url : 'admin/system/perm/tree',
 		method : 'get',
+		lines : true,
 		onSelect : function(node) {
 			var json = '{ "perm.id" : ' + node.id + ' }';
 			$('#dg-list').datagrid('clearSelections');
@@ -12,6 +14,12 @@ $(function() {
 			$('#pid-add').val(node.id);
 			$('#pid-edit').val(node.id);
 			$('#pname-edit').val(node.text);
+		},
+		onLoadSuccess : function(node, data) {
+			if (initFlag) {
+				initFlag = false;
+				$(this).tree('collapseAll');
+			}
 		}
 	});
 	$('#dg-list').datagrid({
@@ -114,7 +122,8 @@ function dlg_add() {
 					editor : {
 						type : 'validatebox',
 						options : {
-							required : true
+							required : true,
+							validType : ['length[0, 10]']
 						}
 					}
 				}, {
@@ -124,7 +133,8 @@ function dlg_add() {
 					editor : {
 						type : 'validatebox',
 						options : {
-							required : true
+							required : true,
+							validType : ['length[0, 10]']
 						}
 					}
 				}, {
@@ -132,11 +142,11 @@ function dlg_add() {
 					width : 150,
 					title : '链接地址',
 					editor : {
-						type : 'validatebox'
+						type : 'validatebox',
+						options : {
+							validType : ['length[0, 100]']
+						}
 					}
-				}, {
-					field : 'perm',
-					hidden : true
 				}]],
 		loadMsg : '数据载入中...',
 		onClickRow : onClickRow

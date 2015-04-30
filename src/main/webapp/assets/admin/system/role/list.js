@@ -1,7 +1,27 @@
+var initFlag = true;
 $(function() {
 	$('#tree').tree({
 		url : 'admin/system/org/tree',
 		method : 'get',
+		lines : true,
+		formatter : function(node) {
+			var text = node.text;
+			$.ajax({
+				type : 'get',
+				url : 'admin/system/role/data',
+				data : {
+					page : 1,
+					rows : 0,
+					params : '{ "org.id" : ' + node.id + ' }'
+				},
+				dataType : 'json',
+				async : false,
+				success : function(data) {
+					text += '&nbsp;<span style=\'color:blue\'>(' + data.total + ')</span>';
+				}
+			});
+			return text;
+		},
 		onSelect : function(node) {
 			var json = '{ "org.id" : ' + node.id + ' }';
 			$('#dg-list').datagrid('clearSelections');
@@ -12,6 +32,12 @@ $(function() {
 			$('#orgId-add').val(node.id);
 			$('#orgId-edit').val(node.id);
 			$('#orgName-edit').val(node.text);
+		},
+		onLoadSuccess : function(node, data) {
+			if (initFlag) {
+				initFlag = false;
+				$(this).tree('collapseAll');
+			}
 		}
 	});
 	$('#dg-list').datagrid({
@@ -111,7 +137,8 @@ function dlg_add() {
 					editor : {
 						type : 'validatebox',
 						options : {
-							required : true
+							required : true,
+							validType : ['length[0, 10]']
 						}
 					}
 				}, {
@@ -119,11 +146,11 @@ function dlg_add() {
 					width : 150,
 					title : '角色描述',
 					editor : {
-						type : 'validatebox'
+						type : 'validatebox',
+						options : {
+							validType : ['length[0, 100]']
+						}
 					}
-				}, {
-					field : 'org',
-					hidden : true
 				}]],
 		loadMsg : '数据载入中...',
 		onClickRow : onClickRow

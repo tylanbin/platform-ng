@@ -1,10 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>后台管理</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <!-- styles -->
-<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui/themes/custom/easyui.css">
 <link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui-custom/easyui.custom.css">
 <!-- scripts -->
@@ -69,18 +68,18 @@
 			<input type="hidden" id="id-edit" />
 			<input type="hidden" id="orgId-edit" name="orgId" />
 			<div style="text-align: center;">
-				<table style="border-width:0;">
+				<table style="border-width:0;" align="center">
 					<tr>
 						<td style="text-align: right;">所属机构：</td>
-						<td><input id="orgName-edit" disabled="disabled" /></td>
+						<td><input id="orgName-edit" disabled="disabled" value="无" /></td>
 					</tr>
 					<tr>
 						<td style="text-align: right;">角色名称：</td>
-						<td><input name="name" class="easyui-validatebox" /></td>
+						<td><input type="text" name="name" class="easyui-validatebox" data-options="required:true,validType:['length[0, 10]']" /></td>
 					</tr>
 					<tr>
 						<td style="text-align: right;">角色描述：</td>
-						<td><input name="description" class="easyui-validatebox" /></td>
+						<td><input type="text" name="description" class="easyui-validatebox" data-options="validType:['length[0, 100]']" /></td>
 					</tr>
 				</table>
 			</div>

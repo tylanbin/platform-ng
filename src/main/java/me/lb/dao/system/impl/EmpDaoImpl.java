@@ -33,6 +33,14 @@ public class EmpDaoImpl extends GenericDaoImpl<Emp, Integer> implements EmpDao {
 					|| "idCard".equals(me.getKey())) {
 				sb.append(" and o." + me.getKey() + " like ?");
 				objs.add("%" + me.getValue() + "%");
+			} else if ("org.id".equals(me.getKey())) {
+				// 所属机构id需要特殊处理非空
+				if ((Integer) me.getValue() == -1) {
+					sb.append(" and o.org is null");
+				} else {
+					sb.append(" and o.org.id = ?");
+					objs.add(me.getValue());
+				}
 			} else {
 				sb.append(" and o." + me.getKey() + " = ?");
 				objs.add(me.getValue());

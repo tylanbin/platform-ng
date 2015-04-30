@@ -6,7 +6,7 @@
 <!-- ico -->
 <link rel="shortcut icon" href="../../../assets/common/favicon.ico">
 <!-- styles -->
-<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui/themes/custom/easyui.css">
 <link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui-custom/easyui.custom.css">
 <!-- scripts -->
@@ -50,12 +50,17 @@
 		}
 	}
 </script>
+<style type="text/css">
+	.panel-header {
+		height: 18px;
+	}
+</style>
 </head>
 
 <body class="easyui-layout" data-options="fit:true">
-	<div data-options="region:'north'" style="height:80px; overflow: hidden;"></div>
+	<div data-options="region:'north'" style="height:80px;overflow:hidden;"></div>
 	<div data-options="region:'west',title:'菜单栏'" style="width:180px;">
-		<div class="menu" style="width:160px; height:auto; padding:20px 8px 8px 8px;">
+		<div class="menu" style="width:160px;height:auto;padding:8px;">
 			<div class="easyui-panel" data-options="title:'系统管理',collapsible:true,collapsed:false"
 				style="width:160px; height:auto; padding:10px; line-height: 25px;">
 				<a style="text-decoration:none;" href="javascript:;" onclick="addTab('组织机构管理','../system/org/list.html')">组织机构管理</a><br />
@@ -65,7 +70,7 @@
 			</div>
 		</div>
 	</div>
-	<div data-options="region:'center'">
+	<div data-options="region:'center',border:false">
 		<div data-options="fit:true" class="easyui-tabs" id="tabs">
 			<div title="主页"></div>
 		</div>

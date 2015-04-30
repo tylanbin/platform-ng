@@ -7,31 +7,6 @@
 	margin-right: 5px;
 }
 
-/* 自定义多行添加表格样式 */
-.customTb {
-	border-color: #CCCCCC;
-	border-width: 1px 0 0 1px;
-	border-style: dotted;
-}
-
-.customTb td {
-	border-color: #CCCCCC;
-	border-width: 0 1px 1px 0;
-	border-style: dotted;
-	/* text-align: center; */
-}
-
-.customTb th {
-	background-color: #F4F4F4;
-	border-color: #CCCCCC;
-	border-width: 0 1px 1px 0;
-	border-style: dotted;
-	text-align: center;
-}
-
-.customInput {
-	border-color: #D4D4D4;
-	border-width: 1px;
-	border-style: solid;
-	height: 20px;
+.tree-node {
+	padding: 2px 0;
 }

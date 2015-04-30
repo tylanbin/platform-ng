@@ -1,7 +1,9 @@
+var initFlag = true;
 $(function() {
 	$('#tree').tree({
 		url : 'admin/system/org/tree',
 		method : 'get',
+		lines : true,
 		onSelect : function(node) {
 			var json = '{ "org.id" : ' + node.id + ' }';
 			$('#dg-list').datagrid('clearSelections');
@@ -13,6 +15,12 @@ $(function() {
 			$('#pname-add').val(node.text);
 			$('#pid-edit').val(node.id);
 			$('#pname-edit').val(node.text);
+		},
+		onLoadSuccess : function(node, data) {
+			if (initFlag) {
+				initFlag = false;
+				$(this).tree('collapseAll');
+			}
 		}
 	});
 	$('#dg-list').datagrid({
@@ -40,7 +48,7 @@ $(function() {
 					title : '机构名称'
 				}, {
 					field : 'serialNum',
-					title : '机构编号'
+					title : '机构编码'
 				}, {
 					field : 'workPlace',
 					title : '工作地点'
@@ -84,12 +92,25 @@ function dlg_add() {
 }
 function func_add() {
 	// 数据处理
+	var name = $('#fm-add input[name="name"]').val();
+	var serialNum = $('#fm-add input[name="serialNum"]').val();
+	var workPlace = $('#fm-add input[name="workPlace"]').val();
+	var leader = $('#fm-add input[name="leader"]').val();
+	var contact = $('#fm-add input[name="contact"]').val();
+	var json =
+		'[{' +
+			'"name" : "' + name + '", ' +
+			'"serialNum" : "' + serialNum + '", ' +
+			'"workPlace" : "' + workPlace + '", ' +
+			'"leader" : "' + leader + '", ' +
+			'"contact" : "' + contact + '"' +
+		'}]';
 	$.ajax({
 		type : 'post',
 		url : 'admin/system/org/batch',
 		data : {
-			id : $('#orgId-add').val(),
-			objs : JSON.stringify(data.rows)
+			id : $('#pid-add').val(),
+			objs : json
 		},
 		dataType : 'json',
 		async : true,

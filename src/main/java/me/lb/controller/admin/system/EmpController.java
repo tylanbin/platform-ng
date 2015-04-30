@@ -72,10 +72,10 @@ public class EmpController {
 			obj.setContact(temp.getContact());
 			obj.setIdCard(temp.getIdCard());
 			obj.setEmail(temp.getEmail());
-			obj.setIsOnJob(temp.getIsOnJob());
-			obj.setDateOfEntry(temp.getDateOfEntry());
-			obj.setDateOfConfirm(temp.getDateOfConfirm());
-			obj.setDateOfLeave(temp.getDateOfLeave());
+			// obj.setIsOnJob(temp.getIsOnJob());
+			// obj.setDateOfEntry(temp.getDateOfEntry());
+			// obj.setDateOfConfirm(temp.getDateOfConfirm());
+			// obj.setDateOfLeave(temp.getDateOfLeave());
 			if (orgId != null) {
 				// 修改所属机构
 				Org org = orgService.findById(orgId);
@@ -107,8 +107,11 @@ public class EmpController {
 		try {
 			Emp temp = empService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.getInstance().filter(Emp.class, "users")
-					.getWriter().writeValueAsString(temp);
+			return JsonWriter
+					.getInstance()
+					.filter(Emp.class, "users")
+					.filter(Org.class, "org", "emps", "roles", "orgs",
+							"children").getWriter().writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -170,8 +173,11 @@ public class EmpController {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			return JsonWriter.getInstance().filter(Emp.class, "users")
-					.getWriter().writeValueAsString(result);
+			return JsonWriter
+					.getInstance()
+					.filter(Emp.class, "users")
+					.filter(Org.class, "org", "emps", "roles", "orgs",
+							"children").getWriter().writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
