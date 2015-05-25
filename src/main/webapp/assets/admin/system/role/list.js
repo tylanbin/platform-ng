@@ -1,4 +1,4 @@
-var initFlag = true;
+var selected = null;
 $(function() {
 	$('#tree').tree({
 		url : 'admin/system/org/tree',
@@ -34,9 +34,9 @@ $(function() {
 			$('#orgName-edit').val(node.text);
 		},
 		onLoadSuccess : function(node, data) {
-			if (initFlag) {
-				initFlag = false;
-				$(this).tree('collapseAll');
+			$(this).tree('collapseAll');
+			if (selected) {
+				$(this).tree('expandTo', $(this).tree('find', selected).target);
 			}
 		}
 	});
@@ -184,6 +184,10 @@ function func_add() {
 			async : true,
 			success : function(data) {
 				if (data.success) {
+					var node = $('#tree').tree('getSelected');
+					if (node) {
+						selected = node.id;
+					}
 					$('#tree').tree('reload');
 					$('#dg-list').datagrid('reload');
 					$('#dg-list').datagrid('clearSelections');
@@ -242,6 +246,10 @@ function func_edit() {
 		success : function(data) {
 			var result = eval('(' + data + ')');
 			if (result.success) {
+				var node = $('#tree').tree('getSelected');
+				if (node) {
+					selected = node.id;
+				}
 				$('#tree').tree('reload');
 				$('#dg-list').datagrid('reload');
 				$('#dg-list').datagrid('clearSelections');
@@ -272,6 +280,10 @@ function func_del() {
 					async : true,
 					success : function(data) {
 						if (data.success) {
+							var node = $('#tree').tree('getSelected');
+							if (node) {
+								selected = node.id;
+							}
 							$('#tree').tree('reload');
 							$('#dg-list').datagrid('reload');
 							$('#dg-list').datagrid('clearSelections');
@@ -312,4 +324,38 @@ function func_reload() {
 	$('#dg-list').datagrid('reload', {
 		params : '{ "org.id" : -1 }'
 	});
+}
+
+function dlg_auth() {
+	var rows = $('#dg-list').datagrid('getSelections');
+	if (rows.length == 0) {
+		$.messager.alert('提示', '请选择要授权的条目！', 'info');
+	} else if (rows.length == 1) {
+		// 载入权限树
+		$('#tree-auth').tree({
+			url : 'admin/system/perm/tree',
+			method : 'get',
+			lines : true,
+			checkbox : true,
+			onClick : function(node) {
+				if (node.checked) {
+					$(this).tree('uncheck', node.target);
+				} else {
+					$(this).tree('check', node.target);
+				}
+			},
+			onLoadSuccess : function(node, data) {
+				$(this).tree('collapseAll');
+			}
+		});
+		$('#id-auth').val(rows[0].id);
+		$('#dlg-auth').dialog('open');
+	} else {
+		$.messager.alert('提示', '授权时只可以选择一个！', 'info');
+	}
+}
+function func_auth() {
+	var perms = $('#tree-auth').tree('getChecked');
+	var permIds
+	alert(perms.toSource())
 }

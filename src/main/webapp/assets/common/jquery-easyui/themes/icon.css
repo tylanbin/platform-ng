@@ -94,3 +94,8 @@
 .icon-large-chart{
 	background:url('icons/large_chart.png') no-repeat center center;
 }
+
+/* 自定义的图标，使用ext的图标 */
+.icon-key{
+	background:url('icons_ext/key.png') no-repeat center center;
+}

@@ -22,7 +22,7 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 @Entity
 @Table(name = "ng_sys_emp")
 // 加入该注解，动态过滤属性
-@JsonFilter("Emp")
+@JsonFilter("me.lb.model.system.Emp")
 public class Emp implements java.io.Serializable {
 
 	// Fields
@@ -205,7 +205,7 @@ public class Emp implements java.io.Serializable {
 		this.dateOfLeave = dateOfLeave;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "emp")
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "emp")
 	public Set<User> getUsers() {
 		return this.users;
 	}

@@ -1,4 +1,4 @@
-var initFlag = true;
+var selected = null;
 $(function() {
 	$('#tree').tree({
 		url : 'admin/system/org/tree',
@@ -34,9 +34,9 @@ $(function() {
 			$('#orgName-edit').val(node.text);
 		},
 		onLoadSuccess : function(node, data) {
-			if (initFlag) {
-				initFlag = false;
-				$(this).tree('collapseAll');
+			$(this).tree('collapseAll');
+			if (selected) {
+				$(this).tree('expandTo', $(this).tree('find', selected).target);
 			}
 		}
 	});
@@ -223,6 +223,10 @@ function func_add() {
 			async : true,
 			success : function(data) {
 				if (data.success) {
+					var node = $('#tree').tree('getSelected');
+					if (node) {
+						selected = node.id;
+					}
 					$('#tree').tree('reload');
 					$('#dg-list').datagrid('reload');
 					$('#dg-list').datagrid('clearSelections');
@@ -281,6 +285,10 @@ function func_edit() {
 		success : function(data) {
 			var result = eval('(' + data + ')');
 			if (result.success) {
+				var node = $('#tree').tree('getSelected');
+				if (node) {
+					selected = node.id;
+				}
 				$('#tree').tree('reload');
 				$('#dg-list').datagrid('reload');
 				$('#dg-list').datagrid('clearSelections');
@@ -311,6 +319,10 @@ function func_del() {
 					async : true,
 					success : function(data) {
 						if (data.success) {
+							var node = $('#tree').tree('getSelected');
+							if (node) {
+								selected = node.id;
+							}
 							$('#tree').tree('reload');
 							$('#dg-list').datagrid('reload');
 							$('#dg-list').datagrid('clearSelections');

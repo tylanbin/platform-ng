@@ -36,8 +36,9 @@
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="dlg_edit()">修改</a>
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="func_del()">删除</a>
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="func_reload()">刷新</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-key',plain:true" onclick="dlg_auth()">授权</a>
 				<!-- 搜索框 -->
-				<input id="searchbox" class="easyui-searchbox" data-options="searcher:search,prompt:'请输入查询内容',menu:'#searchMenu'">
+				<input id="searchbox" class="easyui-searchbox" data-options="width:200,searcher:search,prompt:'请输入查询内容',menu:'#searchMenu'">
 				<div id="searchMenu">
 					<div data-options="name:'name'">角色名称</div>
 					<div data-options="name:'description'">角色描述</div>
@@ -88,6 +89,18 @@
 			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_edit()">确定</a>
 			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-edit').dialog('close');">取消</a>
 		</div>
-	</div> 
+	</div>
+	<!-- 授权 -->
+	<div id="dlg-auth" class="easyui-dialog" style="width:320px;height:420px;padding:20px 30px;top:80px"
+		data-options="title:'授权',closed:true,buttons:'#dlg-btn-auth'">
+		<form id="fm-auth" method="post" style="padding-bottom:20px;">
+			<input type="hidden" id="id-auth" />
+			<ul class="easyui-tree" id="tree-auth"></ul>
+		</form>
+		<div id="dlg-btn-auth">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_auth()">确定</a>
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-auth').dialog('close');">取消</a>
+		</div>
+	</div>
 </body>
 </html>

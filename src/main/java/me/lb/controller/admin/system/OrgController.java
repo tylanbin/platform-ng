@@ -115,7 +115,8 @@ public class OrgController {
 		try {
 			String[] temp = ids.split(",");
 			for (String id : temp) {
-				orgService.delete(orgService.findById(Integer.parseInt(id)));
+				Org org = orgService.findById(Integer.parseInt(id.trim()));
+				orgService.delete(org);
 			}
 			return "{ \"success\" : true }";
 		} catch (Exception e) {

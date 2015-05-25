@@ -21,7 +21,7 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 @Entity
 @Table(name = "ng_sys_perm")
 // 加入该注解，动态过滤属性
-@JsonFilter("Perm")
+@JsonFilter("me.lb.model.system.Perm")
 public class Perm implements java.io.Serializable {
 
 	// Fields
@@ -108,7 +108,7 @@ public class Perm implements java.io.Serializable {
 		this.url = url;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "perms")
+	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "perms")
 	public Set<Role> getRoles() {
 		return this.roles;
 	}
@@ -117,7 +117,7 @@ public class Perm implements java.io.Serializable {
 		this.roles = roles;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "perm")
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "perm")
 	public Set<Perm> getPerms() {
 		return this.perms;
 	}

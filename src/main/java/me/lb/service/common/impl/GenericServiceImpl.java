@@ -14,7 +14,6 @@ import me.lb.service.common.GenericService;
 public class GenericServiceImpl<T, PK extends Serializable> implements
 		GenericService<T, PK> {
 
-	// 在基础类中使用setDao进行注入
 	@Autowired
 	protected GenericDao<T, PK> dao;
 

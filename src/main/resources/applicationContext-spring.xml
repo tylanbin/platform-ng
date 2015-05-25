@@ -23,7 +23,8 @@
 	</aop:config>
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method name="*" />
+			<!-- 使Service注入Service时也可以回滚 -->
+			<tx:method name="*" rollback-for="Exception" />
 		</tx:attributes>
 	</tx:advice>
 

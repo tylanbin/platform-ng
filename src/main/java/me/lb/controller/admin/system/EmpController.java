@@ -146,7 +146,8 @@ public class EmpController {
 		try {
 			String[] temp = ids.split(",");
 			for (String id : temp) {
-				empService.delete(empService.findById(Integer.parseInt(id)));
+				Emp emp = empService.findById(Integer.parseInt(id.trim()));
+				empService.delete(emp);
 			}
 			return "{ \"success\" : true }";
 		} catch (Exception e) {

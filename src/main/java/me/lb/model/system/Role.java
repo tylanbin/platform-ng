@@ -20,7 +20,7 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 @Entity
 @Table(name = "ng_sys_role")
 // 加入该注解，动态过滤属性
-@JsonFilter("Role")
+@JsonFilter("me.lb.model.system.Role")
 public class Role implements java.io.Serializable {
 
 	// Fields
@@ -94,7 +94,7 @@ public class Role implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "roles")
+	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "roles")
 	public Set<User> getUsers() {
 		return this.users;
 	}
@@ -103,7 +103,7 @@ public class Role implements java.io.Serializable {
 		this.users = users;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	@JoinTable(name = "ng_sys_role_perm", joinColumns = { @JoinColumn(name = "roleId") }, inverseJoinColumns = { @JoinColumn(name = "permId") })
 	public Set<Perm> getPerms() {
 		return this.perms;

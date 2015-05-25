@@ -1,4 +1,4 @@
-var initFlag = true;
+var selected = null;
 $(function() {
 	$('#tree').tree({
 		url : 'admin/system/perm/tree',
@@ -16,9 +16,9 @@ $(function() {
 			$('#pname-edit').val(node.text);
 		},
 		onLoadSuccess : function(node, data) {
-			if (initFlag) {
-				initFlag = false;
-				$(this).tree('collapseAll');
+			$(this).tree('collapseAll');
+			if (selected) {
+				$(this).tree('expandTo', $(this).tree('find', selected).target);
 			}
 		}
 	});
@@ -180,6 +180,10 @@ function func_add() {
 			async : true,
 			success : function(data) {
 				if (data.success) {
+					var node = $('#tree').tree('getSelected');
+					if (node) {
+						selected = node.id;
+					}
 					$('#tree').tree('reload');
 					$('#dg-list').datagrid('reload');
 					$('#dg-list').datagrid('clearSelections');
@@ -230,6 +234,7 @@ function dlg_edit() {
 }
 function func_edit() {
 	// 这里是利用html中的form进行提交，所以需要加上项目路径AppCore.baseUrl
+	// 这里理论上应该使用put请求，但由于form标签不支持put方式，故使用post代替
 	$('#fm-edit').form('submit', {
 		url : AppCore.baseUrl + 'admin/system/perm/' + $('#id-edit').val(),
 		onSubmit : function(param) {
@@ -238,6 +243,10 @@ function func_edit() {
 		success : function(data) {
 			var result = eval('(' + data + ')');
 			if (result.success) {
+				var node = $('#tree').tree('getSelected');
+				if (node) {
+					selected = node.id;
+				}
 				$('#tree').tree('reload');
 				$('#dg-list').datagrid('reload');
 				$('#dg-list').datagrid('clearSelections');
@@ -268,6 +277,10 @@ function func_del() {
 					async : true,
 					success : function(data) {
 						if (data.success) {
+							var node = $('#tree').tree('getSelected');
+							if (node) {
+								selected = node.id;
+							}
 							$('#tree').tree('reload');
 							$('#dg-list').datagrid('reload');
 							$('#dg-list').datagrid('clearSelections');

@@ -20,7 +20,7 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 @Entity
 @Table(name = "ng_sys_user")
 // 加入该注解，动态过滤属性
-@JsonFilter("User")
+@JsonFilter("me.lb.model.system.User")
 public class User implements java.io.Serializable {
 
 	// Fields
@@ -126,7 +126,7 @@ public class User implements java.io.Serializable {
 		this.loginRange = loginRange;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	@JoinTable(name = "ng_sys_user_role", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "roleId") })
 	public Set<Role> getRoles() {
 		return this.roles;

@@ -1,5 +1,6 @@
 package me.lb.controller.admin.system;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -119,7 +120,8 @@ public class RoleController {
 		try {
 			String[] temp = ids.split(",");
 			for (String id : temp) {
-				roleService.delete(roleService.findById(Integer.parseInt(id)));
+				Role role = roleService.findById(Integer.parseInt(id.trim()));
+				roleService.delete(role);
 			}
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
@@ -155,6 +157,24 @@ public class RoleController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
+		}
+	}
+
+	// 授权的方法
+	@ResponseBody
+	@RequestMapping(value = "/{id}/auth", method = RequestMethod.POST)
+	public String auth(@PathVariable int id, String permIds) {
+		try {
+			List<Integer> list = new ArrayList<Integer>();
+			String[] temp = permIds.split(",");
+			for (String permId : temp) {
+				list.add(Integer.parseInt(permId.trim()));
+			}
+			roleService.auth(id, list);
+			return "{ \"success\" : true }";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"msg\" : \"操作失败！\" }";
 		}
 	}
 

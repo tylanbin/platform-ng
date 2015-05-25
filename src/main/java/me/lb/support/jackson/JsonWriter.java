@@ -32,7 +32,7 @@ public class JsonWriter {
 	 * @param arr 属性数组
 	 */
 	public JsonWriter filter(Class<?> clazz, String... arr) {
-		this.sfp.addFilter(clazz.getSimpleName(),
+		this.sfp.addFilter(clazz.getName(),
 				SimpleBeanPropertyFilter.serializeAllExcept(arr));
 		return this;
 	}

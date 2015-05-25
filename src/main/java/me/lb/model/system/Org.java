@@ -20,7 +20,7 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 @Entity
 @Table(name = "ng_sys_org")
 // 加入该注解，动态过滤属性
-@JsonFilter("Org")
+@JsonFilter("me.lb.model.system.Org")
 public class Org implements java.io.Serializable {
 
 	// Fields
@@ -125,7 +125,7 @@ public class Org implements java.io.Serializable {
 		this.leader = leader;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "org")
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "org")
 	public Set<Emp> getEmps() {
 		return this.emps;
 	}
@@ -134,7 +134,7 @@ public class Org implements java.io.Serializable {
 		this.emps = emps;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "org")
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "org")
 	public Set<Role> getRoles() {
 		return this.roles;
 	}
@@ -143,7 +143,7 @@ public class Org implements java.io.Serializable {
 		this.roles = roles;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "org")
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "org")
 	public Set<Org> getOrgs() {
 		return this.orgs;
 	}

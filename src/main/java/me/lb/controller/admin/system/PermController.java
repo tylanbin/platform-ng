@@ -40,6 +40,7 @@ public class PermController {
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
 	public String edit(@PathVariable int id, Perm temp, Integer pid) {
+		// 这里理论上应该使用put请求，但由于form标签不支持put方式，故使用post代替
 		try {
 			Perm obj = permService.findById(id);
 			obj.setName(temp.getName());
@@ -114,7 +115,8 @@ public class PermController {
 		try {
 			String[] temp = ids.split(",");
 			for (String id : temp) {
-				permService.delete(permService.findById(Integer.parseInt(id)));
+				Perm perm = permService.findById(Integer.parseInt(id.trim()));
+				permService.delete(perm);
 			}
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
