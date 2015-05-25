@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import me.lb.model.pagination.Pagination;
 import me.lb.model.system.Org;
+import me.lb.model.system.Perm;
 import me.lb.model.system.Role;
 import me.lb.service.system.OrgService;
 import me.lb.service.system.RoleService;
@@ -163,7 +165,7 @@ public class RoleController {
 	// 授权的方法
 	@ResponseBody
 	@RequestMapping(value = "/{id}/auth", method = RequestMethod.POST)
-	public String auth(@PathVariable int id, String permIds) {
+	public String auth_post(@PathVariable int id, String permIds) {
 		try {
 			List<Integer> list = new ArrayList<Integer>();
 			String[] temp = permIds.split(",");
@@ -175,6 +177,22 @@ public class RoleController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"msg\" : \"操作失败！\" }";
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/{id}/auth", method = RequestMethod.GET)
+	public String auth_get(@PathVariable int id) {
+		try {
+			Role temp = roleService.findById(id);
+			Set<Perm> perms = temp.getPerms();
+			// 将查询出的结果序列化为JSON并返回
+			return JsonWriter.getInstance()
+					.filter(Perm.class, "perm", "roles", "perms", "children")
+					.getWriter().writeValueAsString(perms);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "[]";
 		}
 	}
 

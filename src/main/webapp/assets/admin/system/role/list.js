@@ -345,6 +345,18 @@ function dlg_auth() {
 				}
 			},
 			onLoadSuccess : function(node, data) {
+				// 这里需要读取该角色已有的权限
+				$.ajax({
+					type : 'get',
+					url : 'admin/system/role/' + rows[0].id + '/auth',
+					dataType : 'json',
+					async : false,
+					success : function(data) {
+						for (var i = 0; i < data.length; i++) {
+							$('#tree-auth').tree('check', $('#tree-auth').tree('find', data[i].id).target);
+						}
+					}
+				});
 				$(this).tree('collapseAll');
 			}
 		});
@@ -355,7 +367,46 @@ function dlg_auth() {
 	}
 }
 function func_auth() {
+	var roleId = $('#id-auth').val();
 	var perms = $('#tree-auth').tree('getChecked');
-	var permIds
-	alert(perms.toSource())
+	var permIds = new Array();
+	$.each(perms, function(i, perm) {
+		permIds.push(perm.id);
+	});
+	$.ajax({
+		type : 'post',
+		url : 'admin/system/role/' + roleId + '/auth',
+		data : {
+			permIds : permIds.join(',')
+		},
+		dataType : 'json',
+		async : true,
+		success : function(data) {
+			if (data.success) {
+				// 授权不会影响页面数据，无需刷新
+				$('#dlg-auth').dialog('close');
+			} else {
+				$.messager.show({
+					title : '错误',
+					msg : data.msg,
+					showType : 'fade',
+					style : {
+						right : '',
+						bottom : ''
+					}
+				});
+			}
+		},
+		error : function() {
+			$.messager.show({
+				title : '错误',
+				msg : '服务器正忙，请稍后再试！',
+				showType : 'fade',
+				style : {
+					right : '',
+					bottom : ''
+				}
+			});
+		}
+	});
 }
