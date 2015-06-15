@@ -2,7 +2,6 @@ package me.lb.controller.admin.system;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -32,34 +31,45 @@ public class UserController {
 	private EmpService empService;
 
 	@ResponseBody
-	@RequestMapping(value = "/{empId}/user/allot", method = RequestMethod.PUT)
-	public String allot(@PathVariable int empId, String jsonObjs) {
+	@RequestMapping(value = "/{empId}/user", method = RequestMethod.POST)
+	public String user(@PathVariable int empId, String objs) {
 		ObjectMapper om = new ObjectMapper();
 		try {
-			List<User> list = om.readValue(jsonObjs,
+			Emp emp = empService.findById(empId);
+			List<User> list = om.readValue(objs,
 					new TypeReference<List<User>>() {
 					});
-			Iterator<User> it = list.iterator();
-			while (it.hasNext()) {
+			// 先完成验证
+			for (User temp : list) {
+				if (temp.getId() == null) {
+					String loginName = temp.getLoginName();
+					if (!userService.validate(loginName)) {
+						return "{ \"msg\" : \"" + loginName
+								+ "与已有用户名冲突，请更换后重试！\" }";
+					}
+				}
+			}
+			// 通过验证
+			for (User temp : list) {
 				// id判断是否存在
-				User u = it.next();
-				if (u.getId() > 0) {
+				if (temp.getId() != null && temp.getId() > 0) {
 					// id存在，有该记录，更新
-					userService.update(u);
+					// 为了避免更新导致的清空数据，仅处理需要更新的字段
+					User obj = userService.findById(temp.getId());
+					obj.setLoginName(temp.getLoginName());
+					obj.setLoginPass(temp.getLoginPass());
+					obj.setEnabled(temp.getEnabled());
+					userService.update(obj);
 				} else {
 					// id不存在，需要存储
-					// 判断用户名的重复问题
-					if (userService.validate(u.getLoginName())) {
-						u.setEmp(empService.findById(empId));
-						u.setCreateDate(new Timestamp(new Date().getTime()));
-						userService.save(u);
-					} else {
-						return "{ \"msg\" : \"分配的用户名与已有用户名冲突，请更换后重试！\" }";
-					}
+					temp.setEmp(emp);
+					temp.setCreateDate(new Timestamp(new Date().getTime()));
+					userService.save(temp);
 				}
 			}
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
+			e.printStackTrace();
 			return "{ \"msg\" : \"分配失败，请确认操作无误后重试，或联系管理员处理！\" }";
 		}
 	}
@@ -81,8 +91,8 @@ public class UserController {
 		// 用于展示某个员工用户列表的查询
 		Emp emp = empService.findById(empId);
 		Set<User> set = emp.getUsers();
-		return JsonWriter.getInstance().filter(User.class, "roles").getWriter()
-				.writeValueAsString(set);
+		return JsonWriter.getInstance().filter(User.class, "emp", "roles")
+				.getWriter().writeValueAsString(set);
 	}
 
 }

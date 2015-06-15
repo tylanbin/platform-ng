@@ -20,6 +20,7 @@
 <![endif]-->
 <!-- page scripts -->
 <script type="text/javascript" src="../../../../assets/admin/system/emp/list.js"></script>
+<script type="text/javascript" src="../../../../assets/admin/system/emp/user.js"></script>
 </head>
 
 <body>
@@ -38,6 +39,7 @@
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="dlg_edit()">修改</a>
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="func_del()">删除</a>
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="func_reload()">刷新</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-user',plain:true" onclick="dlg_user()">分配用户</a>
 				<!-- 搜索框 -->
 				<input id="searchbox" class="easyui-searchbox" data-options="width:200,searcher:search,prompt:'请输入查询内容',menu:'#searchMenu'">
 				<div id="searchMenu">
@@ -50,7 +52,7 @@
 		</div>
 	</div>
 	<!-- 新增 -->
-	<div id="dlg-add" class="easyui-dialog" style="width:400px;height:320px;top:80px;overflow-y:scroll;"
+	<div id="dlg-add" class="easyui-dialog" style="width:400px;height:320px;top:30px;overflow-y:scroll;"
 		data-options="title:'新增',closed:true,buttons:'#dlg-btn-add',resizable:true,maximizable:true,modal:true">
 		<div style="margin:5px;">
 			<input type="hidden" id="orgId-add" />
@@ -66,7 +68,7 @@
 		</div>
 	</div>
 	<!-- 修改 -->
-	<div id="dlg-edit" class="easyui-dialog" style="width:320px;padding:20px 30px;top:80px"
+	<div id="dlg-edit" class="easyui-dialog" style="width:320px;padding:20px 30px;top:30px"
 		data-options="title:'修改',closed:true,buttons:'#dlg-btn-edit'">
 		<form id="fm-edit" method="post">
 			<input type="hidden" id="id-edit" />
@@ -127,6 +129,22 @@
 		<div id="dlg-btn-edit">
 			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_edit()">确定</a>
 			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-edit').dialog('close');">取消</a>
+		</div>
+	</div>
+	<!-- 设置用户 -->
+	<div id="dlg-user" class="easyui-dialog" style="width:600px;height:320px;top:30px;overflow-y:scroll;"
+		data-options="title:'分配用户',closed:true,buttons:'#dlg-btn-user',resizable:true,maximizable:true,modal:true">
+		<div style="margin:5px;">
+			<input type="hidden" id="empId-user" />
+			<table id="dg-user" data-options="title:'用户',toolbar:'#tb-user'"></table>
+			<div id="tb-user">
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="appendUser()">新增</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeUser()">删除</a>
+			</div>
+		</div>
+		<div id="dlg-btn-user">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_user()">确定</a>
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-user').dialog('close');">取消</a>
 		</div>
 	</div>
 </body>

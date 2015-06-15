@@ -103,7 +103,7 @@
 			},
 			message : '用户名不合法（字母开头，长度6-16，允许字母数字下划线）'
 		},
-		loginPwd : {
+		loginPass : {
 			validator : function(value) {
 				return /^[a-zA-Z][a-zA-Z0-9_]{5,15}$/.test(value);
 			},
