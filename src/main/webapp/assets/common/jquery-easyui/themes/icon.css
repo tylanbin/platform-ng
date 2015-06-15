@@ -102,3 +102,9 @@
 .icon-user{
 	background:url('icons_ext/user/user.png') no-repeat center center;
 }
+.icon-org{
+	background:url('icons_ext/chart/chart_organisation.png') no-repeat center center;
+}
+.icon-group{
+	background:url('icons_ext/group/group_gear.png') no-repeat center center;
+}

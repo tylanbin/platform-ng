@@ -1,6 +1,7 @@
 package me.lb.controller.admin.system;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -133,6 +134,23 @@ public class RoleController {
 	}
 
 	@ResponseBody
+	@RequestMapping(value = "/tree", method = RequestMethod.GET)
+	public String tree() {
+		// 角色的树需要经过特殊处理，将机构和角色合并显示，并进行区分
+		try {
+			List<Org> list = orgService.findTopOrgs();
+			List<Object> result = genRoleTree(list);
+			// 将查询出的结果序列化为JSON并返回
+			return JsonWriter.getInstance().filter(Org.class, "org", "emps")
+					.filter(Role.class, "org", "users", "perms").getWriter()
+					.writeValueAsString(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "[]";
+		}
+	}
+
+	@ResponseBody
 	@RequestMapping(value = "/data", method = RequestMethod.GET)
 	public String data(String params) {
 		ObjectMapper om = new ObjectMapper();
@@ -194,6 +212,40 @@ public class RoleController {
 			e.printStackTrace();
 			return "[]";
 		}
+	}
+
+	/**
+	 * 递归机构集合，取出角色信息，生成角色树
+	 * @param orgs 机构集合（包含父子关系）
+	 * @param result 结果集合
+	 */
+	private List<Object> genRoleTree(Collection<Org> orgs) {
+		List<Object> result = new ArrayList<Object>();
+		for (Org org : orgs) {
+			// 对每个机构进行封装Map的操作
+			Map<String, Object> obj = new HashMap<String, Object>();
+			obj.put("id", "org_" + org.getId());
+			obj.put("text", org.getName());
+			obj.put("iconCls", "icon-org");
+			// 关键是对其children的操作
+			List<Object> children = new ArrayList<Object>();
+			// 首先先加入递归的结果
+			children.addAll(genRoleTree(org.getChildren()));
+			// 其次添加角色的信息
+			for (Role role : org.getRoles()) {
+				// 每个角色都是一个独立的叶子节点
+				Map<String, Object> obj_role = new HashMap<String, Object>();
+				obj_role.put("id", role.getId());
+				obj_role.put("text", role.getName());
+				obj_role.put("iconCls", "icon-group");
+				children.add(obj_role);
+			}
+			if (!children.isEmpty()) {
+				obj.put("children", children);
+			}
+			result.add(obj);
+		}
+		return result;
 	}
 
 }
