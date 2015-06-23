@@ -3,6 +3,7 @@ package me.lb.model.system;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
@@ -34,6 +36,9 @@ public class User implements java.io.Serializable {
 	private Timestamp createDate;
 	private Integer loginRange;
 	private Set<Role> roles = new HashSet<Role>(0);
+
+	// 用于反序列化json，存储关联的角色信息
+	private String roleIds;
 
 	// Constructors
 
@@ -134,6 +139,15 @@ public class User implements java.io.Serializable {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	@Transient
+	public String getRoleIds() {
+		return roleIds;
+	}
+
+	public void setRoleIds(String roleIds) {
+		this.roleIds = roleIds;
 	}
 
 }

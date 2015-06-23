@@ -1,3 +1,19 @@
+var tree_roles = null;
+$(function() {
+	$.ajax({
+		type : 'get',
+		url : 'admin/system/role/tree',
+		dataType : 'json',
+		async : false,
+		success : function(data) {
+			tree_roles = data;
+		},
+		error : function() {
+			tree_roles = [];
+		}
+	});
+})
+
 var userEditIndex = undefined;
 function endUserEditing() {
 	if (userEditIndex == undefined) {
@@ -145,6 +161,55 @@ function dlg_user() {
 							}
 						}
 					}, {
+						field : 'roleIds',
+						width : 80,
+						title : '角色',
+						formatter : function(value, row, index) {
+							var roleNames = '';
+							if (value) {
+								var roleIds = value.split(",");
+								for (var i = 0; i < roleIds.length; i++) {
+									$.ajax({
+										type : 'get',
+										url : 'admin/system/role/' + roleIds[i],
+										dataType : 'json',
+										async : false,
+										success : function(data) {
+											if (data.name) {
+												roleNames += data.name + ', ';
+											}
+										}
+									});
+								}
+							}
+							return roleNames.substring(0, roleNames.length - 2);
+						},
+						editor : {
+							type : 'combotree',
+							options : {
+								data : tree_roles,
+								required : true,
+								editable : false,
+								multiple : true,
+								cascadeCheck : false,
+								onBeforeSelect : function(node) {
+									// 不允许select节点，会自动check
+									return false;
+								},
+								onBeforeCheck : function(node) {
+									// 机构类型不允许选择
+									if (!$.isNumeric(node.id)) {
+										$.messager.show({
+											title : '提示',
+											msg : '不允许选择机构！',
+											showType : 'fade'
+										});
+										return false;
+									}
+								}
+							}
+						}
+					}, {
 						field : 'createDate',
 						width : 80,
 						title : '创建时间',
@@ -163,7 +228,11 @@ function dlg_user() {
 			onClickRow : onClickUserRow
 		});
 		$('#empId-user').val(empId);
-		$('#dlg-user').dialog('open');
+		$('#dlg-user').dialog({
+			onResize : function() {
+				$('#dg-user').datagrid('resize');
+			}
+		}).dialog('open');
 	} else {
 		$.messager.alert('提示', '分配时只可以选择一个！', 'info');
 	}

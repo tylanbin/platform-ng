@@ -113,4 +113,10 @@ public class Role implements java.io.Serializable {
 		this.perms = perms;
 	}
 
+	@Override
+	public String toString() {
+		// 重写toString，为方便用户分配角色的信息显示
+		return String.valueOf(id);
+	}
+
 }

@@ -11,6 +11,7 @@ import me.lb.service.system.EmpService;
 import me.lb.service.system.UserService;
 import me.lb.support.jackson.JsonWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,9 +53,11 @@ public class UserController {
 			// 通过验证
 			for (User temp : list) {
 				// id判断是否存在
+				int userId = 0;
 				if (temp.getId() != null && temp.getId() > 0) {
 					// id存在，有该记录，更新
 					// 为了避免更新导致的清空数据，仅处理需要更新的字段
+					userId = temp.getId();
 					User obj = userService.findById(temp.getId());
 					obj.setLoginName(temp.getLoginName());
 					obj.setLoginPass(temp.getLoginPass());
@@ -64,7 +67,15 @@ public class UserController {
 					// id不存在，需要存储
 					temp.setEmp(emp);
 					temp.setCreateDate(new Timestamp(new Date().getTime()));
-					userService.save(temp);
+					userId = userService.save(temp);
+				}
+				// 再处理与角色的关联
+				if (!StringUtils.isEmpty(temp.getRoleIds())) {
+					List<Integer> roleIds = om.readValue(
+							"[" + temp.getRoleIds() + "]",
+							new TypeReference<List<Integer>>() {
+							});
+					userService.auth(userId, roleIds);
 				}
 			}
 			return "{ \"success\" : true }";
@@ -91,6 +102,11 @@ public class UserController {
 		// 用于展示某个员工用户列表的查询
 		Emp emp = empService.findById(empId);
 		Set<User> set = emp.getUsers();
+		// 处理用户的角色问题
+		for (User u : set) {
+			String temp = u.getRoles().toString().replaceAll(" ", "");
+			u.setRoleIds(temp.substring(1, temp.length() - 1));
+		}
 		return JsonWriter.getInstance().filter(User.class, "emp", "roles")
 				.getWriter().writeValueAsString(set);
 	}
