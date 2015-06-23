@@ -108,3 +108,9 @@
 .icon-group{
 	background:url('icons_ext/group/group_gear.png') no-repeat center center;
 }
+.icon-cog{
+	background:url('icons_ext/cog.png') no-repeat center center;
+}
+.icon-accept{
+	background:url('icons_ext/arrow/accept.png') no-repeat center center;
+}

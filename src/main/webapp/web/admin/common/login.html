@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>后台管理</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<!-- ico -->
+<link rel="shortcut icon" href="../../../assets/common/favicon.ico">
+<!-- styles -->
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui/themes/custom/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui-custom/easyui.custom.css">
+<!-- scripts -->
+<script type="text/javascript" src="../../../assets/common/jquery-easyui/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../../../assets/common/jquery-easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../../../assets/common/jquery-easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../../../assets/common/jquery-easyui-custom/easyui.custom.js"></script>
+<!-- favicon.ico -->
+<link rel="shortcut icon" href="../../../assets/common/favicon.ico">
+<!-- page scripts -->
+<script type="text/javascript">
+	$(function() {
+		window.onresize = function() {
+			$('#dlg').dialog('center');
+		}
+	});
+</script>
+</head>
+
+<body>
+	<div id="dlg" class="easyui-dialog" style="width:400px;height:250px;"
+		data-options="title:'修改',closable:false,buttons:'#dlg-btn'">
+		<div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'north',border:false" style="height:70px;overflow:hidden;border-bottom: 1px solid #95b8e7;">
+				<img src="../../../assets/common/login/login.png" />
+			</div>
+			<div data-options="region:'center',border:false" style="padding:20px 30px;">
+				<form id="fm" method="post">
+					<div style="text-align:center;">
+						<table style="border-width:0;" align="center">
+							<tr>
+								<td style="text-align: right;">用户名：</td>
+								<td><input type="text" name="loginName" class="easyui-validatebox" data-options="required:true" /></td>
+							</tr>
+							<tr>
+								<td style="text-align: right;">密码：</td>
+								<td><input type="text" name="loginPass" class="easyui-validatebox" data-options="required:true" /></td>
+							</tr>
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div id="dlg-btn">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-accept'" onclick="func_login()">登录</a>
+			<a href="javascript:;" class="easyui-menubutton" data-options="iconCls:'icon-cog',menu:'#menu',plain:false">选项</a>
+			<div id="menu" style="width:150px;">
+				<div data-options="iconCls:'icon-undo'">Undo</div>
+				<div data-options="iconCls:'icon-redo'">Redo</div>
+				<div class="menu-sep"></div>
+				<div>Cut</div>
+				<div>Copy</div>
+				<div>Paste</div>
+				<div class="menu-sep"></div>
+				<div data-options="iconCls:'icon-remove'">Delete</div>
+				<div>Select All</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
