@@ -10,6 +10,7 @@ import me.lb.model.system.User;
 import me.lb.service.system.EmpService;
 import me.lb.service.system.UserService;
 import me.lb.support.jackson.JsonWriter;
+import me.lb.utils.MD5Util;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -60,13 +61,20 @@ public class UserController {
 					userId = temp.getId();
 					User obj = userService.findById(temp.getId());
 					obj.setLoginName(temp.getLoginName());
-					obj.setLoginPass(temp.getLoginPass());
 					obj.setEnabled(temp.getEnabled());
+					// 使用自定义的MD5进行编码
+					String md5Pass = MD5Util.getValue(MD5Util.PREFIX
+							+ temp.getLoginPass());
+					obj.setLoginPass(md5Pass);
 					userService.update(obj);
 				} else {
 					// id不存在，需要存储
 					temp.setEmp(emp);
 					temp.setCreateDate(new Timestamp(new Date().getTime()));
+					// 使用自定义的MD5进行编码
+					String md5Pass = MD5Util.getValue(MD5Util.PREFIX
+							+ temp.getLoginPass());
+					temp.setLoginPass(md5Pass);
 					userId = userService.save(temp);
 				}
 				// 再处理与角色的关联

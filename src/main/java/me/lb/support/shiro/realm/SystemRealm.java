@@ -1,5 +1,6 @@
 package me.lb.support.shiro.realm;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -18,7 +19,6 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SystemRealm extends AuthorizingRealm {
@@ -29,10 +29,10 @@ public class SystemRealm extends AuthorizingRealm {
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(
 			PrincipalCollection principals) {
-		// 权限验证
+		// 权限认证
 		// 获取登录用户
-		String loginName = (String) principals.fromRealm(getName()).iterator()
-				.next();
+		Collection<?> temp = principals.fromRealm(getName());
+		String loginName = (String) temp.iterator().next();
 		User loginUser = userService.findByLoginName(loginName);
 		// 取得用户的权限
 		Set<Role> roles = loginUser.getRoles();
@@ -43,36 +43,30 @@ public class SystemRealm extends AuthorizingRealm {
 			perms.addAll(it_role.next().getPerms());
 		}
 		// 放入SimpleAuthorizationInfo返回
-		Set<String> permTokens = new HashSet<String>();
+		Set<String> tokens = new HashSet<String>();
 		Iterator<Perm> it_perm = perms.iterator();
 		while (it_perm.hasNext()) {
 			// 遍历权限标识，放入统一的集合
-			permTokens.add(it_perm.next().getToken());
+			tokens.add(it_perm.next().getToken());
 		}
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-		info.addStringPermissions(permTokens);
+		info.addStringPermissions(tokens);
 		return info;
 	}
 
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(
-			AuthenticationToken authcToken) throws AuthenticationException {
+			AuthenticationToken token) throws AuthenticationException {
 		// 登录认证
-		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-		String loginName = token.getUsername();
-		User loginUser = userService.findByLoginName(loginName);
+		String userName = ((UsernamePasswordToken) token).getUsername();
+		User loginUser = userService.findByLoginName(userName);
 		if (loginUser != null) {
-			return new SimpleAuthenticationInfo(loginUser.getLoginName(),
-					loginUser.getLoginPass(), getName());
+			String loginName = loginUser.getLoginName();
+			String loginPass = loginUser.getLoginPass();
+			return new SimpleAuthenticationInfo(loginName, loginPass, getName());
 		} else {
 			return null;
 		}
-	}
-
-	public void clearCachedAuthorizationInfo(String principal) {
-		SimplePrincipalCollection principals = new SimplePrincipalCollection(
-				principal, getName());
-		clearCachedAuthenticationInfo(principals);
 	}
 
 }

@@ -14,8 +14,31 @@
 <script type="text/javascript" src="../../../assets/common/jquery-easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../../assets/common/jquery-easyui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="../../../assets/common/jquery-easyui-custom/easyui.custom.js"></script>
+<script type="text/javascript" src="../../../../assets/common/framework.js"></script>
 <!-- favicon.ico -->
 <link rel="shortcut icon" href="../../../assets/common/favicon.ico">
+<style type="text/css">
+#nav {
+	list-style-type: none;
+	display: block;
+	height: 21px;
+	position: absolute;
+	top: 40px;
+	right: 5px;
+}
+
+#nav li {
+	float: left;
+	margin-left: -1px;
+	padding: 3px 5px;
+	line-height: 20px;
+	position: relative;
+}
+
+#nav li a {
+	line-height: 20px;
+}
+</style>
 <!-- page scripts -->
 <script type="text/javascript">
 	$(function() {
@@ -51,6 +74,40 @@
 			});
 		}
 	}
+	function func_logout() {
+		$.ajax({
+			type : 'post',
+			url : 'admin/common/logout',
+			dataType : 'json',
+			async : true,
+			success : function(data) {
+				if (data.success) {
+					window.location.href = 'admin/common/login';
+				} else {
+					$.messager.show({
+						title : '错误',
+						msg : data.msg,
+						showType : 'fade',
+						style : {
+							right : '',
+							bottom : ''
+						}
+					});
+				}
+			},
+			error : function() {
+				$.messager.show({
+					title : '错误',
+					msg : '服务器正忙，请稍后再试！',
+					showType : 'fade',
+					style : {
+						right : '',
+						bottom : ''
+					}
+				});
+			}
+		});
+	}
 </script>
 <style type="text/css">
 	.panel-header {
@@ -60,7 +117,13 @@
 </head>
 
 <body class="easyui-layout" data-options="fit:true">
-	<div data-options="region:'north'" style="height:80px;overflow:hidden;"></div>
+	<div data-options="region:'north'" style="height:80px;overflow:hidden;">
+		<!-- 右上角工具条 -->
+		<ul id="nav">
+			<li><a href="javascript:;" onclick="func_change()">修改密码</a></li>
+			<li><a href="javascript:;" onclick="func_logout()">退出</a></li>
+		</ul>
+	</div>
 	<div data-options="region:'west',title:'菜单栏'" style="width:180px;">
 		<div class="menu" style="width:160px;height:auto;padding:8px;">
 			<div class="easyui-panel" data-options="title:'系统管理',collapsible:true,collapsed:false"

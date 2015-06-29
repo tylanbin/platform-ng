@@ -20,11 +20,12 @@
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
 	<bean id="shiro" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
-		<property name="loginUrl" value="/back/login" />
-		<property name="successUrl" value="/back/admin" />
+		<property name="loginUrl" value="/web/admin/common/login.html" />
+		<property name="successUrl" value="/web/admin/common/main.html" />
 		<property name="filterChainDefinitions">
 			<value>
-				/backend/login = anon
+				/web/admin/common/login.html = anon
+				/admin/common/** = anon
 				/assets/** = anon
 				/** = authc
 			</value>
