@@ -1,0 +1,11 @@
+package me.lb.service.{Category}.impl;
+
+import org.springframework.stereotype.Service;
+import me.lb.service.common.impl.GenericServiceImpl;
+import me.lb.service.{Category}.{UpperCase}Service;
+import me.lb.model.{Category}.{UpperCase};
+
+@Service
+public class {UpperCase}ServiceImpl extends GenericServiceImpl<{UpperCase}, Integer> implements {UpperCase}Service {
+
+}

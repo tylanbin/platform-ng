@@ -1,0 +1,24 @@
+package me.lb.dao.{Category}.impl;
+
+import java.util.Map;
+import org.springframework.stereotype.Repository;
+import me.lb.dao.common.impl.GenericDaoImpl;
+import me.lb.dao.{Category}.{UpperCase}Dao;
+import me.lb.model.pagination.Pagination;
+import me.lb.model.{Category}.{UpperCase};
+
+@Repository
+public class {UpperCase}DaoImpl extends GenericDaoImpl<{UpperCase}, Integer> implements {UpperCase}Dao {
+
+	@Override
+	public Pagination<{UpperCase}> pagingQuery() {
+		return getPagination("from {UpperCase}", null);
+	}
+
+	@Override
+	public Pagination<{UpperCase}> pagingQuery(Map<String, Object> params) {
+		// 不使用的话可以不实现
+		return null;
+	}
+
+}

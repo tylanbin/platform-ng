@@ -1,0 +1,8 @@
+package me.lb.dao.{Category};
+
+import me.lb.dao.common.GenericDao;
+import me.lb.model.{Category}.{UpperCase};
+
+public interface {UpperCase}Dao extends GenericDao<{UpperCase}, Integer> {
+
+}

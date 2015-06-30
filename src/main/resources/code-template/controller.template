@@ -1,0 +1,153 @@
+package me.lb.controller.admin.{Category};
+
+import java.util.Map;
+import java.util.List;
+import java.util.Iterator;
+import java.util.HashMap;
+
+import me.lb.support.jackson.JsonWriter;
+import me.lb.service.{Category}.{UpperCase}Service;
+import me.lb.model.pagination.Pagination;
+import me.lb.model.{Category}.{UpperCase};
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+@RequestMapping(value = "/admin/{Category}/{LowerCase}")
+public class {UpperCase}Controller {
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
+	@Autowired
+	private {UpperCase}Service {LowerCase}Service;
+
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public String listPage() {
+		// 跳转到列表页面的方法
+		logger.info("invoke" + getClass().getName() + "." + "list");
+		return "admin/{Category}/{LowerCase}/list";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	public String edit(@PathVariable int id, {UpperCase} temp) {
+		// 修改某个对象的方法
+		try {
+			{UpperCase} obj = {LowerCase}Service.findById(id);
+			// TODO: 这里需要根据实际进行完善
+
+			{LowerCase}Service.update(obj);
+			return "{ \"success\" : true }";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"msg\" : \"操作失败！\" }";
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public String delete(@PathVariable int id) {
+		// 删除某个对象的方法
+		try {
+			{LowerCase}Service.delete({LowerCase}Service.findById(id));
+			return "{ \"success\" : true }";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"msg\" : \"操作失败！\" }";
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public String get(@PathVariable int id) {
+		// 查询某个对象的方法
+		try {
+			{UpperCase} temp = {LowerCase}Service.findById(id);
+			// 将查询出的结果序列化为JSON并返回
+			// 这里可以使用filter方法，过滤不需要序列化的属性
+			// 如果没有需要过滤的话，仍需要调用filter，避免错误
+			return JsonWriter.getInstance().filter({UpperCase}.class).getWriter()
+					.writeValueAsString(temp);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{}";
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/batch", method = RequestMethod.POST)
+	public String batch_add(String objs) {
+		// 批量插入的操作
+		ObjectMapper om = new ObjectMapper();
+		try {
+			List<{UpperCase}> list = om.readValue(objs, new TypeReference<List<{UpperCase}>>() {
+			});
+			Iterator<{UpperCase}> it = list.iterator();
+			while (it.hasNext()) {
+				{UpperCase} obj = it.next();
+				{LowerCase}Service.save(obj);
+			}
+			return "{ \"success\" : true }";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"msg\" : \"操作失败！\" }";
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/batch", method = RequestMethod.DELETE)
+	public String batch_delete(String ids) {
+		// 批量删除的操作
+		try {
+			String[] temp = ids.split(",");
+			for (String id : temp) {
+				{UpperCase} obj = {LowerCase}Service.findById(Integer.parseInt(id.trim()));
+				{LowerCase}Service.delete(obj);
+			}
+			return "{ \"success\" : true }";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"msg\" : \"操作失败！\" }";
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/data", method = RequestMethod.GET)
+	public String data(String params) {
+		// 查询数据集合的方法
+		ObjectMapper om = new ObjectMapper();
+		try {
+			Pagination<{UpperCase}> pm = null;
+			if (!StringUtils.isEmpty(params)) {
+				Map<String, Object> map = om.readValue(params,
+						new TypeReference<Map<String, Object>>() {
+						});
+				pm = {LowerCase}Service.pagingQuery(map);
+			} else {
+				pm = {LowerCase}Service.pagingQuery();
+			}
+			// 序列化查询结果为JSON
+			Map<String, Object> result = new HashMap<String, Object>();
+			result.put("total", pm.getTotal());
+			result.put("rows", pm.getDatas());
+			// 这里可以使用filter方法，过滤不需要序列化的属性
+			// 如果没有需要过滤的话，仍需要调用filter，避免错误
+			return JsonWriter.getInstance().filter({UpperCase}.class).getWriter()
+					.writeValueAsString(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"total\" : 0, \"rows\" : [] }";
+		}
+	}
+
+}

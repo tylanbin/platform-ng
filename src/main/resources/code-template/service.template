@@ -1,0 +1,8 @@
+package me.lb.service.{Category};
+
+import me.lb.service.common.GenericService;
+import me.lb.model.{Category}.{UpperCase};
+
+public interface {UpperCase}Service extends GenericService<{UpperCase}, Integer> {
+
+}
