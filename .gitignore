@@ -3,6 +3,7 @@
 .project
 .classpath
 .mymetadata
+.myhibernatedata
 
 # java
 *.class
