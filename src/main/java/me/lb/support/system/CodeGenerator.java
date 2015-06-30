@@ -3,6 +3,11 @@ package me.lb.support.system;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+import me.lb.support.system.annotation.MetaData;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.util.StringUtils;
@@ -22,6 +27,8 @@ public class CodeGenerator {
 			String path_Dao = basePath + "dao/" + folderStr;
 			String path_Service = basePath + "service/" + folderStr;
 			String path_controller = basePath + "controller/admin/" + folderStr;
+			// model的包名称，反射时使用
+			String packageName = "me.lb.model." + folderStr;
 			File folder = new File(path_model);
 			File[] pojos = folder.listFiles();
 			for (File pojo : pojos) {
@@ -32,8 +39,18 @@ public class CodeGenerator {
 				generateDao(path_Dao, folderStr, className);
 				generateService(path_Service, folderStr, className);
 				generateController(path_controller, folderStr, className);
+				// 反射类，获取字段及对应中文
+				Map<String, String> fieldMap = new HashMap<String, String>();
+				Class<?> clazz = Class.forName(packageName + "." + className);
+				Field[] fields = clazz.getDeclaredFields();
+				for (Field field : fields) {
+					MetaData meta = field.getAnnotation(MetaData.class);
+					if (meta != null) {
+						fieldMap.put(field.getName(), meta.chsName());
+					}
+				}
 				// TODO: 生成页面
-				
+
 			}
 		}
 	}

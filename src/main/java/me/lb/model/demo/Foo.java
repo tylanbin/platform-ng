@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import me.lb.support.system.annotation.MetaData;
+
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
 @Entity
@@ -21,12 +23,19 @@ public class Foo implements java.io.Serializable {
 	// Fields
 
 	private static final long serialVersionUID = -1838970134469714230L;
+	@MetaData(chsName = "编号")
 	private Integer id;
+	@MetaData(chsName = "整型")
 	private Integer col1;
+	@MetaData(chsName = "字符串")
 	private String col2;
+	@MetaData(chsName = "小数")
 	private Double col3;
+	@MetaData(chsName = "日期")
 	private Date col4;
+	@MetaData(chsName = "日期时间")
 	private Timestamp col5;
+	@MetaData(chsName = "文本")
 	private String col6;
 
 	// Constructors
