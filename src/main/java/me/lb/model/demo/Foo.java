@@ -23,7 +23,6 @@ public class Foo implements java.io.Serializable {
 	// Fields
 
 	private static final long serialVersionUID = -1838970134469714230L;
-	@MetaData(chsName = "编号")
 	private Integer id;
 	@MetaData(chsName = "整型")
 	private Integer col1;
