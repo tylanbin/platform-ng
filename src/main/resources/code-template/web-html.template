@@ -19,7 +19,7 @@
 <script type="text/javascript" src="../../../../assets/common/json-js/json2.js"></script>
 <![endif]-->
 <!-- page scripts -->
-<script type="text/javascript" src="../../../../assets/admin/demo/foo/list.js"></script>
+<script type="text/javascript" src="../../../../assets/admin/{Category}/{LowerCase}/list.js"></script>
 </head>
 
 <body>
@@ -43,12 +43,7 @@
 				<div id="searchMenu">
 					<!-- 这里使用反射解析属性，并生成HTML进行替换 -->
 					<!-- <div data-options="name:'fieldName'">chsName</div> -->
-					<div data-options="name:'col5'">日期时间</div>
-					<div data-options="name:'col4'">日期</div>
-					<div data-options="name:'col6'">文本</div>
-					<div data-options="name:'col1'">整型</div>
-					<div data-options="name:'col3'">小数</div>
-					<div data-options="name:'col2'">字符串</div>
+{SearchHtml}
 				</div>
 			</div>
 		</div>
@@ -81,12 +76,7 @@
 						<td><input type="text" name="fieldName" class="easyui-validatebox" data-options="required:true" /></td>
 					</tr> -->
 					<!-- 控件类型需要进行后期修改 -->
-					<tr><td style="text-align: right;">日期时间：</td><td><input type="text" name="col5" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">日期：</td><td><input type="text" name="col4" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">文本：</td><td><input type="text" name="col6" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">整型：</td><td><input type="text" name="col1" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">小数：</td><td><input type="text" name="col3" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">字符串：</td><td><input type="text" name="col2" class="easyui-validatebox" data-options="required:true" /></td></tr>
+{EditHtml}
 				</table>
 			</div>
 		</form>

@@ -11,32 +11,16 @@ $(function() {
 		pagination : true,
 		pageSize : 15,
 		pageList : [10, 15, 20],
-		url : 'admin/demo/foo/data',
+		url : 'admin/{Category}/{LowerCase}/data',
 		queryParams : {},
 		method : 'get',
 		frozenColumns : [[{
 					field : 'ck',
 					checkbox : true
 				}]],
-		columns : [[{
-					"field" : "col5",
-					"title" : "日期时间"
-				}, {
-					"field" : "col4",
-					"title" : "日期"
-				}, {
-					"field" : "col6",
-					"title" : "文本"
-				}, {
-					"field" : "col1",
-					"title" : "整型"
-				}, {
-					"field" : "col3",
-					"title" : "小数"
-				}, {
-					"field" : "col2",
-					"title" : "字符串"
-				}]],
+		columns : [
+{ListJson}
+		],
 		loadMsg : '数据载入中...'
 	});
 	$('#dg-list').datagrid('getPager').pagination({
@@ -101,67 +85,9 @@ function dlg_add() {
 		fitColumns : true,
 		singleSelect : true,
 		// 多行增加的列的列宽、控件类型需要后期修改
-		columns : [[{
-					"field" : "col5",
-					"title" : "日期时间",
-					"width" : 80,
-					"editor" : {
-						"type" : "validatebox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col4",
-					"title" : "日期",
-					"width" : 80,
-					"editor" : {
-						"type" : "validatebox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col6",
-					"title" : "文本",
-					"width" : 80,
-					"editor" : {
-						"type" : "validatebox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col1",
-					"title" : "整型",
-					"width" : 80,
-					"editor" : {
-						"type" : "validatebox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col3",
-					"title" : "小数",
-					"width" : 80,
-					"editor" : {
-						"type" : "validatebox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col2",
-					"title" : "字符串",
-					"width" : 80,
-					"editor" : {
-						"type" : "validatebox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}]],
+		columns : [
+{AddJson}
+		],
 		loadMsg : '数据载入中...',
 		onClickRow : onClickRow
 	});
@@ -185,7 +111,7 @@ function func_add() {
 		var data = $('#dg-add').datagrid('getData');
 		$.ajax({
 			type : 'post',
-			url : 'admin/demo/foo/batch',
+			url : 'admin/{Category}/{LowerCase}/batch',
 			data : {
 				objs : JSON.stringify(data.rows)
 			},
@@ -239,7 +165,7 @@ function func_edit() {
 	// 这里是利用html中的form进行提交，所以需要加上项目路径AppCore.baseUrl
 	// 这里理论上应该使用put请求，但由于form标签不支持put方式，故使用post代替
 	$('#fm-edit').form('submit', {
-		url : AppCore.baseUrl + 'admin/demo/foo/' + $('#id-edit').val(),
+		url : AppCore.baseUrl + 'admin/{Category}/{LowerCase}/' + $('#id-edit').val(),
 		onSubmit : function(param) {
 			return $(this).form('validate');
 		},
@@ -270,7 +196,7 @@ function func_del() {
 				});
 				$.ajax({
 					type : 'delete',
-					url : 'admin/demo/foo/batch?ids=' + ids,
+					url : 'admin/{Category}/{LowerCase}/batch?ids=' + ids,
 					dataType : 'json',
 					async : true,
 					success : function(data) {
