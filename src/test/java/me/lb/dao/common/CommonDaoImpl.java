@@ -29,7 +29,7 @@ public class CommonDaoImpl extends GenericDaoImpl<User, Integer> implements
 			Map.Entry<String, Object> me = it.next();
 			// 需要额外处理模糊查询的参数
 			// if ("orLogic".equals(me.getKey())) {
-			// sb.append(" or o." + me.getKey() + " = ?");
+			// sb.append(" or o." + me.getKey() + " like ?");
 			// objs.add("%" + me.getValue() + "%");
 			// } else {
 			sb.append(" and o." + me.getKey() + " = ?");
