@@ -7,15 +7,15 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 
 ## 目录
 * [框架介绍](#框架介绍)
-* [核心模块](#modules)
-	* [核心模块](#modules-1)
-	* [核心模块](#modules-2)
-* [开始使用](#start)
-	* [POJO类](#start-1)
-	* [代码生成](#start-2)
-	* [代码调整](#start-3)
-* [注意事项](#warn)
-* [备注](#remark)
+* [核心模块](#核心模块)
+	* [组织机构-员工模块](#组织机构-员工模块)
+	* [用户-角色-权限模块](#用户-角色-权限模块)
+* [开始使用](#开始使用)
+	* [POJO类](#POJO类)
+	* [代码生成](#代码生成)
+	* [代码调整](#代码调整)
+* [注意事项](#注意事项)
+* [备注](#备注)
 
 ## 框架介绍
 * [Hibernate 4.0.x](http://hibernate.org/orm/)
@@ -24,18 +24,18 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 * [jQuery 1.8.3](http://jquery.com/)
 * [jQuery EasyUI 1.4.2](http://www.jeasyui.com/)
 
-## <a name="modules">核心模块</a>
-### <a name="modules-1">组织机构-员工模块</a>
+## 核心模块
+### 组织机构-员工模块
 * 对组织机构、员工的基本管理
 * 对员工账号、角色的基本管理
 
-### <a name="modules-2">用户-角色-权限模块</a>
+### 用户-角色-权限模块
 * 对系统角色、权限的基本管理
 * 对用户、角色、权限关系的管理
 * 与Shiro框架整合，进行精细化权限控制
 
-## <a name="start">开始使用</a>
-### <a name="start-1">POJO类</a>
+## 开始使用
+### POJO类
 * 本框架使用Hibernate注解形式，所以可以手动完成POJO类，或使用反向工具生成
 * 为POJO类加入注解`@JsonFilter(包.类名)`，目的是为Json序列化时，动态过滤属性
 * 为POJO类属性加入注解`@MetaData(chsName = "xxx")`，目的是在生成页面代码时取得中文属性名
@@ -116,7 +116,7 @@ public class Foo implements java.io.Serializable {
 }
 ```
 
-### <a name="start-2">代码生成</a>
+### 代码生成
 * 调整代码生成工具`me.lb.support.system.CodeGenerator`，列出自定义的POJO类所在的文件夹（可以多个）
 
 ```Java
@@ -133,15 +133,15 @@ public static final String[] POJOFOLDER = { "demo1", "demo2" };
 	* `src/main/webapp/web/admin/xxx/pojo/list.html`为页面代码
 	* `src/main/webapp/assets/admin/xxx/pojo/list.js`为JS代码
 
-### <a name="start-3">代码调整</a>
+### 代码调整
 * 代码生成完毕后，需要手动调整修改如下几处
 1. `me.lb.dao.xxx.impl.PojoDaoImpl`文件，修改带参数的`pagingQuery`方法（处理模糊查询的参数）
 2. `me.lb.controller.admin.xxx.PojoController`文件，修改`edit`方法（处理修改对象的哪些属性）
 3. 其余代码不调整也可使用，但推荐根据情况进行修改（如页面中的属性输入框）
 
-## <a name="warn">注意事项</a>
+## 注意事项
 * 需要Maven的支持，并需要计算机联网（下载Jar）
 * 推荐使用Eclipse或MyEclipse进行平台的使用
 
-## <a name="remarks">备注</a>
+## 备注
 * [jQuery EasyUI 文档](http://www.jeasyui.com/documentation/index.php)
