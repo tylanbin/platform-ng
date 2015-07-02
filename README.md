@@ -6,7 +6,7 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 * 该平台放弃了传统的JSP页面，转用HTML+AJAX的方式实现，旨在减少开发人员与美工之间的冲突
 
 ## 目录
-* [框架介绍](#frameworks)
+* [框架介绍](#框架介绍)
 * [核心模块](#modules)
 	* [核心模块](#modules-1)
 	* [核心模块](#modules-2)
@@ -17,7 +17,7 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 * [注意事项](#warn)
 * [备注](#remark)
 
-## <a name="frameworks">框架介绍</a>
+## 框架介绍
 * [Hibernate 4.0.x](http://hibernate.org/orm/)
 * [Spring Framework 4.0.x](http://projects.spring.io/spring-framework/)
 * [Shiro 1.2.3](http://shiro.apache.org/)
