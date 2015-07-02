@@ -28,7 +28,8 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 ###<a name="modules-1"/>组织机构-员工模块
 * 对组织机构、员工的基本管理
 * 对员工账号、角色的基本管理
-###<a name="modules-1"/>用户-角色-权限模块
+
+###<a name="modules-2"/>用户-角色-权限模块
 * 对系统角色、权限的基本管理
 * 对用户、角色、权限关系的管理
 * 与Shiro框架整合，进行精细化权限控制
@@ -39,6 +40,7 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 * 为POJO类加入注解`@JsonFilter(包.类名)`，目的是为Json序列化时，动态过滤属性
 * 为POJO类属性加入注解`@MetaData(chsName = "xxx")`，目的是在生成页面代码时取得中文属性名
 * 示例代码如下（或直接参照`me.lb.model.demo.Foo`）
+
 ```Java
 package me.lb.model.demo;
 
@@ -116,6 +118,7 @@ public class Foo implements java.io.Serializable {
 
 ###<a name="start-2"/>代码生成
 * 调整代码生成工具`me.lb.support.system.CodeGenerator`，列出自定义的POJO类所在的文件夹（可以多个）
+
 ```Java
 // 如果你的POJO类为me.lb.xxx.Pojo，则xxx就是所指的名称
 public static final String[] POJOFOLDER = { "demo1", "demo2" };
