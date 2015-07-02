@@ -53,7 +53,7 @@ public class CodeGenerator {
 						fieldMap.put(field.getName(), meta.chsName());
 					}
 				}
-				// TODO: 生成页面
+				// 生成页面
 				generateWeb(folderStr, className, fieldMap);
 			}
 		}

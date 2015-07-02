@@ -15,7 +15,7 @@ import me.lb.support.system.annotation.MetaData;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
 @Entity
-@Table(name = "ng_demo_foo", catalog = "platform_ng")
+@Table(name = "ng_demo_foo")
 // 加入该注解，动态过滤属性
 @JsonFilter("me.lb.model.demo.Foo")
 public class Foo implements java.io.Serializable {
