@@ -117,26 +117,26 @@ public class Foo implements java.io.Serializable {
 ```
 
 ### <a name="start-2"/>代码生成
-* 调整代码生成工具`me.lb.support.system.CodeGenerator`，列出自定义的POJO类所在的文件夹（可以多个）
+* 调整代码生成工具 `me.lb.support.system.CodeGenerator` ，列出自定义的POJO类所在的文件夹（可以多个）
 
 ```Java
 // 如果你的POJO类为me.lb.xxx.Pojo，则xxx就是所指的名称
 public static final String[] POJOFOLDER = { "demo1", "demo2" };
 ```
-* 直接执行`me.lb.support.system.CodeGenerator`，即可生成代码
+* 直接执行 `me.lb.support.system.CodeGenerator` ，即可生成代码
 * 代码生成说明（以POJO类为me.lb.model.xxx.Pojo为例）
-	* `me.lb.dao.xxx.PojoDao`为持久层接口
-	* `me.lb.dao.xxx.impl.PojoDaoImpl`为持久层实现
-	* `me.lb.service.xxx.PojoService`为业务层接口
-	* `me.lb.service.xxx.impl.PojoServiceImpl`为业务层实现
-	* `me.lb.controller.admin.xxx.PojoController`为控制层
-	* `src/main/webapp/web/admin/xxx/pojo/list.html`为页面代码
-	* `src/main/webapp/assets/admin/xxx/pojo/list.js`为JS代码
+	* `me.lb.dao.xxx.PojoDao` 为持久层接口
+	* `me.lb.dao.xxx.impl.PojoDaoImpl` 为持久层实现
+	* `me.lb.service.xxx.PojoService` 为业务层接口
+	* `me.lb.service.xxx.impl.PojoServiceImpl` 为业务层实现
+	* `me.lb.controller.admin.xxx.PojoController` 为控制层
+	* `src/main/webapp/web/admin/xxx/pojo/list.html` 为页面代码
+	* `src/main/webapp/assets/admin/xxx/pojo/list.js` 为JS代码
 
 ### <a name="start-3"/>代码调整
 * 代码生成完毕后，需要手动调整修改如下几处
-1. `me.lb.dao.xxx.impl.PojoDaoImpl`文件，修改带参数的`pagingQuery`方法（处理模糊查询的参数）
-2. `me.lb.controller.admin.xxx.PojoController`文件，修改`edit`方法（处理修改对象的哪些属性）
+1. `me.lb.dao.xxx.impl.PojoDaoImpl` 文件，修改带参数的 `pagingQuery` 方法（处理模糊查询的参数）
+2. `me.lb.controller.admin.xxx.PojoController` 文件，修改 `edit` 方法（处理修改对象的哪些属性）
 3. 其余代码不调整也可使用，但推荐根据情况进行修改（如页面中的属性输入框）
 
 ## <a name="warn"/>注意事项
