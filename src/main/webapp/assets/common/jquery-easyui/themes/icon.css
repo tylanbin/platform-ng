@@ -114,3 +114,9 @@
 .icon-accept{
 	background:url('icons_ext/arrow/accept.png') no-repeat center center;
 }
+.icon-server{
+	background:url('icons_ext/server.png') no-repeat center center;
+}
+.icon-table{
+	background:url('icons_ext/table/table_multiple.png') no-repeat center center;
+}
