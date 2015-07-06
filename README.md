@@ -144,6 +144,7 @@ public static final String[] POJOFOLDER = { "demo1", "demo2" };
 ## 注意事项
 * 需要Maven的支持，并需要计算机联网（下载Jar）
 * 推荐使用Eclipse或MyEclipse进行平台的使用
+* 如果项目部署路径修改（默认http://localhost/），需要修改`src/main/webapp/assets/common/framework.js`及错误页面
 
 ## 备注
 * [jQuery EasyUI 文档](http://www.jeasyui.com/documentation/index.php)

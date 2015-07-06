@@ -1,4 +1,5 @@
 var AppCore = {
+	// 定义项目的基础路径，修改的同时需要修改404和500的错误页面
 	baseUrl : 'http://localhost/'
 };
 $(function() {
