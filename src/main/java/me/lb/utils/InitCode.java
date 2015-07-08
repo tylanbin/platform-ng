@@ -1,4 +1,4 @@
-package me.lb.support.system;
+package me.lb.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,7 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.util.StringUtils;
 
-public class CodeGenerator {
+public class InitCode {
 
 	public static final String TEMPLATEPATH = "code-template";
 	public static final String[] POJOFOLDER = { "demo" };

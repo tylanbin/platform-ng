@@ -12,7 +12,7 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 	* [用户-角色-权限模块](#用户-角色-权限模块)
 * [开始使用](#开始使用)
 	* [POJO类](#POJO类)
-	* [代码生成](#代码生成)
+	* [项目生成](#项目生成)
 	* [代码调整](#代码调整)
 * [注意事项](#注意事项)
 * [备注](#备注)
@@ -116,14 +116,17 @@ public class Foo implements java.io.Serializable {
 }
 ```
 
-### 代码生成
-* 调整代码生成工具`me.lb.support.system.CodeGenerator`，列出自定义的POJO类所在的文件夹（可以多个）
+### 项目生成
+* 修改数据库配置`src/main/resources/jdbc.properties`，配置数据库参数（暂时只支持MySQL）
+* 执行数据库生成工具`me.lb.utils.InitDB`，生成数据表及关联
+* 调整代码生成工具`me.lb.utils.InitCode`，列出自定义的POJO类所在的文件夹（可以多个）
 
 ```Java
 // 如果你的POJO类为me.lb.xxx.Pojo，则xxx就是所指的名称
 public static final String[] POJOFOLDER = { "demo1", "demo2" };
 ```
-* 直接执行 `me.lb.support.system.CodeGenerator` ，即可生成代码
+
+* 直接执行 `me.lb.support.system.CodeGenerator`，即可生成代码
 * 代码生成说明（以POJO类为`me.lb.model.xxx.Pojo`为例）
 	* `me.lb.dao.xxx.PojoDao`为持久层接口
 	* `me.lb.dao.xxx.impl.PojoDaoImpl`为持久层实现
