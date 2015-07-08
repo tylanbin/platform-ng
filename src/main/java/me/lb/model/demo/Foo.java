@@ -112,7 +112,7 @@ public class Foo implements java.io.Serializable {
 		this.col5 = col5;
 	}
 
-	@Column(name = "col6", length = 65535)
+	@Column(name = "col6", columnDefinition = "text")
 	public String getCol6() {
 		return this.col6;
 	}
