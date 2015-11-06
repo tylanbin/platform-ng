@@ -180,6 +180,16 @@
 					<path>/</path>
 				</configuration>
 			</plugin>
+			<!-- Tomcat6 -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat6-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<port>80</port>
+					<path>/</path>
+				</configuration>
+			</plugin>
 			<!-- 测试插件 -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
