@@ -12,7 +12,6 @@
 		<shiro.version>1.2.3</shiro.version>
 	</properties>
 
-
 	<dependencies>
 		<!-- JUnit -->
 		<dependency>
