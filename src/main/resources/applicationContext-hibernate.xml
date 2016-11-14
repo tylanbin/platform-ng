@@ -25,7 +25,7 @@
 		<property name="user" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
 
-		<property name="minPoolSize" value="5" />
+		<property name="minPoolSize" value="3" />
 		<property name="maxPoolSize" value="20" />
 		<property name="maxStatements" value="0" />
 		<property name="acquireIncrement" value="5" />

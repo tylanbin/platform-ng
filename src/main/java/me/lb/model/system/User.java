@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.codehaus.jackson.map.annotate.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFilter;
 
 @Entity
 @Table(name = "ng_sys_user")

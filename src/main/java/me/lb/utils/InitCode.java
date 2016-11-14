@@ -11,10 +11,11 @@ import java.util.Map;
 import me.lb.support.system.annotation.MetaData;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class InitCode {
 
@@ -82,7 +83,7 @@ public class InitCode {
 			output = new FileOutputStream(file_interface);
 			String content = generateSrc(category, className, objName,
 					"dao.template");
-			IOUtils.write(content, output);
+			IOUtils.write(content, output, "utf-8");
 		}
 		// 写入class
 		if (!file_implclass.exists()) {
@@ -91,7 +92,7 @@ public class InitCode {
 			output = new FileOutputStream(file_implclass);
 			String content = generateSrc(category, className, objName,
 					"daoImpl.template");
-			IOUtils.write(content, output);
+			IOUtils.write(content, output, "utf-8");
 		}
 	}
 
@@ -118,7 +119,7 @@ public class InitCode {
 			output = new FileOutputStream(file_interface);
 			String content = generateSrc(category, className, objName,
 					"service.template");
-			IOUtils.write(content, output);
+			IOUtils.write(content, output, "utf-8");
 		}
 		// 写入class
 		if (!file_implclass.exists()) {
@@ -127,7 +128,7 @@ public class InitCode {
 			output = new FileOutputStream(file_implclass);
 			String content = generateSrc(category, className, objName,
 					"serviceImpl.template");
-			IOUtils.write(content, output);
+			IOUtils.write(content, output, "utf-8");
 		}
 	}
 
@@ -148,7 +149,7 @@ public class InitCode {
 			output = new FileOutputStream(file);
 			String content = generateSrc(category, className, objName,
 					"controller.template");
-			IOUtils.write(content, output);
+			IOUtils.write(content, output, "utf-8");
 		}
 	}
 
@@ -178,14 +179,14 @@ public class InitCode {
 			output = new FileOutputStream(file_html);
 			String content = generateHtml(category, className, objName,
 					"web-html.template", fields);
-			IOUtils.write(content, output);
+			IOUtils.write(content, output, "utf-8");
 		}
 		// 写入js
 		if (!file_js.exists()) {
 			output = new FileOutputStream(file_js);
 			String content = generateJs(category, className, objName,
 					"web-js.template", fields);
-			IOUtils.write(content, output);
+			IOUtils.write(content, output, "utf-8");
 		}
 	}
 
@@ -203,7 +204,7 @@ public class InitCode {
 				+ TEMPLATEPATH + "/";
 		File templateFile = new File(path + templateName);
 		FileInputStream input = new FileInputStream(templateFile);
-		String content = IOUtils.toString(input);
+		String content = IOUtils.toString(input, "utf-8");
 		String result = content.replaceAll("\\{Category\\}", category)
 				.replaceAll("\\{UpperCase\\}", upperCase)
 				.replaceAll("\\{LowerCase\\}", lowerCase);
@@ -226,7 +227,7 @@ public class InitCode {
 				+ TEMPLATEPATH + "/";
 		File templateFile = new File(path + templateName);
 		FileInputStream input = new FileInputStream(templateFile);
-		String content = IOUtils.toString(input);
+		String content = IOUtils.toString(input, "utf-8");
 		// 处理html
 		String tp_search = "\t\t\t\t\t<div data-options=\"name:'{fname}'\">{cname}</div>\n";
 		String tp_edit = "\t\t\t\t\t<tr><td style=\"text-align: right;\">{cname}：</td>"
@@ -272,7 +273,7 @@ public class InitCode {
 		ObjectMapper om = new ObjectMapper();
 		File templateFile = new File(path + templateName);
 		FileInputStream input = new FileInputStream(templateFile);
-		String content = IOUtils.toString(input);
+		String content = IOUtils.toString(input, "utf-8");
 		// 处理json
 		ArrayNode arr_list = om.createArrayNode();
 		ArrayNode arr_add = om.createArrayNode();

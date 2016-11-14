@@ -2,6 +2,7 @@ package me.lb.model.demo;
 
 import java.sql.Timestamp;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import javax.persistence.TemporalType;
 
 import me.lb.support.system.annotation.MetaData;
 
-import org.codehaus.jackson.map.annotate.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFilter;
 
 @Entity
 @Table(name = "ng_demo_foo")

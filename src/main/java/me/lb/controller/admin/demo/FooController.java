@@ -1,26 +1,27 @@
 package me.lb.controller.admin.demo;
 
-import java.util.Map;
-import java.util.List;
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import me.lb.support.jackson.JsonWriter;
-import me.lb.service.demo.FooService;
-import me.lb.model.pagination.Pagination;
 import me.lb.model.demo.Foo;
+import me.lb.model.pagination.Pagination;
+import me.lb.service.demo.FooService;
+import me.lb.support.jackson.JsonWriter;
 
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-import org.springframework.stereotype.Controller;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping(value = "/admin/demo/foo")
