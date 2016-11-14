@@ -21,6 +21,7 @@
 			classpath:applicationContext-hibernate.xml
 			classpath:applicationContext-spring.xml
 			classpath:applicationContext-shiro.xml
+			classpath:applicationContext-activiti.xml
 		</param-value>
 	</context-param>
 	<listener>
@@ -106,7 +107,9 @@
 		<!-- 启动容器时初始化Servlet -->
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:applicationContext-mvc.xml</param-value>
+			<param-value>
+				classpath:applicationContext-mvc.xml
+			</param-value>
 		</init-param>
 		<!-- 如果顺序放置到init-param前将报错 -->
 		<load-on-startup>1</load-on-startup>

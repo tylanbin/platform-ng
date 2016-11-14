@@ -26,6 +26,11 @@
 		window.onresize = function() {
 			$('#dlg').dialog('center');
 		}
+		$('body').keydown(function(event) {
+			if (event.keyCode == "13") {
+				func_login();
+			}
+		});
 	});
 	function func_login() {
 		$('#fm').form('submit', {

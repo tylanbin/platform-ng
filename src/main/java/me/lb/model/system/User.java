@@ -76,7 +76,8 @@ public class User implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	// 获得用户的时候，希望能直接获取员工，不存在1+n问题
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "empId")
 	public Emp getEmp() {
 		return this.emp;

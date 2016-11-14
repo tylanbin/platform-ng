@@ -164,6 +164,19 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.2.4</version>
 		</dependency>
+		
+		<!-- Activiti -->
+		<!-- 为了与设计器兼容，使用旧版 -->
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-spring</artifactId>
+			<version>${activiti.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-json-converter</artifactId>
+			<version>${activiti.version}</version>
+		</dependency>
 
 	</dependencies>
 
@@ -212,4 +225,5 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 </project>

@@ -36,6 +36,22 @@
 				}
 			}
 		});
+		// 获取用户信息
+		$.ajax({
+			type : 'post',
+			url : 'getLoginInfo',
+			dataType : 'json',
+			async : true,
+			success : function(data) {
+				if (data) {
+					if (data.emp) {
+						$('#nav .username').html(data.emp.name);
+					} else {
+						$('#nav .username').html(data.loginName);
+					}
+				}
+			}
+		});
 	});
 	function tab_add(title, url) {
 		if ($('#tabs').tabs('exists', title)) {
@@ -53,6 +69,9 @@
 	}
 	function tab_close() {
 		$('#tabs').tabs('close', menuOfTab);
+	}
+	function func_change() {
+		
 	}
 	function func_logout() {
 		$.ajax({
@@ -101,6 +120,7 @@
 	<div data-options="region:'north'" style="height:80px;overflow:hidden;">
 		<!-- 右上角工具条 -->
 		<ul id="nav">
+			<li>欢迎使用，<b class="username">admin</b></li>
 			<li><a href="javascript:;" onclick="func_change()">修改密码</a></li>
 			<li><a href="javascript:;" onclick="func_logout()">退出</a></li>
 		</ul>
