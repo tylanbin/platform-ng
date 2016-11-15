@@ -52,6 +52,8 @@
 				}
 			}
 		});
+		// 访问来源判断（流程设计器返回预留）
+		var from = window.location.search.substring(6);
 	});
 	function tab_add(title, url) {
 		if ($('#tabs').tabs('exists', title)) {

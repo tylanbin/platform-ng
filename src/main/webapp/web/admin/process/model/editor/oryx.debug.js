@@ -1861,20 +1861,20 @@ if(!ORYX.CONFIG) ORYX.CONFIG = {};
  * This file contains URI constants that may be used for XMLHTTPRequests.
  */
 
-ORYX.CONFIG.ROOT_PATH =					"../editor/"; //TODO: Remove last slash!!
-ORYX.CONFIG.EXPLORER_PATH =				"../explorer";
-ORYX.CONFIG.LIBS_PATH =					"../libs";
+ORYX.CONFIG.ROOT_PATH =					"editor/"; //TODO: Remove last slash!!
+ORYX.CONFIG.EXPLORER_PATH =				"explorer";
+ORYX.CONFIG.LIBS_PATH =					"libs";
 
 /**
  * Regular Config
  */	
-ORYX.CONFIG.SERVER_HANDLER_ROOT = 		"../service";
+ORYX.CONFIG.SERVER_HANDLER_ROOT = 		"service";// 这里修改后，不知道有什么作用
 ORYX.CONFIG.SERVER_EDITOR_HANDLER =		ORYX.CONFIG.SERVER_HANDLER_ROOT + "/editor";
 ORYX.CONFIG.SERVER_MODEL_HANDLER =		ORYX.CONFIG.SERVER_HANDLER_ROOT + "/model";
 ORYX.CONFIG.STENCILSET_HANDLER = 		ORYX.CONFIG.SERVER_HANDLER_ROOT + "/editor_stencilset?embedsvg=true&url=true&namespace=";    
 ORYX.CONFIG.STENCIL_SETS_URL = 			ORYX.CONFIG.SERVER_HANDLER_ROOT + "/editor_stencilset";
 
-ORYX.CONFIG.PLUGINS_CONFIG =			ORYX.CONFIG.SERVER_HANDLER_ROOT + "/editor/plugins";
+ORYX.CONFIG.PLUGINS_CONFIG =			"editor/plugins.xml";// 从源码分析，只有这个链接有用
 ORYX.CONFIG.SYNTAXCHECKER_URL =			ORYX.CONFIG.SERVER_HANDLER_ROOT + "/syntaxchecker";
 ORYX.CONFIG.DEPLOY_URL = 				ORYX.CONFIG.SERVER_HANDLER_ROOT + "/model/deploy";
 ORYX.CONFIG.MODEL_LIST_URL = 			ORYX.CONFIG.SERVER_HANDLER_ROOT + "/models";
@@ -1916,7 +1916,7 @@ ORYX.CONFIG.PANEL_LEFT_WIDTH 	= 		250;
 ORYX.CONFIG.PANEL_RIGHT_COLLAPSED 	= 	true;
 ORYX.CONFIG.PANEL_RIGHT_WIDTH	= 		300;
 ORYX.CONFIG.APPNAME = 					'Activiti BPM suite';
-ORYX.CONFIG.WEB_URL = 					"../";
+ORYX.CONFIG.WEB_URL = 					"../../../../web/admin/common/main.html?from=model";
 
 ORYX.CONFIG.BLANK_IMAGE = ORYX.CONFIG.LIBS_PATH + '/ext-2.0.2/resources/images/default/s.gif';
 
@@ -8468,9 +8468,9 @@ ORYX.Core.StencilSet.StencilSet = Clazz.extend({
 		this._availableStencils = new Hash();
         
 		if(ORYX.CONFIG.BACKEND_SWITCH) {
-			this._baseUrl = "../editor/stencilsets/bpmn2.0/";
-			this._source = "../stencilsets/bpmn2.0/bpmn2.0.json";
-			new Ajax.Request("../service/editor/stencilset", {
+			this._baseUrl = "editor/stencilsets/bpmn2.0/";
+			this._source = "stencilsets/bpmn2.0/bpmn2.0.json";
+			new Ajax.Request("editor/stencilset.json", {
 	            asynchronous: false,
 	            method: 'get',
 	            onSuccess: this._init.bind(this),
@@ -11194,7 +11194,7 @@ function init() {
 			modelUrl = modelUrl.replace("/self","/json");
 		} else {
 			var modelId = window.location.search.substring(4);
-			modelUrl = "../service/model/" + modelId + "/json";
+			modelUrl = modelId + "/json";
 		}
 
         ORYX.Editor.createByUrl(modelUrl, {
@@ -11564,7 +11564,7 @@ ORYX.Editor = {
 			
 			var content =  "<div id='editor_header'>" +
                 "<div id='header_logo_image'>" +                
-                    "<img src='../explorer/src/img/signavio/smoky/logo2.png' border=\"0\"/>" +
+                    "<img src='explorer/src/img/signavio/smoky/logo2.png' border=\"0\"/>" +
                 "</div>" +
                 "<span class='openid " + (publicText == user ? "not" : "") + "'>" + 
                   (unescape(user)) + 
@@ -11572,7 +11572,7 @@ ORYX.Editor = {
                 "</span>" + 
                 "<div id='header_close_image'>" +
                   "<a href=\""+ORYX.CONFIG.WEB_URL+"\" target=\"_self\" title=\"close modeler\">" +
-                    "<img src='../editor/images/close_button.png' border=\"0\" />" + 
+                    "<img src='editor/images/close_button.png' border=\"0\" />" + 
                   "</a>" +
                 "</div>" + 
               "</div>";
@@ -18328,7 +18328,7 @@ new function(){
 		var sversion 	= "color:#ad0f5b;padding-right:10px;font-family:tahoma,arial,san-serif;font-size:12px;";
 		var stext 		= "display:block;position:relative;text-align:right;top:0;width:100%;";
 		var stitle 		= "color:#ad0f5b;font-weight:bold;padding-right:10px;font-family:tahoma,arial,san-serif;font-size:12px;"
-		var sloading 	= "height:16px;width:16px;margin-bottom:-4px;background: transparent url(../libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat center;"
+		var sloading 	= "height:16px;width:16px;margin-bottom:-4px;background: transparent url(libs/ext-2.0.2/resources/images/default/tree/loading.gif) no-repeat center;"
 		var simg 		= "padding-bottom:10px;border-bottom:1px solid #ad0f5b;";
 
 		// Define the parent
@@ -21907,7 +21907,7 @@ Ext.extend(Ext.form.ComplexListField, Ext.form.TriggerField,  {
 			var toolbar = new Ext.Toolbar(
 			[{
 				text: ORYX.I18N.PropertyWindow.add,					
-				icon: '../editor/images/add.png',
+				icon: 'editor/images/add.png',
 				iconCls: "x-dummy",
 				handler: function(){
 					var ds = this.grid.getStore();
@@ -21920,7 +21920,7 @@ Ext.extend(Ext.form.ComplexListField, Ext.form.TriggerField,  {
 				}.bind(this)
 			},{
 				text: ORYX.I18N.PropertyWindow.rem,					
-				icon: '../editor/images/delete.png',
+				icon: 'editor/images/delete.png',
 				iconCls: "x-dummy",
 		        handler : function(){
 					var ds = this.grid.getStore();
@@ -22447,7 +22447,7 @@ Ext.extend(Ext.form.MultipleComplexListField, Ext.form.TriggerField,  {
 			var toolbar = new Ext.Toolbar(
 			[{
 				text: ORYX.I18N.PropertyWindow.add,					
-				icon: '../editor/images/add.png',
+				icon: 'editor/images/add.png',
 				iconCls: "x-dummy",
 				handler: function(){
 					var ds = this.grid.getStore();
@@ -22460,7 +22460,7 @@ Ext.extend(Ext.form.MultipleComplexListField, Ext.form.TriggerField,  {
 				}.bind(this)
 			},{
 				text: ORYX.I18N.PropertyWindow.rem,					
-				icon: '../editor/images/delete.png',
+				icon: 'editor/images/delete.png',
 				iconCls: "x-dummy",
 		        handler : function(){
 					var ds = this.grid.getStore();
@@ -22520,7 +22520,7 @@ Ext.extend(Ext.form.MultipleComplexListField, Ext.form.TriggerField,  {
 			var secondToolbar = new Ext.Toolbar(
 			[{
 				text: ORYX.I18N.PropertyWindow.add,					
-				icon: '../editor/images/add.png',
+				icon: 'editor/images/add.png',
 				iconCls: "x-dummy",
 				handler: function(){
 					var ds = this.secondGrid.getStore();
@@ -22533,7 +22533,7 @@ Ext.extend(Ext.form.MultipleComplexListField, Ext.form.TriggerField,  {
 				}.bind(this)
 			},{
 				text: ORYX.I18N.PropertyWindow.rem,					
-				icon: '../editor/images/delete.png',
+				icon: 'editor/images/delete.png',
 				iconCls: "x-dummy",
 		        handler : function(){
 					var ds = this.secondGrid.getStore();
@@ -24810,7 +24810,7 @@ ORYX.Plugins.Save = Clazz.extend({
 		
 		var modelMeta = this.facade.getModelMetaData();
 		
-		new Ajax.Request("../service/model/" + modelMeta.modelId + "/json", {
+		new Ajax.Request(modelMeta.modelId + "/json", {
             method: 'get',
             asynchronous: true,
 			requestHeaders: {
@@ -24869,9 +24869,9 @@ ORYX.Plugins.Save = Clazz.extend({
 		
 		var saveUri;
 		if(forceNew == false) {
-			saveUri = "../service/model/" + params.id + "/save";
+			saveUri = params.id;
 		} else {
-			saveUri = "../service/model/new";
+			saveUri = params.id;
 		}
 		
 		// Send the request to the server.
