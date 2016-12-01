@@ -175,8 +175,8 @@ function func_edit() {
 			return $(this).form('validate');
 		},
 		success : function(data) {
-			var result = eval('(' + data + ')');
-			if (result.success) {
+			var data = eval('(' + data + ')');
+			if (data.success) {
 				var node = $('#tree').tree('getSelected');
 				if (node) {
 					selected = node.id;
@@ -188,7 +188,12 @@ function func_edit() {
 			} else {
 				$.messager.show({
 					title : '错误',
-					msg : result.msg
+					msg : data.msg,
+					showType : 'fade',
+					style : {
+						right : '',
+						bottom : ''
+					}
 				});
 			}
 		}
@@ -219,6 +224,9 @@ function func_del() {
 							$('#dg-list').datagrid('reload');
 							$('#dg-list').datagrid('clearSelections');
 						} else {
+							// 出错也需要重载
+							$('#dg-list').datagrid('reload');
+							$('#dg-list').datagrid('clearSelections');
 							$.messager.show({
 								title : '错误',
 								msg : data.msg,
@@ -231,6 +239,9 @@ function func_del() {
 						}
 					},
 					error : function() {
+						// 出错也需要重载
+						$('#dg-list').datagrid('reload');
+						$('#dg-list').datagrid('clearSelections');
 						$.messager.show({
 							title : '错误',
 							msg : '服务器正忙，请稍后再试！',

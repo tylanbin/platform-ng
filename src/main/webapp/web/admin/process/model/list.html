@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<!-- styles -->
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui/themes/custom/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui-custom/easyui.custom.css">
+<!-- scripts -->
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui-custom/easyui.custom.js"></script>
+<script type="text/javascript" src="../../../../assets/common/framework.js"></script>
+<!-- 时间处理js -->
+<script type="text/javascript" src="../../../../assets/common/js.Date.js"></script>
+<!-- JSON2 -->
+<!--[if lt IE 8]>
+<script type="text/javascript" src="../../../../assets/common/json-js/json2.js"></script>
+<![endif]-->
+<!-- page scripts -->
+<script type="text/javascript" src="../../../../assets/admin/process/model/list.js"></script>
+</head>
+
+<body>
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'center',border:false">
+			<table id="dg-list" data-options="title:'列表',toolbar:'#tb-list'"></table>
+			<div id="tb-list">
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="dlg_add()">新增</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="func_edit()">设计</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="func_del()">删除</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="func_reload()">刷新</a>
+				<input id="searchbox" class="easyui-searchbox" data-options="width:200,searcher:search,prompt:'请输入查询内容',menu:'#searchMenu'">
+				<div id="searchMenu">
+					<div data-options="name:'nameLike'">名称</div>
+					<div data-options="name:'keyLike'">KEY</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 新增 -->
+	<div id="dlg-add" class="easyui-dialog" style="width:320px;padding:10px;"
+		data-options="title:'新增',closed:true,buttons:'#dlg-btn-add',resizable:true,maximizable:true,modal:true">
+		<div style="margin:5px;">
+			<form id="fm-add" method="post" action="">
+				<div style="text-align: center;">
+					<table style="border-width:0;" align="center">
+						<tr>
+							<td style="text-align: right;">KEY：</td>
+							<td style="text-align: left;"><input type="text" name="key" class="easyui-validatebox" data-options="required:true" /></td>
+						</tr>
+						<tr>
+							<td style="text-align: right;">名称：</td>
+							<td style="text-align: left;"><input type="text" name="name" class="easyui-validatebox" data-options="required:true" /></td>
+						</tr>
+						<tr>
+							<td style="text-align: right;">描述：</td>
+							<td style="text-align: left;"><textarea name="description" rows="" cols="" ></textarea></td>
+						</tr>
+					</table>
+				</div>
+			</form>
+		</div>
+		<div id="dlg-btn-add">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_add()">确定</a>
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-add').dialog('close');">取消</a>
+		</div>
+	</div>
+	<!-- 修改 -->
+	<div id="dlg-edit" class="easyui-dialog" style="width:320px;padding:20px 30px;top:30px"
+		data-options="title:'修改',closed:true,buttons:'#dlg-btn-edit'">
+		<form id="fm-edit" method="post">
+			<input type="hidden" id="id-edit" />
+			<div style="text-align: center;">
+				<table style="border-width:0;" align="center">
+					<!-- 这里使用反射解析属性，并生成HTML进行替换 -->
+					<!-- <tr>
+						<td style="text-align: right;">chsName：</td>
+						<td><input type="text" name="fieldName" class="easyui-validatebox" data-options="required:true" /></td>
+					</tr> -->
+					<!-- 控件类型需要进行后期修改 -->
+					<tr><td style="text-align: right;">日期时间：</td><td><input type="text" name="col5" class="easyui-validatebox" data-options="required:true" /></td></tr>
+					<tr><td style="text-align: right;">日期：</td><td><input type="text" name="col4" class="easyui-validatebox" data-options="required:true" /></td></tr>
+					<tr><td style="text-align: right;">文本：</td><td><input type="text" name="col6" class="easyui-validatebox" data-options="required:true" /></td></tr>
+					<tr><td style="text-align: right;">整型：</td><td><input type="text" name="col1" class="easyui-validatebox" data-options="required:true" /></td></tr>
+					<tr><td style="text-align: right;">小数：</td><td><input type="text" name="col3" class="easyui-validatebox" data-options="required:true" /></td></tr>
+					<tr><td style="text-align: right;">字符串：</td><td><input type="text" name="col2" class="easyui-validatebox" data-options="required:true" /></td></tr>
+				</table>
+			</div>
+		</form>
+		<div id="dlg-btn-edit">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_edit()">确定</a>
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-edit').dialog('close');">取消</a>
+		</div>
+	</div>
+</body>
+</html>

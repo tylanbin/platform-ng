@@ -1916,7 +1916,7 @@ ORYX.CONFIG.PANEL_LEFT_WIDTH 	= 		250;
 ORYX.CONFIG.PANEL_RIGHT_COLLAPSED 	= 	true;
 ORYX.CONFIG.PANEL_RIGHT_WIDTH	= 		300;
 ORYX.CONFIG.APPNAME = 					'Activiti BPM suite';
-ORYX.CONFIG.WEB_URL = 					"../../../../web/admin/common/main.html?from=model";
+ORYX.CONFIG.WEB_URL = 					"../../../../web/admin/process/model/list.html";
 
 ORYX.CONFIG.BLANK_IMAGE = ORYX.CONFIG.LIBS_PATH + '/ext-2.0.2/resources/images/default/s.gif';
 
