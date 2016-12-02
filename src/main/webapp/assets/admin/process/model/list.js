@@ -153,3 +153,66 @@ function func_reload() {
 	$('#dg-list').datagrid('clearSelections');
 	$('#dg-list').datagrid('reload', {});
 }
+
+function func_getJson() {
+	var rows = $('#dg-list').datagrid('getSelections');
+	if (rows.length == 0) {
+		$.messager.alert('提示', '请选择要导出的流程模型！', 'info');
+	} else if (rows.length == 1) {
+		window.location.href = AppCore.baseUrl + 'admin/process/model/' + rows[0].id + '/json';
+	} else {
+		$.messager.alert('提示', '导出时只可以选择一个！', 'info');
+	}
+}
+
+function func_deploy() {
+	var rows = $('#dg-list').datagrid('getSelections');
+	if (rows.length == 0) {
+		$.messager.alert('提示', '请选择要部署的流程模型！', 'info');
+	} else if (rows.length == 1) {
+		$.ajax({
+			type : 'post',
+			url : 'admin/process/model/' + rows[0].id + '/deploy',
+			dataType : 'json',
+			async : true,
+			success : function(data) {
+				if (data.success) {
+					$('#dg-list').datagrid('reload');
+					$('#dg-list').datagrid('clearSelections');
+					$.messager.show({
+						title : '部署成功',
+						msg : '流程ID：' + data.processDefinitionId,
+						showType : 'fade',
+						style : {
+							right : '',
+							bottom : ''
+						}
+					});
+				} else {
+					$.messager.show({
+						title : '错误',
+						msg : data.msg,
+						showType : 'fade',
+						style : {
+							right : '',
+							bottom : ''
+						}
+					});
+				}
+			},
+			error : function() {
+				$.messager.show({
+					title : '错误',
+					msg : '服务器正忙，请稍后再试！',
+					showType : 'fade',
+					style : {
+						right : '',
+						bottom : ''
+					}
+				});
+			}
+		});
+	} else {
+		$.messager.alert('提示', '每次只可以部署一个！', 'info');
+	}
+}
