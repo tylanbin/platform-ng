@@ -85,7 +85,7 @@ function func_add() {
 function func_edit() {
 	var rows = $('#dg-list').datagrid('getSelections');
 	if (rows.length == 0) {
-		$.messager.alert('提示', '请选择要设计的流程模型！', 'info');
+		$.messager.alert('提示', '请选择要设计的条目！', 'info');
 	} else if (rows.length == 1) {
 		window.location.href = 'editor.html?id=' + rows[0].id;
 	} else {
@@ -157,7 +157,7 @@ function func_reload() {
 function func_getJson() {
 	var rows = $('#dg-list').datagrid('getSelections');
 	if (rows.length == 0) {
-		$.messager.alert('提示', '请选择要导出的流程模型！', 'info');
+		$.messager.alert('提示', '请选择要导出的条目！', 'info');
 	} else if (rows.length == 1) {
 		window.location.href = AppCore.baseUrl + 'admin/process/model/' + rows[0].id + '/json';
 	} else {
@@ -168,7 +168,7 @@ function func_getJson() {
 function func_deploy() {
 	var rows = $('#dg-list').datagrid('getSelections');
 	if (rows.length == 0) {
-		$.messager.alert('提示', '请选择要部署的流程模型！', 'info');
+		$.messager.alert('提示', '请选择要部署的条目！', 'info');
 	} else if (rows.length == 1) {
 		$.ajax({
 			type : 'post',
@@ -213,6 +213,6 @@ function func_deploy() {
 			}
 		});
 	} else {
-		$.messager.alert('提示', '每次只可以部署一个！', 'info');
+		$.messager.alert('提示', '部署时只可以选择一个！', 'info');
 	}
 }
