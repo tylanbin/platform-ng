@@ -91,10 +91,9 @@ public class OrgController {
 	@ResponseBody
 	@RequestMapping(value = "/batch", method = RequestMethod.POST)
 	public String batch_add(Org par, String objs) {
-		ObjectMapper om = new ObjectMapper();
 		try {
-			List<Org> list = om.readValue(objs, new TypeReference<List<Org>>() {
-			});
+			ObjectMapper om = new ObjectMapper();
+			List<Org> list = om.readValue(objs, new TypeReference<List<Org>>() {});
 			Iterator<Org> it = list.iterator();
 			while (it.hasNext()) {
 				Org obj = it.next();
@@ -144,13 +143,11 @@ public class OrgController {
 	@ResponseBody
 	@RequestMapping(value = "/data", method = RequestMethod.GET)
 	public String data(String params) {
-		ObjectMapper om = new ObjectMapper();
 		try {
+			ObjectMapper om = new ObjectMapper();
 			Pagination<Org> pm = null;
 			if (!StringUtils.isEmpty(params)) {
-				Map<String, Object> map = om.readValue(params,
-						new TypeReference<Map<String, Object>>() {
-						});
+				Map<String, Object> map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 				pm = orgService.pagingQuery(map);
 			} else {
 				pm = orgService.pagingQuery();

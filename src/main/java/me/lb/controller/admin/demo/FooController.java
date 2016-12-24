@@ -77,7 +77,8 @@ public class FooController {
 			// 将查询出的结果序列化为JSON并返回
 			// 这里可以使用filter方法，过滤不需要序列化的属性
 			// 如果没有需要过滤的话，仍需要调用filter，避免错误
-			return JsonWriter.getInstance().filter(Foo.class).getWriter()
+			return JsonWriter.getInstance()
+					.filter(Foo.class).getWriter()
 					.writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -89,10 +90,9 @@ public class FooController {
 	@RequestMapping(value = "/batch", method = RequestMethod.POST)
 	public String batch_add(String objs) {
 		// 批量插入的操作
-		ObjectMapper om = new ObjectMapper();
 		try {
-			List<Foo> list = om.readValue(objs, new TypeReference<List<Foo>>() {
-			});
+			ObjectMapper om = new ObjectMapper();
+			List<Foo> list = om.readValue(objs, new TypeReference<List<Foo>>() {});
 			Iterator<Foo> it = list.iterator();
 			while (it.hasNext()) {
 				Foo obj = it.next();
@@ -126,13 +126,11 @@ public class FooController {
 	@RequestMapping(value = "/data", method = RequestMethod.GET)
 	public String data(String params) {
 		// 查询数据集合的方法
-		ObjectMapper om = new ObjectMapper();
 		try {
+			ObjectMapper om = new ObjectMapper();
 			Pagination<Foo> pm = null;
 			if (!StringUtils.isEmpty(params)) {
-				Map<String, Object> map = om.readValue(params,
-						new TypeReference<Map<String, Object>>() {
-						});
+				Map<String, Object> map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 				pm = fooService.pagingQuery(map);
 			} else {
 				pm = fooService.pagingQuery();
@@ -143,7 +141,8 @@ public class FooController {
 			result.put("rows", pm.getDatas());
 			// 这里可以使用filter方法，过滤不需要序列化的属性
 			// 如果没有需要过滤的话，仍需要调用filter，避免错误
-			return JsonWriter.getInstance().filter(Foo.class).getWriter()
+			return JsonWriter.getInstance()
+					.filter(Foo.class).getWriter()
 					.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();

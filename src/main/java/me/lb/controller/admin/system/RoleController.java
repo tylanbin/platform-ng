@@ -84,11 +84,10 @@ public class RoleController {
 		try {
 			Role temp = roleService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter
-					.getInstance()
+			return JsonWriter.getInstance()
 					.filter(Role.class, "users", "perms")
-					.filter(Org.class, "org", "emps", "roles", "orgs",
-							"children").getWriter().writeValueAsString(temp);
+					.filter(Org.class, "org", "emps", "roles", "orgs", "children")
+					.getWriter().writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -98,11 +97,9 @@ public class RoleController {
 	@ResponseBody
 	@RequestMapping(value = "/batch", method = RequestMethod.POST)
 	public String batch_add(Org org, String objs) {
-		ObjectMapper om = new ObjectMapper();
 		try {
-			List<Role> list = om.readValue(objs,
-					new TypeReference<List<Role>>() {
-					});
+			ObjectMapper om = new ObjectMapper();
+			List<Role> list = om.readValue(objs, new TypeReference<List<Role>>() {});
 			Iterator<Role> it = list.iterator();
 			while (it.hasNext()) {
 				Role obj = it.next();
@@ -142,9 +139,10 @@ public class RoleController {
 			List<Org> list = orgService.findTopOrgs();
 			List<Object> result = genRoleTree(list);
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter.getInstance().filter(Org.class, "org", "emps")
-					.filter(Role.class, "org", "users", "perms").getWriter()
-					.writeValueAsString(result);
+			return JsonWriter.getInstance()
+					.filter(Org.class, "org", "emps")
+					.filter(Role.class, "org", "users", "perms")
+					.getWriter().writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "[]";
@@ -154,13 +152,11 @@ public class RoleController {
 	@ResponseBody
 	@RequestMapping(value = "/data", method = RequestMethod.GET)
 	public String data(String params) {
-		ObjectMapper om = new ObjectMapper();
 		try {
+			ObjectMapper om = new ObjectMapper();
 			Pagination<Role> pm = null;
 			if (!StringUtils.isEmpty(params)) {
-				Map<String, Object> map = om.readValue(params,
-						new TypeReference<Map<String, Object>>() {
-						});
+				Map<String, Object> map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 				pm = roleService.pagingQuery(map);
 			} else {
 				pm = roleService.pagingQuery();
@@ -169,12 +165,10 @@ public class RoleController {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			// FIXME: 这里存在json级联序列化的问题，需要处理
-			return JsonWriter
-					.getInstance()
+			return JsonWriter.getInstance()
 					.filter(Role.class, "users", "perms")
-					.filter(Org.class, "org", "emps", "roles", "orgs",
-							"children").getWriter().writeValueAsString(result);
+					.filter(Org.class, "org", "emps", "roles", "orgs", "children")
+					.getWriter().writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

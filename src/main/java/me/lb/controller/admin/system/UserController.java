@@ -36,19 +36,16 @@ public class UserController {
 	@ResponseBody
 	@RequestMapping(value = "/{empId}/user", method = RequestMethod.POST)
 	public String user(@PathVariable int empId, String objs) {
-		ObjectMapper om = new ObjectMapper();
 		try {
+			ObjectMapper om = new ObjectMapper();
 			Emp emp = empService.findById(empId);
-			List<User> list = om.readValue(objs,
-					new TypeReference<List<User>>() {
-					});
+			List<User> list = om.readValue(objs, new TypeReference<List<User>>() {});
 			// 先完成验证
 			for (User temp : list) {
 				if (temp.getId() == null) {
 					String loginName = temp.getLoginName();
 					if (!userService.validate(loginName)) {
-						return "{ \"msg\" : \"" + loginName
-								+ "与已有用户名冲突，请更换后重试！\" }";
+						return "{ \"msg\" : \"" + loginName + "与已有用户名冲突，请更换后重试！\" }";
 					}
 				}
 			}
@@ -64,8 +61,7 @@ public class UserController {
 					obj.setLoginName(temp.getLoginName());
 					obj.setEnabled(temp.getEnabled());
 					// 使用自定义的MD5进行编码
-					String md5Pass = MD5Util.getValue(MD5Util.PREFIX
-							+ temp.getLoginPass());
+					String md5Pass = MD5Util.getValue(MD5Util.PREFIX + temp.getLoginPass());
 					obj.setLoginPass(md5Pass);
 					userService.update(obj);
 				} else {
@@ -73,17 +69,13 @@ public class UserController {
 					temp.setEmp(emp);
 					temp.setCreateDate(new Timestamp(new Date().getTime()));
 					// 使用自定义的MD5进行编码
-					String md5Pass = MD5Util.getValue(MD5Util.PREFIX
-							+ temp.getLoginPass());
+					String md5Pass = MD5Util.getValue(MD5Util.PREFIX + temp.getLoginPass());
 					temp.setLoginPass(md5Pass);
 					userId = userService.save(temp);
 				}
 				// 再处理与角色的关联
 				if (!StringUtils.isEmpty(temp.getRoleIds())) {
-					List<Integer> roleIds = om.readValue(
-							"[" + temp.getRoleIds() + "]",
-							new TypeReference<List<Integer>>() {
-							});
+					List<Integer> roleIds = om.readValue("[" + temp.getRoleIds() + "]", new TypeReference<List<Integer>>() {});
 					userService.auth(userId, roleIds);
 				}
 			}
@@ -116,7 +108,8 @@ public class UserController {
 			String temp = u.getRoles().toString().replaceAll(" ", "");
 			u.setRoleIds(temp.substring(1, temp.length() - 1));
 		}
-		return JsonWriter.getInstance().filter(User.class, "emp", "roles")
+		return JsonWriter.getInstance()
+				.filter(User.class, "emp", "roles")
 				.getWriter().writeValueAsString(set);
 	}
 

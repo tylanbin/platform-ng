@@ -90,11 +90,9 @@ public class PermController {
 	@ResponseBody
 	@RequestMapping(value = "/batch", method = RequestMethod.POST)
 	public String batch_add(Perm par, String objs) {
-		ObjectMapper om = new ObjectMapper();
 		try {
-			List<Perm> list = om.readValue(objs,
-					new TypeReference<List<Perm>>() {
-					});
+			ObjectMapper om = new ObjectMapper();
+			List<Perm> list = om.readValue(objs, new TypeReference<List<Perm>>() {});
 			Iterator<Perm> it = list.iterator();
 			while (it.hasNext()) {
 				Perm obj = it.next();
@@ -144,14 +142,12 @@ public class PermController {
 	@ResponseBody
 	@RequestMapping(value = "/data", method = RequestMethod.GET)
 	public String data(String params) {
-		ObjectMapper om = new ObjectMapper();
 		try {
+			ObjectMapper om = new ObjectMapper();
 			Pagination<Perm> pm = null;
 			if (!StringUtils.isEmpty(params)) {
 				// Perm vo = om.readValue(jsonParam, Perm.class);
-				Map<String, Object> map = om.readValue(params,
-						new TypeReference<Map<String, Object>>() {
-						});
+				Map<String, Object> map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 				pm = permService.pagingQuery(map);
 			} else {
 				pm = permService.pagingQuery();

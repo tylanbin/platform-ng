@@ -108,11 +108,10 @@ public class EmpController {
 		try {
 			Emp temp = empService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			return JsonWriter
-					.getInstance()
+			return JsonWriter.getInstance()
 					.filter(Emp.class, "users")
-					.filter(Org.class, "org", "emps", "roles", "orgs",
-							"children").getWriter().writeValueAsString(temp);
+					.filter(Org.class, "org", "emps", "roles", "orgs", "children")
+					.getWriter().writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -122,10 +121,9 @@ public class EmpController {
 	@ResponseBody
 	@RequestMapping(value = "/batch", method = RequestMethod.POST)
 	public String batch_add(Org org, String objs) {
-		ObjectMapper om = new ObjectMapper();
 		try {
-			List<Emp> list = om.readValue(objs, new TypeReference<List<Emp>>() {
-			});
+			ObjectMapper om = new ObjectMapper();
+			List<Emp> list = om.readValue(objs, new TypeReference<List<Emp>>() {});
 			Iterator<Emp> it = list.iterator();
 			while (it.hasNext()) {
 				Emp obj = it.next();
@@ -160,13 +158,11 @@ public class EmpController {
 	@ResponseBody
 	@RequestMapping(value = "/data", method = RequestMethod.GET)
 	public String data(String params) {
-		ObjectMapper om = new ObjectMapper();
 		try {
+			ObjectMapper om = new ObjectMapper();
 			Pagination<Emp> pm = null;
 			if (!StringUtils.isEmpty(params)) {
-				Map<String, Object> map = om.readValue(params,
-						new TypeReference<Map<String, Object>>() {
-						});
+				Map<String, Object> map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 				pm = empService.pagingQuery(map);
 			} else {
 				pm = empService.pagingQuery();
@@ -175,11 +171,10 @@ public class EmpController {
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			return JsonWriter
-					.getInstance()
+			return JsonWriter.getInstance()
 					.filter(Emp.class, "users")
-					.filter(Org.class, "org", "emps", "roles", "orgs",
-							"children").getWriter().writeValueAsString(result);
+					.filter(Org.class, "org", "emps", "roles", "orgs", "children")
+					.getWriter().writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

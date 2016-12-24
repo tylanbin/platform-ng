@@ -139,8 +139,8 @@ public class ModelController {
 	@RequestMapping(value = "/data", method = RequestMethod.GET)
 	public String data(String params) {
 		// 查询数据集合的方法
-		ObjectMapper om = new ObjectMapper();
 		try {
+			ObjectMapper om = new ObjectMapper();
 			Map<String, Object> map = null;
 			if (!StringUtils.isEmpty(params)) {
 				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
