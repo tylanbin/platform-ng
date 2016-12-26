@@ -1,6 +1,7 @@
 package me.lb.controller.admin.process;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class DefController {
 				// 查询全部流程定义
 			} else if ("active".equals(type)) {
 				query = query.active();
-			}  else if ("suspended".equals(type)) {
+			} else if ("suspended".equals(type)) {
 				query = query.suspended();
 			}
 			// 级联查询参数
@@ -66,10 +67,15 @@ public class DefController {
 			// 查询结果（分页查询）
 			long total = query.count();
 			List<ProcessDefinition> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要使用值对象进行处理
+			List<Object> datas = new ArrayList<Object>();
+			for (ProcessDefinition pd : list) {
+				datas.add(convert(pd));
+			}
 			// 序列化查询结果为JSON
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", total);
-			result.put("rows", list);
+			result.put("rows", datas);
 			// 不是自己的实体类，不需要进行输出过滤
 			return om.writeValueAsString(result);
 		} catch (Exception e) {
@@ -77,7 +83,7 @@ public class DefController {
 			return "{ \"total\" : 0, \"rows\" : [] }";
 		}
 	}
-	
+
 	@RequestMapping(value = "/${pdId}/resource/{type}", method = RequestMethod.GET)
 	public void resource(@PathVariable String pdId, @PathVariable String type, HttpServletResponse response) {
 		try {
@@ -99,6 +105,28 @@ public class DefController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	// 私有方法
+	
+	/**
+	 * 将流程定义转换为Map
+	 * @param pd
+	 * @return
+	 */
+	private Map<String, Object> convert(ProcessDefinition pd) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", pd.getId());
+		map.put("key", pd.getKey());
+		map.put("version", pd.getVersion());
+		map.put("category", pd.getCategory());
+		map.put("deploymentId", pd.getDeploymentId());
+		map.put("name", pd.getName());
+		map.put("description", pd.getDescription());
+		map.put("tenantId", pd.getTenantId());
+		map.put("isSuspended", pd.isSuspended());
+		map.put("hasStartFormKey", pd.hasStartFormKey());
+		return map;
 	}
 
 }

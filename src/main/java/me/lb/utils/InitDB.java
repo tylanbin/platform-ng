@@ -9,10 +9,8 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 public class InitDB {
 
 	public static void main(String[] args) {
-		BeanFactory factory = new ClassPathXmlApplicationContext(
-				"applicationContext-hibernate.xml");
-		LocalSessionFactoryBean sessionFactory = factory
-				.getBean(LocalSessionFactoryBean.class);
+		BeanFactory factory = new ClassPathXmlApplicationContext("applicationContext-hibernate.xml");
+		LocalSessionFactoryBean sessionFactory = factory.getBean(LocalSessionFactoryBean.class);
 		Configuration cfg = sessionFactory.getConfiguration();
 		SchemaExport se = new SchemaExport(cfg);
 		se.create(false, true);
