@@ -111,8 +111,8 @@ public class DefController {
 	
 	/**
 	 * 将流程定义转换为Map
-	 * @param pd
-	 * @return
+	 * @param pd Activiti的流程定义
+	 * @return 封装后的Map
 	 */
 	private Map<String, Object> convert(ProcessDefinition pd) {
 		Map<String, Object> map = new HashMap<String, Object>();
