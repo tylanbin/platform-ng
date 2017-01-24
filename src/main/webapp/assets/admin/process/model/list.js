@@ -1,4 +1,3 @@
-var selected = null;
 $(function() {
 	$('#dg-list').datagrid({
 		fit : true,

@@ -33,6 +33,44 @@ public class DefController {
 	private RepositoryService repositoryService;
 
 	@ResponseBody
+	@RequestMapping(value = "/{pdId}/state/{type}", method = RequestMethod.PUT)
+	public String state(@PathVariable String pdId, @PathVariable String type) {
+		try {
+			if ("active".equals(type)) {
+				repositoryService.activateProcessDefinitionById(pdId);
+			} else if ("suspend".equals(type)) {
+				repositoryService.suspendProcessDefinitionById(pdId);
+			}
+			return "{ \"success\" : true }";
+		} catch (Exception e) {
+			return "{ \"msg\" : \"操作失败！\" }";
+		}
+	}
+	
+	@RequestMapping(value = "/{pdId}/resource/{type}", method = RequestMethod.GET)
+	public void resource(@PathVariable String pdId, @PathVariable String type, HttpServletResponse response) {
+		try {
+			// 获取流程定义
+			ProcessDefinition pd = repositoryService.getProcessDefinition(pdId);
+			// 获取资源名称
+			String resourceName = null;
+			if ("xml".equals(type)) {
+				response.setContentType("application/xml");
+				resourceName = pd.getResourceName();
+			} else {
+				response.setContentType("image/png");
+				resourceName = pd.getDiagramResourceName();
+			}
+			// 获取资源内容（xml/image）并返回
+			InputStream input = repositoryService.getResourceAsStream(pd.getDeploymentId(), resourceName);
+			IOUtils.copy(input, response.getOutputStream());
+			response.flushBuffer();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@ResponseBody
 	@RequestMapping(value = "/data/{type}", method = RequestMethod.GET)
 	public String data(@PathVariable String type, String params) {
 		try {
@@ -53,13 +91,13 @@ public class DefController {
 				query = query.suspended();
 			}
 			// 级联查询参数
-			if (map.containsKey("pdKey")) {
+			if (map.containsKey("pdKeyLike")) {
 				query = query.processDefinitionKeyLike(String.valueOf(map.get("pdKey")));
 			}
-			if (map.containsKey("pdName")) {
+			if (map.containsKey("pdNameLike")) {
 				query = query.processDefinitionNameLike(String.valueOf(map.get("pdName")));
 			}
-			if (map.containsKey("pdCategory")) {
+			if (map.containsKey("pdCategoryLike")) {
 				query = query.processDefinitionCategoryLike(String.valueOf(map.get("pdCategory")));
 			}
 			// 查询结果排序
@@ -83,29 +121,6 @@ public class DefController {
 			return "{ \"total\" : 0, \"rows\" : [] }";
 		}
 	}
-
-	@RequestMapping(value = "/${pdId}/resource/{type}", method = RequestMethod.GET)
-	public void resource(@PathVariable String pdId, @PathVariable String type, HttpServletResponse response) {
-		try {
-			// 获取流程定义
-			ProcessDefinition pd = repositoryService.getProcessDefinition(pdId);
-			// 获取资源名称
-			String resourceName = null;
-			if ("xml".equals(type)) {
-				response.setContentType("application/xml");
-				resourceName = pd.getResourceName();
-			} else {
-				response.setContentType("image/png");
-				resourceName = pd.getDiagramResourceName();
-			}
-			// 获取资源内容（xml/image）并返回
-			InputStream input = repositoryService.getResourceAsStream(pd.getDeploymentId(), resourceName);
-			IOUtils.copy(input, response.getOutputStream());
-			response.flushBuffer();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	// 私有方法
 	
@@ -118,10 +133,10 @@ public class DefController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", pd.getId());
 		map.put("key", pd.getKey());
+		map.put("name", pd.getName());
 		map.put("version", pd.getVersion());
 		map.put("category", pd.getCategory());
 		map.put("deploymentId", pd.getDeploymentId());
-		map.put("name", pd.getName());
 		map.put("description", pd.getDescription());
 		map.put("tenantId", pd.getTenantId());
 		map.put("isSuspended", pd.isSuspended());

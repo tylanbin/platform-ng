@@ -19,8 +19,10 @@
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
 				<property name="supportedMediaTypes">
 					<list>
-						<value>text/plain;charset=UTF-8</value>
 						<value>text/html;charset=UTF-8</value>
+						<value>text/plain;charset=UTF-8</value>
+						<!-- 最后这条是为了处理Activiti设计器json的乱码问题 -->
+						<value>text/javascript;charset=UTF-8</value>
 					</list>
 				</property>
 			</bean>
