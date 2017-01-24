@@ -1,10 +1,10 @@
-/**
- * jQuery EasyUI 1.4.2
+﻿/**
+ * jQuery EasyUI 1.4.5
  * 
- * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2016 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
- * To use it on other terms please contact us at info@jeasyui.com
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
  *
  */
 (function($){
@@ -45,98 +45,100 @@ if(_8.buttonText||_8.buttonIcon){
 var _9=$("<a href=\"javascript:void(0)\" class=\"textbox-button\"></a>").prependTo(tb);
 _9.addClass("textbox-button-"+_8.buttonAlign).linkbutton({text:_8.buttonText,iconCls:_8.buttonIcon});
 }
-_a(_6,_8.disabled);
-_b(_6,_8.readonly);
+_a(_6);
+_b(_6,_8.disabled);
+_c(_6,_8.readonly);
 };
-function _c(_d){
-var tb=$.data(_d,"textbox").textbox;
+function _d(_e){
+var tb=$.data(_e,"textbox").textbox;
 tb.find(".textbox-text").validatebox("destroy");
 tb.remove();
-$(_d).remove();
+$(_e).remove();
 };
-function _e(_f,_10){
-var _11=$.data(_f,"textbox");
-var _12=_11.options;
-var tb=_11.textbox;
-var _13=tb.parent();
-if(_10){
-_12.width=_10;
+function _f(_10,_11){
+var _12=$.data(_10,"textbox");
+var _13=_12.options;
+var tb=_12.textbox;
+var _14=tb.parent();
+if(_11){
+_13.width=_11;
 }
-if(isNaN(parseInt(_12.width))){
-var c=$(_f).clone();
+if(isNaN(parseInt(_13.width))){
+var c=$(_10).clone();
 c.css("visibility","hidden");
-c.insertAfter(_f);
-_12.width=c.outerWidth();
+c.insertAfter(_10);
+_13.width=c.outerWidth();
 c.remove();
 }
-var _14=tb.is(":visible");
-if(!_14){
+var _15=tb.is(":visible");
+if(!_15){
 tb.appendTo("body");
 }
-var _15=tb.find(".textbox-text");
+var _16=tb.find(".textbox-text");
 var btn=tb.find(".textbox-button");
-var _16=tb.find(".textbox-addon");
-var _17=_16.find(".textbox-icon");
-tb._size(_12,_13);
+var _17=tb.find(".textbox-addon");
+var _18=_17.find(".textbox-icon");
+tb._size(_13,_14);
 btn.linkbutton("resize",{height:tb.height()});
-btn.css({left:(_12.buttonAlign=="left"?0:""),right:(_12.buttonAlign=="right"?0:"")});
-_16.css({left:(_12.iconAlign=="left"?(_12.buttonAlign=="left"?btn._outerWidth():0):""),right:(_12.iconAlign=="right"?(_12.buttonAlign=="right"?btn._outerWidth():0):"")});
-_17.css({width:_12.iconWidth+"px",height:tb.height()+"px"});
-_15.css({paddingLeft:(_f.style.paddingLeft||""),paddingRight:(_f.style.paddingRight||""),marginLeft:_18("left"),marginRight:_18("right")});
-if(_12.multiline){
-_15.css({paddingTop:(_f.style.paddingTop||""),paddingBottom:(_f.style.paddingBottom||"")});
-_15._outerHeight(tb.height());
+btn.css({left:(_13.buttonAlign=="left"?0:""),right:(_13.buttonAlign=="right"?0:"")});
+_17.css({left:(_13.iconAlign=="left"?(_13.buttonAlign=="left"?btn._outerWidth():0):""),right:(_13.iconAlign=="right"?(_13.buttonAlign=="right"?btn._outerWidth():0):"")});
+_18.css({width:_13.iconWidth+"px",height:tb.height()+"px"});
+_16.css({paddingLeft:(_10.style.paddingLeft||""),paddingRight:(_10.style.paddingRight||""),marginLeft:_19("left"),marginRight:_19("right")});
+if(_13.multiline){
+_16.css({paddingTop:(_10.style.paddingTop||""),paddingBottom:(_10.style.paddingBottom||"")});
+_16._outerHeight(tb.height());
 }else{
-var _19=Math.floor((tb.height()-_15.height())/2);
-_15.css({paddingTop:_19+"px",paddingBottom:_19+"px"});
+_16.css({paddingTop:0,paddingBottom:0,height:tb.height()+"px",lineHeight:tb.height()+"px"});
 }
-_15._outerWidth(tb.width()-_17.length*_12.iconWidth-btn._outerWidth());
-if(!_14){
-tb.insertAfter(_f);
+_16._outerWidth(tb.width()-_18.length*_13.iconWidth-btn._outerWidth());
+if(!_15){
+tb.insertAfter(_10);
 }
-_12.onResize.call(_f,_12.width,_12.height);
-function _18(_1a){
-return (_12.iconAlign==_1a?_16._outerWidth():0)+(_12.buttonAlign==_1a?btn._outerWidth():0);
+_13.onResize.call(_10,_13.width,_13.height);
+function _19(_1a){
+return (_13.iconAlign==_1a?_17._outerWidth():0)+(_13.buttonAlign==_1a?btn._outerWidth():0);
 };
 };
-function _1b(_1c){
-var _1d=$(_1c).textbox("options");
-var _1e=$(_1c).textbox("textbox");
-_1e.validatebox($.extend({},_1d,{deltaX:$(_1c).textbox("getTipX"),onBeforeValidate:function(){
+function _a(_1b){
+var _1c=$(_1b).textbox("options");
+var _1d=$(_1b).textbox("textbox");
+_1d.validatebox($.extend({},_1c,{deltaX:$(_1b).textbox("getTipX"),onBeforeValidate:function(){
+_1c.onBeforeValidate.call(_1b);
 var box=$(this);
 if(!box.is(":focus")){
-_1d.oldInputValue=box.val();
-box.val(_1d.value);
+_1c.oldInputValue=box.val();
+box.val(_1c.value);
 }
-},onValidate:function(_1f){
+},onValidate:function(_1e){
 var box=$(this);
-if(_1d.oldInputValue!=undefined){
-box.val(_1d.oldInputValue);
-_1d.oldInputValue=undefined;
+if(_1c.oldInputValue!=undefined){
+box.val(_1c.oldInputValue);
+_1c.oldInputValue=undefined;
 }
 var tb=box.parent();
-if(_1f){
+if(_1e){
 tb.removeClass("textbox-invalid");
 }else{
 tb.addClass("textbox-invalid");
 }
+_1c.onValidate.call(_1b,_1e);
 }}));
 };
-function _20(_21){
-var _22=$.data(_21,"textbox");
-var _23=_22.options;
-var tb=_22.textbox;
-var _24=tb.find(".textbox-text");
-_24.attr("placeholder",_23.prompt);
-_24.unbind(".textbox");
-if(!_23.disabled&&!_23.readonly){
-_24.bind("blur.textbox",function(e){
+function _1f(_20){
+var _21=$.data(_20,"textbox");
+var _22=_21.options;
+var tb=_21.textbox;
+var _23=tb.find(".textbox-text");
+_23.attr("placeholder",_22.prompt);
+_23.unbind(".textbox");
+if(!_22.disabled&&!_22.readonly){
+_23.bind("blur.textbox",function(e){
 if(!tb.hasClass("textbox-focused")){
 return;
 }
-_23.value=$(this).val();
-if(_23.value==""){
-$(this).val(_23.prompt).addClass("textbox-prompt");
+_22.value=$(this).val();
+if(_22.value==""){
+$(this).val(_22.prompt).addClass("textbox-prompt");
 }else{
 $(this).removeClass("textbox-prompt");
 }
@@ -145,77 +147,76 @@ tb.removeClass("textbox-focused");
 if(tb.hasClass("textbox-focused")){
 return;
 }
-if($(this).val()!=_23.value){
-$(this).val(_23.value);
+if($(this).val()!=_22.value){
+$(this).val(_22.value);
 }
 $(this).removeClass("textbox-prompt");
 tb.addClass("textbox-focused");
 });
-for(var _25 in _23.inputEvents){
-_24.bind(_25+".textbox",{target:_21},_23.inputEvents[_25]);
+for(var _24 in _22.inputEvents){
+_23.bind(_24+".textbox",{target:_20},_22.inputEvents[_24]);
 }
 }
-var _26=tb.find(".textbox-addon");
-_26.unbind().bind("click",{target:_21},function(e){
-var _27=$(e.target).closest("a.textbox-icon:not(.textbox-icon-disabled)");
-if(_27.length){
-var _28=parseInt(_27.attr("icon-index"));
-var _29=_23.icons[_28];
-if(_29&&_29.handler){
-_29.handler.call(_27[0],e);
-_23.onClickIcon.call(_21,_28);
+var _25=tb.find(".textbox-addon");
+_25.unbind().bind("click",{target:_20},function(e){
+var _26=$(e.target).closest("a.textbox-icon:not(.textbox-icon-disabled)");
+if(_26.length){
+var _27=parseInt(_26.attr("icon-index"));
+var _28=_22.icons[_27];
+if(_28&&_28.handler){
+_28.handler.call(_26[0],e);
+_22.onClickIcon.call(_20,_27);
 }
 }
 });
-_26.find(".textbox-icon").each(function(_2a){
-var _2b=_23.icons[_2a];
-var _2c=$(this);
-if(!_2b||_2b.disabled||_23.disabled||_23.readonly){
-_2c.addClass("textbox-icon-disabled");
+_25.find(".textbox-icon").each(function(_29){
+var _2a=_22.icons[_29];
+var _2b=$(this);
+if(!_2a||_2a.disabled||_22.disabled||_22.readonly){
+_2b.addClass("textbox-icon-disabled");
 }else{
-_2c.removeClass("textbox-icon-disabled");
+_2b.removeClass("textbox-icon-disabled");
 }
 });
 var btn=tb.find(".textbox-button");
 btn.unbind(".textbox").bind("click.textbox",function(){
 if(!btn.linkbutton("options").disabled){
-_23.onClickButton.call(_21);
+_22.onClickButton.call(_20);
 }
 });
-btn.linkbutton((_23.disabled||_23.readonly)?"disable":"enable");
-tb.unbind(".textbox").bind("_resize.textbox",function(e,_2d){
-if($(this).hasClass("easyui-fluid")||_2d){
-_e(_21);
+btn.linkbutton((_22.disabled||_22.readonly)?"disable":"enable");
+tb.unbind(".textbox").bind("_resize.textbox",function(e,_2c){
+if($(this).hasClass("easyui-fluid")||_2c){
+_f(_20);
 }
 return false;
 });
 };
-function _a(_2e,_2f){
-var _30=$.data(_2e,"textbox");
-var _31=_30.options;
-var tb=_30.textbox;
-if(_2f){
-_31.disabled=true;
-$(_2e).attr("disabled","disabled");
+function _b(_2d,_2e){
+var _2f=$.data(_2d,"textbox");
+var _30=_2f.options;
+var tb=_2f.textbox;
+var _31=tb.find(".textbox-text");
+var ss=$(_2d).add(tb.find(".textbox-value"));
+_30.disabled=_2e;
+if(_30.disabled){
+_31.validatebox("disable");
 tb.addClass("textbox-disabled");
-tb.find(".textbox-text,.textbox-value").attr("disabled","disabled");
+ss.attr("disabled","disabled");
 }else{
-_31.disabled=false;
+_31.validatebox("enable");
 tb.removeClass("textbox-disabled");
-$(_2e).removeAttr("disabled");
-tb.find(".textbox-text,.textbox-value").removeAttr("disabled");
+ss.removeAttr("disabled");
 }
 };
-function _b(_32,_33){
+function _c(_32,_33){
 var _34=$.data(_32,"textbox");
 var _35=_34.options;
-_35.readonly=_33==undefined?true:_33;
-_34.textbox.removeClass("textbox-readonly").addClass(_35.readonly?"textbox-readonly":"");
-var _36=_34.textbox.find(".textbox-text");
-_36.removeAttr("readonly");
-if(_35.readonly||!_35.editable){
-_36.attr("readonly","readonly");
-}
+var tb=_34.textbox;
+var _36=tb.find(".textbox-text");
+_36.validatebox("readonly",_33);
+_35.readonly=_36.validatebox("options").readonly;
+tb.removeClass("textbox-readonly").addClass(_35.readonly?"textbox-readonly":"");
 };
 $.fn.textbox=function(_37,_38){
 if(typeof _37=="string"){
@@ -242,9 +243,8 @@ _3b=$.data(this,"textbox",{options:$.extend({},$.fn.textbox.defaults,$.fn.textbo
 _3b.options.originalValue=_3b.options.value;
 }
 _5(this);
-_20(this);
-_e(this);
-_1b(this);
+_1f(this);
+_f(this);
 $(this).textbox("initValue",_3b.options.value);
 });
 };
@@ -269,8 +269,8 @@ var _3f=$(_3c).textbox("button");
 if(_3f.length){
 t.textbox("button").linkbutton($.extend(true,{},_3f.linkbutton("options")));
 }
-_20(this);
-_1b(this);
+_1f(this);
+_a(this);
 });
 },textbox:function(jq){
 return $.data(jq[0],"textbox").textbox.find(".textbox-text");
@@ -278,26 +278,26 @@ return $.data(jq[0],"textbox").textbox.find(".textbox-text");
 return $.data(jq[0],"textbox").textbox.find(".textbox-button");
 },destroy:function(jq){
 return jq.each(function(){
-_c(this);
+_d(this);
 });
 },resize:function(jq,_40){
 return jq.each(function(){
-_e(this,_40);
+_f(this,_40);
 });
 },disable:function(jq){
 return jq.each(function(){
-_a(this,true);
-_20(this);
+_b(this,true);
+_1f(this);
 });
 },enable:function(jq){
 return jq.each(function(){
-_a(this,false);
-_20(this);
+_b(this,false);
+_1f(this);
 });
 },readonly:function(jq,_41){
 return jq.each(function(){
-_b(this,_41);
-_20(this);
+_c(this,_41);
+_1f(this);
 });
 },isValid:function(jq){
 return jq.textbox("textbox").validatebox("isValid");
@@ -309,10 +309,11 @@ $(this).textbox("setValue","");
 return jq.each(function(){
 var _43=$(this).textbox("options");
 var _44=$(this).textbox("textbox");
+_42=_42==undefined?"":String(_42);
 if($(this).textbox("getText")!=_42){
-_43.value=_42;
 _44.val(_42);
 }
+_43.value=_42;
 if(!_44.is(":focus")){
 if(_42){
 _44.removeClass("textbox-prompt");
@@ -375,9 +376,9 @@ return _50/2*(_4e.iconAlign=="right"?1:-1);
 }};
 $.fn.textbox.parseOptions=function(_52){
 var t=$(_52);
-return $.extend({},$.fn.validatebox.parseOptions(_52),$.parser.parseOptions(_52,["prompt","iconCls","iconAlign","buttonText","buttonIcon","buttonAlign",{multiline:"boolean",editable:"boolean",iconWidth:"number"}]),{value:(t.val()||undefined),type:(t.attr("type")?t.attr("type"):undefined),disabled:(t.attr("disabled")?true:undefined),readonly:(t.attr("readonly")?true:undefined)});
+return $.extend({},$.fn.validatebox.parseOptions(_52),$.parser.parseOptions(_52,["prompt","iconCls","iconAlign","buttonText","buttonIcon","buttonAlign",{multiline:"boolean",iconWidth:"number"}]),{value:(t.val()||undefined),type:(t.attr("type")?t.attr("type"):undefined)});
 };
-$.fn.textbox.defaults=$.extend({},$.fn.validatebox.defaults,{width:"auto",height:22,prompt:"",value:"",type:"text",multiline:false,editable:true,disabled:false,readonly:false,icons:[],iconCls:null,iconAlign:"right",iconWidth:18,buttonText:"",buttonIcon:null,buttonAlign:"right",inputEvents:{blur:function(e){
+$.fn.textbox.defaults=$.extend({},$.fn.validatebox.defaults,{width:"auto",height:22,prompt:"",value:"",type:"text",multiline:false,icons:[],iconCls:null,iconAlign:"right",iconWidth:18,buttonText:"",buttonIcon:null,buttonAlign:"right",inputEvents:{blur:function(e){
 var t=$(e.data.target);
 var _53=t.textbox("options");
 t.textbox("setValue",_53.value);

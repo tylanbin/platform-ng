@@ -1,10 +1,10 @@
-/**
- * jQuery EasyUI 1.4.2
+﻿/**
+ * jQuery EasyUI 1.4.5
  * 
- * Copyright (c) 2009-2015 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2016 www.jeasyui.com. All rights reserved.
  *
- * Licensed under the GPL license: http://www.gnu.org/licenses/gpl.txt
- * To use it on other terms please contact us at info@jeasyui.com
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
  *
  */
 (function($){
@@ -19,7 +19,7 @@ var _4=$.data(this,"navpanel");
 if(_4){
 $.extend(_4.options,_1);
 }else{
-_4=$.data(this,"navpanel",{options:$.extend({},$.fn.navpanel.defaults,$.fn.navpanel.parseOptions(this,_1))});
+_4=$.data(this,"navpanel",{options:$.extend({},$.fn.navpanel.defaults,$.fn.navpanel.parseOptions(this),_1)});
 }
 $(this).panel(_4.options);
 });
