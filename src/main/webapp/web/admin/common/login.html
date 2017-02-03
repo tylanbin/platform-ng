@@ -19,6 +19,9 @@
 <!-- page scripts -->
 <script type="text/javascript">
 	$(function() {
+		if (top.location !== self.location) {
+			top.location = self.location;
+		}
 		window.onresize = function() {
 			$('#dlg').dialog('center');
 		}
