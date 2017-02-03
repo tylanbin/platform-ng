@@ -74,6 +74,61 @@ function search(value, name) {
 	});
 }
 
+function func_del() {
+	var rows = $('#dg-list').datagrid('getSelections');
+	if (rows.length > 0) {
+		$.messager.confirm('提示', '确定删除已选择的条目？', function(r) {
+			if (r) {
+				var ids = new Array();
+				$.each(rows, function(i, row) {
+					ids.push(row.deploymentId);
+				});
+				$.ajax({
+					type : 'delete',
+					url : 'admin/process/def/batch?ids=' + ids,
+					dataType : 'json',
+					async : true,
+					success : function(data) {
+						if (data.success) {
+							$('#dg-list').datagrid('reload');
+							$('#dg-list').datagrid('clearSelections');
+						} else {
+							// 出错也需要重载
+							$('#dg-list').datagrid('reload');
+							$('#dg-list').datagrid('clearSelections');
+							$.messager.show({
+								title : '错误',
+								msg : data.msg,
+								showType : 'fade',
+								style : {
+									right : '',
+									bottom : ''
+								}
+							});
+						}
+					},
+					error : function() {
+						// 出错也需要重载
+						$('#dg-list').datagrid('reload');
+						$('#dg-list').datagrid('clearSelections');
+						$.messager.show({
+							title : '错误',
+							msg : '服务器正忙，请稍后再试！',
+							showType : 'fade',
+							style : {
+								right : '',
+								bottom : ''
+							}
+						});
+					}
+				});
+			}
+		});
+	} else {
+		$.messager.alert('提示', '请选择要删除的条目！', 'info');
+	}
+}
+
 function func_reload() {
 	$('#searchbox').searchbox('setValue', '');
 	$('#dg-list').datagrid('clearSelections');

@@ -82,6 +82,10 @@ public class ModelController {
 		}
 	}
 	
+	/**
+	 * 部署流程模型为流程定义
+	 * @param id 流程模型id
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/{id}/deploy", method = RequestMethod.POST)
 	public String deploy(@PathVariable String id, HttpServletResponse response) {

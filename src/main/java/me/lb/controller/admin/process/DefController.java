@@ -32,6 +32,31 @@ public class DefController {
 	@Autowired
 	private RepositoryService repositoryService;
 
+	/**
+	 * 批量删除流程部署
+	 * @param ids deploymentId的集合
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/batch", method = RequestMethod.DELETE)
+	public String batch_delete(String ids) {
+		try {
+			String[] temp = ids.split(",");
+			for (String id : temp) {
+				// 删除流程的部署和定义，并删除流程实例
+				repositoryService.deleteDeployment(id, true);
+			}
+			return "{ \"success\" : true }";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"msg\" : \"操作失败！\" }";
+		}
+	}
+	
+	/**
+	 * 挂起/激活流程定义
+	 * @param pdId 流程定义id
+	 * @param type 操作类型：active/suspend
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/{pdId}/state/{type}", method = RequestMethod.PUT)
 	public String state(@PathVariable String pdId, @PathVariable String type) {
@@ -47,6 +72,11 @@ public class DefController {
 		}
 	}
 	
+	/**
+	 * 获取流程定义的资源文件
+	 * @param pdId 流程定义id
+	 * @param type 资源文件类型：xml/img
+	 */
 	@RequestMapping(value = "/{pdId}/resource/{type}", method = RequestMethod.GET)
 	public void resource(@PathVariable String pdId, @PathVariable String type, HttpServletResponse response) {
 		try {
@@ -81,7 +111,7 @@ public class DefController {
 			if (!StringUtils.isEmpty(params)) {
 				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 			}
-			// 分类别查询数据
+			// 分类别查询数据（这里只显示最新版本，去掉latestVersion显示全部）
 			ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().latestVersion();
 			if ("all".equals(type)) {
 				// 查询全部流程定义
