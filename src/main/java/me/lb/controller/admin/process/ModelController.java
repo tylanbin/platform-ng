@@ -110,18 +110,29 @@ public class ModelController {
 	}
 	
 	/**
-	 * 获取流程模型的源Json数据
+	 * 获取流程模型的Json/XML
 	 * @param id 流程模型id
 	 */
-	@RequestMapping(value = "/{id}/json", method = RequestMethod.GET)
-	public void getJson(@PathVariable String id, HttpServletResponse response) {
+	@RequestMapping(value = "/{id}/resource/{type}", method = RequestMethod.GET)
+	public void getJson(@PathVariable String id, String type, HttpServletResponse response) {
 		try {
 			Model model = repositoryService.getModel(id);
             byte[] editorSource = repositoryService.getModelEditorSource(id);
-            IOUtils.write(editorSource, response.getWriter(), "utf-8");
-            // 设置响应的信息
-            String filename = new String((model.getName() + ".json").getBytes(), "iso-8859-1");
-            response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+            if ("json".equals(type)) {
+                IOUtils.write(editorSource, response.getWriter(), "utf-8");
+                // 设置响应的信息
+                String filename = new String((model.getName() + ".json").getBytes(), "iso-8859-1");
+                response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+			} else {
+				// 流程模型Json -> 流程模型 -> XML
+	            JsonNode jsonNode = new ObjectMapper().readTree(editorSource);
+	            BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(jsonNode);
+	            byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(bpmnModel);
+	            IOUtils.write(bpmnBytes, response.getWriter(), "utf-8");
+	            // 设置响应的信息
+	            String filename = new String((model.getName() + ".bpmn20.xml").getBytes(), "iso-8859-1");
+	            response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+			}
             response.flushBuffer();
 		} catch (Exception e) {
 			e.printStackTrace();

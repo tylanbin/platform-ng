@@ -123,6 +123,9 @@
 .icon-page{
 	background:url('icons_ext/page/page_go.png') no-repeat center center;
 }
+.icon-text{
+	background:url('icons_ext/page/page_white_text.png') no-repeat center center;
+}
 .icon-code{
 	background:url('icons_ext/page/page_white_code.png') no-repeat center center;
 }

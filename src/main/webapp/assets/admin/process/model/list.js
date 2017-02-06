@@ -153,12 +153,12 @@ function func_reload() {
 	$('#dg-list').datagrid('reload', {});
 }
 
-function func_getJson() {
+function func_resource(type) {
 	var rows = $('#dg-list').datagrid('getSelections');
 	if (rows.length == 0) {
 		$.messager.alert('提示', '请选择要导出的条目！', 'info');
 	} else if (rows.length == 1) {
-		window.location.href = AppCore.baseUrl + 'admin/process/model/' + rows[0].id + '/json';
+		window.location.href = AppCore.baseUrl + 'admin/process/model/' + rows[0].id + '/resource/' + type;
 	} else {
 		$.messager.alert('提示', '导出时只可以选择一个！', 'info');
 	}
