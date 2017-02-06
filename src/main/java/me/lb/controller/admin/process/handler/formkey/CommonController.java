@@ -1,4 +1,4 @@
-package me.lb.controller.admin.process.handler;
+package me.lb.controller.admin.process.handler.formkey;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping(value = "/admin/process/formkey")
-public class FormkeyController {
+public class CommonController {
 	
 	@Autowired
 	private FormService formService;
