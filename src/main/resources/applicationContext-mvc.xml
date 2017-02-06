@@ -41,6 +41,9 @@
 		<property name="prefix" value="/WEB-INF/jsp/"></property>
 		<property name="suffix" value=".jsp"></property>
 	</bean> -->
+	
+	<!-- 支持上传文件 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 
 	<!-- 异常处理 -->
 	<bean id="exceptionHandler" class="me.lb.support.spring.handler.ExceptionHandler" />

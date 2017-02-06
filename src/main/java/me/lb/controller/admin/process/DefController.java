@@ -5,14 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
 import me.lb.support.system.SystemContext;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +35,32 @@ public class DefController {
 	
 	@Autowired
 	private RepositoryService repositoryService;
+	
+	/**
+	 * 通过zip文件部署流程
+	 * @param name 流程名称
+	 * @param file 上传的zip文件
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deploy", method = RequestMethod.POST)
+	public String deploy(MultipartFile file) {
+		try {
+			String fileName = file.getOriginalFilename();
+			if ("zip".equals(FilenameUtils.getExtension(fileName))) {
+				ZipInputStream zip = new ZipInputStream(file.getInputStream());
+				Deployment d = repositoryService.createDeployment().name(fileName).addZipInputStream(zip).deploy();
+				// 查询部署信息
+	            ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().deploymentId(d.getId()).singleResult();
+	            return "{ \"success\" : true, \"processDefinitionId\" : \"" + pd.getId() + "\" }";
+			} else {
+				// 只允许部署zip类型的文件
+				return "{ \"msg\" : \"部署失败，只允许使用zip文件格式！\" }";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"msg\" : \"上传失败！\" }";
+		}
+	}
 
 	/**
 	 * 批量删除流程部署

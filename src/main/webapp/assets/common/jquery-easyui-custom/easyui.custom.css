@@ -10,3 +10,7 @@
 .tree-node {
 	padding: 2px 0;
 }
+
+input[type="file"] {
+	font-size: 12px;
+}

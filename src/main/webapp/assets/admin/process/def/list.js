@@ -74,6 +74,49 @@ function search(value, name) {
 	});
 }
 
+function dlg_deploy() {
+	$('#fm-deploy').form('clear');
+	$('#dlg-deploy').dialog('open');
+}
+function func_deploy() {
+	$('body').mask('操作中...');// 避免文件过大导致等待中重复提交
+	$('#fm-deploy').form('submit', {
+		url : AppCore.baseUrl + 'admin/process/def/deploy',
+		onSubmit : function(param) {
+			if ($(this).form('validate')) {
+				// 额外需要验证文件是否上传
+				if ($('#fm-deploy [name="file"]').val() != '') {
+					return true;
+				} else {
+					$.messager.alert('提示', '请选择部署的ZIP文件！', 'info');
+					return false;
+				}
+			} else {
+				return false;
+			}
+		},
+		success : function(data) {
+			$('body').unmask();
+			var data = eval('(' + data + ')');
+			if (data.success) {
+				$('#dg-list').datagrid('reload');
+				$('#dg-list').datagrid('clearSelections');
+				$('#dlg-deploy').dialog('close');
+			} else {
+				$.messager.show({
+					title : '错误',
+					msg : data.msg,
+					showType : 'fade',
+					style : {
+						right : '',
+						bottom : ''
+					}
+				});
+			}
+		}
+	});
+}
+
 function func_del() {
 	var rows = $('#dg-list').datagrid('getSelections');
 	if (rows.length > 0) {
@@ -163,8 +206,8 @@ function func_state() {
 				success : function(data) {
 					if (data.success) {
 						$('#dg-list').datagrid('reload');
-						$('#dg-list').datagrid('clearSelections');
-						/*$.messager.show({
+						/*$('#dg-list').datagrid('clearSelections');
+						$.messager.show({
 							title : title,
 							msg : msg,
 							showType : 'fade',
