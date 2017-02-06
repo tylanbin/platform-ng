@@ -15,7 +15,6 @@ import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,35 +39,35 @@ public class FormkeyController {
 	private IdentityService identityService;
 
 	/**
-	 * 获取开始节点设置的formkey
+	 * 获取开始节点设置的form
 	 * @param pdId 流程定义id
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/form/start", method = RequestMethod.GET)
-	public String getStartFormKey(String pdId) {
+	public Object getStartFormKey(String pdId) {
 		try {
-			String formkey = formService.getStartFormKey(pdId);
-			return "{ \"success\" : true, \"formkey\" : \"" + formkey + "\" }";
+			// 在部署流程时，将设计的表单一同压缩在zip中进行部署，这里就可以直接获取表单内容了
+			Object form = formService.getRenderedStartForm(pdId);
+			return form;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "{ \"msg\" : \"操作失败！\" }";
+			return "";
 		}
 	}
 	
 	/**
-	 * 获取任务节点设置的formkey
+	 * 获取任务节点设置的form
 	 * @param taskId 流程实例的任务节点id（实例id）
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/form/task", method = RequestMethod.GET)
-	public String getTaskFormKey(String taskId) {
+	public Object getTaskFormKey(String taskId) {
 		try {
-			Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-			String formkey = formService.getTaskFormKey(task.getProcessDefinitionId(), task.getTaskDefinitionKey());
-			return "{ \"success\" : true, \"formkey\" : \"" + formkey + "\" }";
+			Object form = formService.getRenderedTaskForm(taskId);
+			return form;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "{ \"msg\" : \"操作失败！\" }";
+			return "";
 		}
 	}
 	
