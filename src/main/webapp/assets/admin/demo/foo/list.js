@@ -106,7 +106,7 @@ function dlg_add() {
 					"title" : "日期时间",
 					"width" : 80,
 					"editor" : {
-						"type" : "validatebox",
+						"type" : "textbox",
 						"options" : {
 							"required" : true
 						}
@@ -116,7 +116,7 @@ function dlg_add() {
 					"title" : "日期",
 					"width" : 80,
 					"editor" : {
-						"type" : "validatebox",
+						"type" : "textbox",
 						"options" : {
 							"required" : true
 						}
@@ -126,7 +126,7 @@ function dlg_add() {
 					"title" : "文本",
 					"width" : 80,
 					"editor" : {
-						"type" : "validatebox",
+						"type" : "textbox",
 						"options" : {
 							"required" : true
 						}
@@ -136,7 +136,7 @@ function dlg_add() {
 					"title" : "整型",
 					"width" : 80,
 					"editor" : {
-						"type" : "validatebox",
+						"type" : "textbox",
 						"options" : {
 							"required" : true
 						}
@@ -146,7 +146,7 @@ function dlg_add() {
 					"title" : "小数",
 					"width" : 80,
 					"editor" : {
-						"type" : "validatebox",
+						"type" : "textbox",
 						"options" : {
 							"required" : true
 						}
@@ -156,7 +156,7 @@ function dlg_add() {
 					"title" : "字符串",
 					"width" : 80,
 					"editor" : {
-						"type" : "validatebox",
+						"type" : "textbox",
 						"options" : {
 							"required" : true
 						}

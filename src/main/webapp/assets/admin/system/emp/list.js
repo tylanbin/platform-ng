@@ -162,7 +162,7 @@ function dlg_add() {
 						width : 80,
 						title : '姓名',
 						editor : {
-							type : 'validatebox',
+							type : 'textbox',
 							options : {
 								required : true,
 								validType : ['length[0, 10]']

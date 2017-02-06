@@ -120,7 +120,7 @@ function dlg_add() {
 					width : 80,
 					title : '权限名称',
 					editor : {
-						type : 'validatebox',
+						type : 'textbox',
 						options : {
 							required : true,
 							validType : ['length[0, 10]']
@@ -131,7 +131,7 @@ function dlg_add() {
 					width : 100,
 					title : '权限标识',
 					editor : {
-						type : 'validatebox',
+						type : 'textbox',
 						options : {
 							required : true,
 							validType : ['length[0, 10]']
@@ -142,7 +142,7 @@ function dlg_add() {
 					width : 150,
 					title : '链接地址',
 					editor : {
-						type : 'validatebox',
+						type : 'textbox',
 						options : {
 							validType : ['length[0, 100]']
 						}

@@ -117,7 +117,7 @@ function dlg_user() {
 						width : 80,
 						title : '用户名',
 						editor : {
-							type : 'validatebox',
+							type : 'textbox',
 							options : {
 								required : true,
 								validType : ['loginName']
@@ -128,7 +128,7 @@ function dlg_user() {
 						width : 80,
 						title : '密码',
 						editor : {
-							type : 'validatebox',
+							type : 'textbox',
 							options : {
 								required : true,
 								validType : ['loginPass']

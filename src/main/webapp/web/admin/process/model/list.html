@@ -54,11 +54,11 @@
 					<table style="border-width:0;" align="center">
 						<tr>
 							<td style="text-align: right;">KEY：</td>
-							<td style="text-align: left;"><input type="text" name="key" class="easyui-validatebox" data-options="required:true" /></td>
+							<td style="text-align: left;"><input type="text" name="key" class="easyui-textbox" data-options="required:true" /></td>
 						</tr>
 						<tr>
 							<td style="text-align: right;">名称：</td>
-							<td style="text-align: left;"><input type="text" name="name" class="easyui-validatebox" data-options="required:true" /></td>
+							<td style="text-align: left;"><input type="text" name="name" class="easyui-textbox" data-options="required:true" /></td>
 						</tr>
 						<tr>
 							<td style="text-align: right;">描述：</td>
@@ -71,33 +71,6 @@
 		<div id="dlg-btn-add">
 			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_add()">确定</a>
 			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-add').dialog('close');">取消</a>
-		</div>
-	</div>
-	<!-- 修改 -->
-	<div id="dlg-edit" class="easyui-dialog" style="width:320px;padding:20px 30px;top:30px"
-		data-options="title:'修改',closed:true,buttons:'#dlg-btn-edit'">
-		<form id="fm-edit" method="post">
-			<input type="hidden" id="id-edit" />
-			<div style="text-align: center;">
-				<table style="border-width:0;" align="center">
-					<!-- 这里使用反射解析属性，并生成HTML进行替换 -->
-					<!-- <tr>
-						<td style="text-align: right;">chsName：</td>
-						<td><input type="text" name="fieldName" class="easyui-validatebox" data-options="required:true" /></td>
-					</tr> -->
-					<!-- 控件类型需要进行后期修改 -->
-					<tr><td style="text-align: right;">日期时间：</td><td><input type="text" name="col5" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">日期：</td><td><input type="text" name="col4" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">文本：</td><td><input type="text" name="col6" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">整型：</td><td><input type="text" name="col1" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">小数：</td><td><input type="text" name="col3" class="easyui-validatebox" data-options="required:true" /></td></tr>
-					<tr><td style="text-align: right;">字符串：</td><td><input type="text" name="col2" class="easyui-validatebox" data-options="required:true" /></td></tr>
-				</table>
-			</div>
-		</form>
-		<div id="dlg-btn-edit">
-			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_edit()">确定</a>
-			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-edit').dialog('close');">取消</a>
 		</div>
 	</div>
 </body>

@@ -232,7 +232,7 @@ public class InitCode {
 		String tp_search = "\t\t\t\t\t<div data-options=\"name:'{fname}'\">{cname}</div>\n";
 		String tp_edit = "\t\t\t\t\t<tr><td style=\"text-align: right;\">{cname}：</td>"
 				+ "<td><input type=\"text\" name=\"{fname}\" "
-				+ "class=\"easyui-validatebox\" data-options=\"required:true\" /></td></tr>\n";
+				+ "class=\"easyui-textbox\" data-options=\"required:true\" /></td></tr>\n";
 		StringBuffer html_search = new StringBuffer();
 		StringBuffer html_edit = new StringBuffer();
 		Iterator<Map.Entry<String, String>> it = fields.entrySet().iterator();
@@ -295,7 +295,7 @@ public class InitCode {
 			ObjectNode add_editor = om.createObjectNode();
 			ObjectNode add_editor_options = om.createObjectNode();
 			add_editor_options.put("required", true);
-			add_editor.put("type", "validatebox");
+			add_editor.put("type", "textbox");
 			add_editor.put("options", add_editor_options);
 			obj_add.put("editor", add_editor);
 			arr_add.add(obj_add);

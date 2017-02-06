@@ -135,7 +135,7 @@ function dlg_add() {
 					width : 80,
 					title : '角色名称',
 					editor : {
-						type : 'validatebox',
+						type : 'textbox',
 						options : {
 							required : true,
 							validType : ['length[0, 10]']
@@ -146,7 +146,7 @@ function dlg_add() {
 					width : 150,
 					title : '角色描述',
 					editor : {
-						type : 'validatebox',
+						type : 'textbox',
 						options : {
 							validType : ['length[0, 100]']
 						}
