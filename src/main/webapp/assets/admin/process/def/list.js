@@ -79,21 +79,14 @@ function dlg_deploy() {
 	$('#dlg-deploy').dialog('open');
 }
 function func_deploy() {
-	$('body').mask('操作中...');// 避免文件过大导致等待中重复提交
 	$('#fm-deploy').form('submit', {
 		url : AppCore.baseUrl + 'admin/process/def/deploy',
 		onSubmit : function(param) {
 			if ($(this).form('validate')) {
-				// 额外需要验证文件是否上传
-				if ($('#fm-deploy [name="file"]').val() != '') {
-					return true;
-				} else {
-					$.messager.alert('提示', '请选择部署的ZIP文件！', 'info');
-					return false;
-				}
-			} else {
-				return false;
+				// 避免文件过大导致用户重复提交
+				$('body').mask('操作中...');
 			}
+			return $(this).form('validate');
 		},
 		success : function(data) {
 			$('body').unmask();
