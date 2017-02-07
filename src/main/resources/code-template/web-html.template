@@ -44,8 +44,9 @@
 				<!-- 搜索框 -->
 				<input id="searchbox" class="easyui-searchbox" data-options="width:200,searcher:search,prompt:'请输入查询内容',menu:'#searchMenu'">
 				<div id="searchMenu">
-					<!-- 这里使用反射解析属性，并生成HTML进行替换 -->
+					<!-- 这里使用反射解析属性，并生成HTML进行替换，模糊查询必须以Like结尾 -->
 					<!-- <div data-options="name:'fieldName'">chsName</div> -->
+					<!-- <div data-options="name:'fieldNameLike'">chsName</div> -->
 {SearchHtml}
 				</div>
 			</div>

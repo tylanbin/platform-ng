@@ -28,12 +28,9 @@ public class OrgDaoImpl extends GenericDaoImpl<Org, Integer> implements OrgDao {
 		Iterator<Map.Entry<String, Object>> it = params.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, Object> me = it.next();
-			// 需要额外处理模糊查询的参数
-			if ("name".equals(me.getKey()) || "serialNum".equals(me.getKey())
-					|| "workPlace".equals(me.getKey())
-					|| "leader".equals(me.getKey())
-					|| "contact".equals(me.getKey())) {
-				sb.append(" and o." + me.getKey() + " like ?");
+			// 特殊处理Like
+			if (me.getKey().endsWith("Like")) {
+				sb.append(" and o." + me.getKey().substring(0, me.getKey().length() - 4) + " like ?");
 				objs.add("%" + me.getValue() + "%");
 			} else if ("org.id".equals(me.getKey())) {
 				// 父对象id需要特殊处理非空

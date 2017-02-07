@@ -26,14 +26,14 @@ public class FooDaoImpl extends GenericDaoImpl<Foo, Integer> implements FooDao {
 		Iterator<Map.Entry<String, Object>> it = params.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, Object> me = it.next();
-			// 需要额外处理模糊查询的参数
-			// if ("orLogic".equals(me.getKey())) {
-			// sb.append(" or o." + me.getKey() + " like ?");
-			// objs.add("%" + me.getValue() + "%");
-			// } else {
-			sb.append(" and o." + me.getKey() + " = ?");
-			objs.add(me.getValue());
-			// }
+			// 特殊处理Like
+			if (me.getKey().endsWith("Like")) {
+				sb.append(" and o." + me.getKey().substring(0, me.getKey().length() - 4) + " like ?");
+				objs.add("%" + me.getValue() + "%");
+			} else {
+				sb.append(" and o." + me.getKey() + " = ?");
+				objs.add(me.getValue());
+			}
 		}
 		return getPagination(sb.toString(), objs);
 	}

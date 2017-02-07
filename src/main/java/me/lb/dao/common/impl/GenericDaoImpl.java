@@ -52,8 +52,14 @@ public abstract class GenericDaoImpl<T, PK extends Serializable> implements
 					.iterator();
 			while (it.hasNext()) {
 				Map.Entry<String, Object> me = it.next();
-				sb.append(" and o." + me.getKey() + " = ?");
-				objs.add(me.getValue());
+				// 特殊处理Like
+				if (me.getKey().endsWith("Like")) {
+					sb.append(" and o." + me.getKey().substring(0, me.getKey().length() - 4) + " like ?");
+					objs.add("%" + me.getValue() + "%");
+				} else {
+					sb.append(" and o." + me.getKey() + " = ?");
+					objs.add(me.getValue());
+				}
 			}
 			Query q = sessionFactory.getCurrentSession().createQuery(
 					sb.toString());
