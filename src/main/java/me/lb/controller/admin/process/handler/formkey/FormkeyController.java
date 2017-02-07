@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping(value = "/admin/process/formkey")
-public class CommonController {
+public class FormkeyController {
 	
 	@Autowired
 	private FormService formService;
