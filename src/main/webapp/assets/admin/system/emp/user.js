@@ -113,6 +113,9 @@ function dlg_user() {
 			url : 'admin/system/emp/' + empId + '/user/data',
 			method : 'get',
 			columns : [[{
+						field : 'id',
+						title : 'ID'
+					}, {
 						field : 'loginName',
 						width : 80,
 						title : '用户名',

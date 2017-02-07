@@ -1,28 +1,39 @@
 package me.lb.controller.admin.process.handler.formkey;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import me.lb.model.system.User;
+import me.lb.support.system.SystemContext;
+import me.lb.utils.ActivitiUtil;
 import me.lb.utils.UserUtil;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 外置表单（formkey）类型流程的处理
@@ -41,6 +52,8 @@ public class FormkeyController {
 	private RuntimeService runtimeService;
 	@Autowired
 	private IdentityService identityService;
+	@Autowired
+	private RepositoryService repositoryService;
 
 	/**
 	 * 获取开始节点设置的form
@@ -80,10 +93,43 @@ public class FormkeyController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/process/startList", method = RequestMethod.GET)
-	public String startList(HttpSession session) {
+	public String startList(String params, HttpSession session) {
 		try {
-			// TODO: 缺少可发起的流程定义的列表
-			return "{ \"total\" : 0, \"rows\" : [] }";
+			User user = UserUtil.getUserFromSession(session);
+			// 处理查询参数
+			ObjectMapper om = new ObjectMapper();
+			Map<String, Object> map = new HashMap<String, Object>();
+			if (!StringUtils.isEmpty(params)) {
+				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+			}
+			ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery()
+					.startableByUser(String.valueOf(user.getId())).latestVersion().active();
+			// 级联查询参数
+			if (map.containsKey("pdKeyLike")) {
+				query = query.processDefinitionKeyLike("%" + map.get("pdKey") + "%");
+			}
+			if (map.containsKey("pdNameLike")) {
+				query = query.processDefinitionNameLike("%" + map.get("pdName") + "%");
+			}
+			if (map.containsKey("pdCategoryLike")) {
+				query = query.processDefinitionCategoryLike("%" + map.get("pdCategory") + "%");
+			}
+			// 查询结果排序
+			query = query.orderByDeploymentId().desc();
+			// 查询结果（分页查询）
+			long total = query.count();
+			List<ProcessDefinition> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要使用值对象进行处理
+			List<Object> datas = new ArrayList<Object>();
+			for (ProcessDefinition pd : list) {
+				datas.add(ActivitiUtil.convertProcessDefinitionToMap(pd));
+			}
+			// 序列化查询结果为JSON
+			Map<String, Object> result = new HashMap<String, Object>();
+			result.put("total", total);
+			result.put("rows", datas);
+			// 不是自己的实体类，不需要进行输出过滤
+			return om.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

@@ -30,7 +30,7 @@
 						top : e.pageY
 					});
 				}
-			}
+			},
 		});
 		// 获取用户信息
 		$.ajax({
@@ -54,7 +54,6 @@
 	function tab_add(title, url) {
 		if ($('#tabs').tabs('exists', title)) {
 			$('#tabs').tabs('select', title);
-			$('#tabs').tabs('getSelected').panel('refresh');
 		} else {
 			var content = '<iframe scrolling="auto" frameborder="0" src="'
 					+ url + '" style="width:100%; height:100%;"></iframe>';
@@ -64,6 +63,12 @@
 				closable : true
 			});
 		}
+	}
+	function tab_refresh() {
+		var content = $('#tabs').tabs('getTab', menuOfTab).panel('options').content;
+		$('#tabs').tabs('getTab', menuOfTab).panel({
+			content : content
+		});
 	}
 	function tab_close() {
 		$('#tabs').tabs('close', menuOfTab);
@@ -153,7 +158,7 @@
 		</div>
 	</div>
 	<div id="menu" class="easyui-menu">
-		<div data-options="iconCls:'icon-reload'" onclick="alert('new')">刷新</div>
+		<div data-options="iconCls:'icon-reload'" onclick="tab_refresh()">刷新</div>
 		<div data-options="iconCls:'icon-cancel'" onclick="tab_close()">关闭</div>
 	</div>
 </body>

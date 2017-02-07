@@ -10,6 +10,7 @@ import java.util.zip.ZipInputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import me.lb.support.system.SystemContext;
+import me.lb.utils.ActivitiUtil;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -168,7 +169,7 @@ public class DefController {
 			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要使用值对象进行处理
 			List<Object> datas = new ArrayList<Object>();
 			for (ProcessDefinition pd : list) {
-				datas.add(convert(pd));
+				datas.add(ActivitiUtil.convertProcessDefinitionToMap(pd));
 			}
 			// 序列化查询结果为JSON
 			Map<String, Object> result = new HashMap<String, Object>();
@@ -180,28 +181,6 @@ public class DefController {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
 		}
-	}
-	
-	// 私有方法
-	
-	/**
-	 * 将流程定义转换为Map
-	 * @param pd Activiti的流程定义
-	 * @return 封装后的Map
-	 */
-	private Map<String, Object> convert(ProcessDefinition pd) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("id", pd.getId());
-		map.put("key", pd.getKey());
-		map.put("name", pd.getName());
-		map.put("version", pd.getVersion());
-		map.put("category", pd.getCategory());
-		map.put("deploymentId", pd.getDeploymentId());
-		map.put("description", pd.getDescription());
-		map.put("tenantId", pd.getTenantId());
-		map.put("isSuspended", pd.isSuspended());
-		map.put("hasStartFormKey", pd.hasStartFormKey());
-		return map;
 	}
 
 }

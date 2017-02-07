@@ -50,6 +50,9 @@ public class RoleController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
 	public String edit(@PathVariable int id, Role temp, Integer orgId) {
 		try {
+			if (!roleService.validate(temp.getName())) {
+				return "{ \"msg\" : \"" + temp.getName() + "与已有角色名冲突，请更换后重试！\" }";
+			}
 			Role obj = roleService.findById(id);
 			obj.setName(temp.getName());
 			obj.setDescription(temp.getDescription());
@@ -103,6 +106,9 @@ public class RoleController {
 			Iterator<Role> it = list.iterator();
 			while (it.hasNext()) {
 				Role obj = it.next();
+				if (!roleService.validate(obj.getName())) {
+					return "{ \"msg\" : \"" + obj.getName() + "与已有角色名冲突，请更换后重试！\" }";
+				}
 				if (org.getId() != null) {
 					obj.setOrg(org);
 				}

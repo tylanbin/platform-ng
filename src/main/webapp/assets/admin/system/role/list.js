@@ -61,6 +61,9 @@ $(function() {
 					checkbox : true
 				}]],
 		columns : [[{
+					field : 'id',
+					title : 'ID'
+				}, {
 					field : 'name',
 					title : '角色名称'
 				}, {
