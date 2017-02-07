@@ -152,13 +152,13 @@ public class DefController {
 			}
 			// 级联查询参数
 			if (map.containsKey("pdKeyLike")) {
-				query = query.processDefinitionKeyLike(String.valueOf(map.get("pdKey")));
+				query = query.processDefinitionKeyLike("%" + map.get("pdKey") + "%");
 			}
 			if (map.containsKey("pdNameLike")) {
-				query = query.processDefinitionNameLike(String.valueOf(map.get("pdName")));
+				query = query.processDefinitionNameLike("%" + map.get("pdName") + "%");
 			}
 			if (map.containsKey("pdCategoryLike")) {
-				query = query.processDefinitionCategoryLike(String.valueOf(map.get("pdCategory")));
+				query = query.processDefinitionCategoryLike("%" + map.get("pdCategory") + "%");
 			}
 			// 查询结果排序
 			query = query.orderByProcessDefinitionKey().desc();

@@ -13,8 +13,10 @@ import me.lb.utils.UserUtil;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +37,8 @@ public class FormkeyController {
 	private FormService formService;
 	@Autowired
 	private TaskService taskService;
+	@Autowired
+	private RuntimeService runtimeService;
 	@Autowired
 	private IdentityService identityService;
 
@@ -94,29 +98,33 @@ public class FormkeyController {
 	@ResponseBody
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/process/{pdId}/start", method = RequestMethod.POST)
-	public String startProcess(@PathVariable String pdId, HttpServletRequest request) {
+	public String startProcess(@PathVariable String pdId, String piName, HttpServletRequest request) {
 		try {
 			// 获取用户登录信息
 			User user = UserUtil.getUserFromSession(request.getSession());
 			if (user != null) {
 				// 用户登录才可以发起流程
-				// 参数处理
-				Map<String, String> params = new HashMap<String, String>();
+				// 使用builder可以设置流程实例的属性
+				ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder();
 				// 从request中读取参数然后转换
 				Map<String, String[]> map = request.getParameterMap();
 				Iterator<Map.Entry<String, String[]>> it = map.entrySet().iterator();
-				// 除特殊字段外都存放到map中
+				// 除特殊字段外都需要存储
 				while (it.hasNext()) {
 					Map.Entry<String, String[]> me = it.next();
 					String name = me.getKey();
 					// 这样处理可以兼容复选框（,分隔）
 					String value = Arrays.toString(me.getValue());
 					value = value.substring(1, value.length() - 1);
-					params.put(name, value);
+					// 记录到builder中
+					builder.addVariable(name, value);
 				}
 				// 设置发起人
 				identityService.setAuthenticatedUserId(String.valueOf(user.getId()));
-				ProcessInstance pi = formService.submitStartFormData(pdId, params);
+				// TODO: 这里预留了流程实例的名称，开始先直接使用流程定义名称即可
+				builder.processDefinitionId(pdId);
+				builder.processInstanceName(piName);
+				ProcessInstance pi = builder.start();
 				return "{ \"success\" : true, \"piId\" : \"" + pi.getId() + "\" }";
 			} else {
 				return "{ \"msg\" : \"未登录用户禁止发起流程！\" }";

@@ -169,6 +169,7 @@ public class ModelController {
 				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 			}
 			// 处理参数，拼接sql
+			// 编写的sql需要参考activiti-engine-x.x.x.jar中的org.activiti.db.mapping包
 			StringBuffer sql = new StringBuffer("from ACT_RE_MODEL RES where 1=1");
 			if (map != null && map.containsKey("nameLike")) {
 				sql.append(" and RES.NAME_ like #{nameLike}");
@@ -177,15 +178,17 @@ public class ModelController {
 				sql.append(" and RES.KEY_ like #{keyLike}");
 			}
 			// 创建自定义查询
-			NativeModelQuery q = repositoryService.createNativeModelQuery().sql("select distinct RES.* " + sql);
+			NativeModelQuery q = repositoryService.createNativeModelQuery();
+			// 先查询数据
+			q.sql("select distinct RES.* " + sql);
 			if (map != null && map.containsKey("nameLike")) {
 				q.parameter("nameLike", "%" + map.get("nameLike") + "%");
 			}
 			if (map != null && map.containsKey("keyLike")) {
 				q.parameter("keyLike", "%" + map.get("keyLike") + "%");
 			}
-			// 开始查询结果
 			List<Model> rows = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+			// 再查询总数
 			long total = q.sql("select count(distinct RES.ID_) " + sql).count();
 			// 序列化查询结果为JSON
 			Map<String, Object> result = new HashMap<String, Object>();
