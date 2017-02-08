@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 
 import me.lb.model.system.User;
 import me.lb.service.system.UserService;
-import me.lb.utils.InitDB;
 import me.lb.utils.MD5Util;
 import me.lb.utils.UserUtil;
 
@@ -48,12 +47,12 @@ public class MainController {
 		try {
 			if ("test".equals(type)) {
 				// 使用测试数据初始化
-				InputStream input = InitDB.class.getClassLoader().getResourceAsStream("sql/test.sql");
+				InputStream input = MainController.class.getClassLoader().getResourceAsStream("sql/test.sql");
 				List<String> sqls = IOUtils.readLines(input, "utf-8");
 				jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
 			} else if ("normal".equals(type)) {
 				// 使用正式数据初始化
-				InputStream input = InitDB.class.getClassLoader().getResourceAsStream("sql/normal.sql");
+				InputStream input = MainController.class.getClassLoader().getResourceAsStream("sql/normal.sql");
 				List<String> sqls = IOUtils.readLines(input, "utf-8");
 				jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
 			}
