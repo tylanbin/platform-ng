@@ -18,7 +18,7 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			classpath:applicationContext-hibernate.xml
+			classpath:applicationContext-orm.xml
 			classpath:applicationContext-spring.xml
 			classpath:applicationContext-shiro.xml
 			classpath:applicationContext-activiti.xml

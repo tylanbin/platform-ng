@@ -12,10 +12,10 @@
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-	<!-- 配置自动扫描注解的包，启用的配置在applicationContext-hibernate.xml中已配置 -->
+	<!-- 配置自动扫描注解的包，启用的配置在applicationContext-orm.xml中已配置 -->
 	<context:component-scan base-package="me.lb.service" />
 
-	<!-- 事务边界，事务管理器在applicationContext-hibernate.xml中已配置 -->
+	<!-- 事务边界，事务管理器在applicationContext-orm.xml中已配置 -->
 	<aop:config>
 		<!-- service以及子包 -->
 		<aop:pointcut id="service" expression="execution(* me.lb.service..*.*(..))" />

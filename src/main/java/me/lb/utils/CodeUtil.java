@@ -17,16 +17,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class InitCode {
+public class CodeUtil {
 
 	public static final String TEMPLATEPATH = "code-template";
-	public static final String[] POJOFOLDER = { "demo" };
 
-	public static void main(String[] args) throws Exception {
+	public static void genAll(String[] folders) throws Exception {
 		// 先遍历所有的目录，得到全部的实体
-		String basePath = System.getProperty("user.dir")
-				+ "/src/main/java/me/lb/";
-		for (String folderStr : POJOFOLDER) {
+		String basePath = System.getProperty("user.dir") + "/src/main/java/me/lb/";
+		for (String folderStr : folders) {
 			// 各层的全路径
 			String path_model = basePath + "model/" + folderStr;
 			String path_Dao = basePath + "dao/" + folderStr;
@@ -60,8 +58,7 @@ public class InitCode {
 		}
 	}
 
-	private static void generateDao(String path, String category,
-			String className) throws Exception {
+	private static void generateDao(String path, String category, String className) throws Exception {
 		File folder_interface = new File(path);
 		File folder_implclass = new File(path + "/impl");
 		// 创建目录
@@ -74,30 +71,24 @@ public class InitCode {
 		// 创建文件
 		FileOutputStream output = null;
 		File file_interface = new File(path + "/" + className + "Dao.java");
-		File file_implclass = new File(path + "/impl/" + className
-				+ "DaoImpl.java");
+		File file_implclass = new File(path + "/impl/" + className + "DaoImpl.java");
 		// 写入interface
 		if (!file_interface.exists()) {
-			String objName = className.substring(0, 1).toLowerCase()
-					+ className.substring(1);
+			String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
 			output = new FileOutputStream(file_interface);
-			String content = generateSrc(category, className, objName,
-					"dao.template");
+			String content = generateSrc(category, className, objName, "dao.template");
 			IOUtils.write(content, output, "utf-8");
 		}
 		// 写入class
 		if (!file_implclass.exists()) {
-			String objName = className.substring(0, 1).toLowerCase()
-					+ className.substring(1);
+			String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
 			output = new FileOutputStream(file_implclass);
-			String content = generateSrc(category, className, objName,
-					"daoImpl.template");
+			String content = generateSrc(category, className, objName, "daoImpl.template");
 			IOUtils.write(content, output, "utf-8");
 		}
 	}
 
-	private static void generateService(String path, String category,
-			String className) throws Exception {
+	private static void generateService(String path, String category, String className) throws Exception {
 		File folder_interface = new File(path);
 		File folder_implclass = new File(path + "/impl");
 		// 创建目录
@@ -110,30 +101,24 @@ public class InitCode {
 		// 创建文件
 		FileOutputStream output = null;
 		File file_interface = new File(path + "/" + className + "Service.java");
-		File file_implclass = new File(path + "/impl/" + className
-				+ "ServiceImpl.java");
+		File file_implclass = new File(path + "/impl/" + className + "ServiceImpl.java");
 		// 写入interface
 		if (!file_interface.exists()) {
-			String objName = className.substring(0, 1).toLowerCase()
-					+ className.substring(1);
+			String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
 			output = new FileOutputStream(file_interface);
-			String content = generateSrc(category, className, objName,
-					"service.template");
+			String content = generateSrc(category, className, objName, "service.template");
 			IOUtils.write(content, output, "utf-8");
 		}
 		// 写入class
 		if (!file_implclass.exists()) {
-			String objName = className.substring(0, 1).toLowerCase()
-					+ className.substring(1);
+			String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
 			output = new FileOutputStream(file_implclass);
-			String content = generateSrc(category, className, objName,
-					"serviceImpl.template");
+			String content = generateSrc(category, className, objName, "serviceImpl.template");
 			IOUtils.write(content, output, "utf-8");
 		}
 	}
 
-	private static void generateController(String path, String category,
-			String className) throws Exception {
+	private static void generateController(String path, String category, String className) throws Exception {
 		File folder = new File(path);
 		// 创建目录
 		if (!folder.exists()) {
@@ -144,23 +129,17 @@ public class InitCode {
 		File file = new File(path + "/" + className + "Controller.java");
 		// 写入文件
 		if (!file.exists()) {
-			String objName = className.substring(0, 1).toLowerCase()
-					+ className.substring(1);
+			String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
 			output = new FileOutputStream(file);
-			String content = generateSrc(category, className, objName,
-					"controller.template");
+			String content = generateSrc(category, className, objName, "controller.template");
 			IOUtils.write(content, output, "utf-8");
 		}
 	}
 
-	private static void generateWeb(String category, String className,
-			Map<String, String> fields) throws Exception {
-		String objName = className.substring(0, 1).toLowerCase()
-				+ className.substring(1);
-		String path_html = System.getProperty("user.dir")
-				+ "/src/main/webapp/web/admin/" + category + "/";
-		String path_js = System.getProperty("user.dir")
-				+ "/src/main/webapp/assets/admin/" + category + "/";
+	private static void generateWeb(String category, String className, Map<String, String> fields) throws Exception {
+		String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
+		String path_html = System.getProperty("user.dir") + "/src/main/webapp/web/admin/" + category + "/";
+		String path_js = System.getProperty("user.dir") + "/src/main/webapp/assets/admin/" + category + "/";
 		File folder_html = new File(path_html + objName);
 		File folder_js = new File(path_js + objName);
 		// 创建目录
@@ -177,15 +156,13 @@ public class InitCode {
 		// 写入html
 		if (!file_html.exists()) {
 			output = new FileOutputStream(file_html);
-			String content = generateHtml(category, className, objName,
-					"web-html.template", fields);
+			String content = generateHtml(category, className, objName, "web-html.template", fields);
 			IOUtils.write(content, output, "utf-8");
 		}
 		// 写入js
 		if (!file_js.exists()) {
 			output = new FileOutputStream(file_js);
-			String content = generateJs(category, className, objName,
-					"web-js.template", fields);
+			String content = generateJs(category, className, objName, "web-js.template", fields);
 			IOUtils.write(content, output, "utf-8");
 		}
 	}
@@ -198,10 +175,8 @@ public class InitCode {
 	 * @param templateName 模板名称
 	 * @return 替换后的模板字符串
 	 */
-	private static String generateSrc(String category, String upperCase,
-			String lowerCase, String templateName) throws Exception {
-		String path = System.getProperty("user.dir") + "/src/main/resources/"
-				+ TEMPLATEPATH + "/";
+	private static String generateSrc(String category, String upperCase, String lowerCase, String templateName) throws Exception {
+		String path = System.getProperty("user.dir") + "/src/main/resources/" + TEMPLATEPATH + "/";
 		File templateFile = new File(path + templateName);
 		FileInputStream input = new FileInputStream(templateFile);
 		String content = IOUtils.toString(input, "utf-8");
@@ -220,11 +195,8 @@ public class InitCode {
 	 * @param fields 反射得到的属性map
 	 * @return 替换后的模板字符串
 	 */
-	private static String generateHtml(String category, String upperCase,
-			String lowerCase, String templateName, Map<String, String> fields)
-			throws Exception {
-		String path = System.getProperty("user.dir") + "/src/main/resources/"
-				+ TEMPLATEPATH + "/";
+	private static String generateHtml(String category, String upperCase, String lowerCase, String templateName, Map<String, String> fields) throws Exception {
+		String path = System.getProperty("user.dir") + "/src/main/resources/" + TEMPLATEPATH + "/";
 		File templateFile = new File(path + templateName);
 		FileInputStream input = new FileInputStream(templateFile);
 		String content = IOUtils.toString(input, "utf-8");
@@ -241,11 +213,9 @@ public class InitCode {
 			String fname = me.getKey();// 英文
 			String cname = me.getValue();// 中文
 			// 处理搜索select的html
-			html_search.append(tp_search.replaceAll("\\{fname\\}", fname)
-					.replaceAll("\\{cname\\}", cname));
+			html_search.append(tp_search.replaceAll("\\{fname\\}", fname).replaceAll("\\{cname\\}", cname));
 			// 处理编辑时table的html
-			html_edit.append(tp_edit.replaceAll("\\{fname\\}", fname)
-					.replaceAll("\\{cname\\}", cname));
+			html_edit.append(tp_edit.replaceAll("\\{fname\\}", fname).replaceAll("\\{cname\\}", cname));
 		}
 		// 处理模板
 		String result = content.replaceAll("\\{Category\\}", category)
@@ -265,11 +235,8 @@ public class InitCode {
 	 * @param fields 反射得到的属性map
 	 * @return 替换后的模板字符串
 	 */
-	private static String generateJs(String category, String upperCase,
-			String lowerCase, String templateName, Map<String, String> fields)
-			throws Exception {
-		String path = System.getProperty("user.dir") + "/src/main/resources/"
-				+ TEMPLATEPATH + "/";
+	private static String generateJs(String category, String upperCase, String lowerCase, String templateName, Map<String, String> fields) throws Exception {
+		String path = System.getProperty("user.dir") + "/src/main/resources/" + TEMPLATEPATH + "/";
 		ObjectMapper om = new ObjectMapper();
 		File templateFile = new File(path + templateName);
 		FileInputStream input = new FileInputStream(templateFile);
@@ -301,10 +268,8 @@ public class InitCode {
 			arr_add.add(obj_add);
 		}
 		// 处理模板
-		String json_list = om.writerWithDefaultPrettyPrinter()
-				.writeValueAsString(arr_list);// 优化格式
-		String json_add = om.writerWithDefaultPrettyPrinter()
-				.writeValueAsString(arr_add);// 优化格式
+		String json_list = om.writerWithDefaultPrettyPrinter().writeValueAsString(arr_list);// 优化格式
+		String json_add = om.writerWithDefaultPrettyPrinter().writeValueAsString(arr_add);// 优化格式
 		String result = content.replaceAll("\\{Category\\}", category)
 				.replaceAll("\\{UpperCase\\}", upperCase)
 				.replaceAll("\\{LowerCase\\}", lowerCase)

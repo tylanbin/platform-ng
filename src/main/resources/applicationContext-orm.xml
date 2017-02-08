@@ -47,6 +47,11 @@
 			</props>
 		</property>
 	</bean>
+	
+	<!-- 增加jdbcTemplate，主要用于utils中 -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 
 	<!-- 事务管理器，在此设置是因为JUnit测试会使用 -->
 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">

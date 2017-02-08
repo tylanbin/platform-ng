@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @TransactionConfiguration(defaultRollback = false)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:applicationContext-hibernate.xml")
+@ContextConfiguration(locations = "classpath:applicationContext-orm.xml")
 public class RoleDaoTest {
 
 	@Autowired

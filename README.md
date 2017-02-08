@@ -118,8 +118,11 @@ public class Foo implements java.io.Serializable {
 
 ### 项目生成
 * 修改数据库配置`src/main/resources/jdbc.properties`，配置数据库参数（暂时只支持MySQL）
-* 执行数据库生成工具`me.lb.utils.InitDB`，生成数据表及关联
-* 调整代码生成工具`me.lb.utils.InitCode`，列出自定义的POJO类所在的文件夹（可以多个）
+* 执行数据库生成工具`me.lb.utils.InitDB`（src/test/java下），生成数据表及关联，并初始化数据（可选）
+* 调整代码生成工具`me.lb.utils.InitCode`（src/test/java下），列出自定义的POJO类所在的文件夹（可以多个）
+* 注意：
+	* 在eclipse中，项目依赖的`activiti-modeler`可能与JUnit存在冲突，导致无法正常执行测试用例
+	* 如果出现冲突，需要通过执行mvn test来执行测试用例（mvn test -Dtest=类名#方法名）
 
 ```Java
 // 如果你的POJO类为me.lb.xxx.Pojo，则xxx就是所指的名称
