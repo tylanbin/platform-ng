@@ -88,7 +88,7 @@ public class ModelController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/{id}/deploy", method = RequestMethod.POST)
-	public String deploy(@PathVariable String id, HttpServletResponse response) {
+	public String deploy(@PathVariable String id) {
 		try {
 			// 读取数据
 			Model model = repositoryService.getModel(id);

@@ -100,7 +100,7 @@ public class MainController {
 
 	@ResponseBody
 	@RequestMapping(value = "/logout")
-	public String logout(HttpSession session) {
+	public String logout() {
 		try {
 			SecurityUtils.getSubject().logout();
 			return "{ \"success\" : true }";

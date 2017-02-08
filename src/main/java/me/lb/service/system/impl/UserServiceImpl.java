@@ -107,7 +107,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, Integer>
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("loginName", loginName);
 		List<User> temp = ((UserDao) dao).findAll(params);
-		if (temp != null && temp.size() > 0) {
+		if (!temp.isEmpty()) {
 			return temp.get(0);
 		} else {
 			return null;

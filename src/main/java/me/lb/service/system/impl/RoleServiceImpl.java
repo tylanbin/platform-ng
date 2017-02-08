@@ -106,7 +106,7 @@ public class RoleServiceImpl extends GenericServiceImpl<Role, Integer>
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("name", name);
 		List<Role> temp = ((RoleDao) dao).findAll(params);
-		if (temp != null && temp.size() > 0) {
+		if (!temp.isEmpty()) {
 			return temp.get(0);
 		} else {
 			return null;

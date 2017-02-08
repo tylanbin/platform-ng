@@ -1,6 +1,7 @@
 package me.lb.controller.admin.system;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class UserController {
 		try {
 			ObjectMapper om = new ObjectMapper();
 			Emp emp = empService.findById(empId);
-			List<User> list = om.readValue(objs, new TypeReference<List<User>>() {});
+			List<User> list = new ArrayList<User>();
 			// 先完成验证
 			for (User temp : list) {
 				if (temp.getId() == null) {
@@ -94,6 +95,7 @@ public class UserController {
 			userService.delete(userService.findById(id));
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
+			e.printStackTrace();
 			return "{ \"msg\" : \"删除失败，请确认操作无误后重试，或联系管理员处理！\" }";
 		}
 	}
@@ -101,17 +103,22 @@ public class UserController {
 	@ResponseBody
 	@RequestMapping(value = "/{empId}/user/data", method = RequestMethod.GET)
 	public String data(@PathVariable int empId) throws Exception {
-		// 用于展示某个员工用户列表的查询
-		Emp emp = empService.findById(empId);
-		Set<User> set = emp.getUsers();
-		// 处理用户的角色问题
-		for (User u : set) {
-			String temp = u.getRoles().toString().replaceAll(" ", "");
-			u.setRoleIds(temp.substring(1, temp.length() - 1));
+		try {
+			// 用于展示某个员工用户列表的查询
+			Emp emp = empService.findById(empId);
+			Set<User> set = emp.getUsers();
+			// 处理用户的角色问题
+			for (User u : set) {
+				String temp = u.getRoles().toString().replaceAll(" ", "");
+				u.setRoleIds(temp.substring(1, temp.length() - 1));
+			}
+			return JsonWriter.getInstance()
+					.filter(User.class, "emp", "roles")
+					.getWriter().writeValueAsString(set);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "[]";
 		}
-		return JsonWriter.getInstance()
-				.filter(User.class, "emp", "roles")
-				.getWriter().writeValueAsString(set);
 	}
 
 }

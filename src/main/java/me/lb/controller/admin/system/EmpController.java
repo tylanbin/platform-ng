@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import me.lb.model.pagination.Pagination;
 import me.lb.model.system.Emp;
 import me.lb.model.system.Org;
@@ -45,8 +43,7 @@ public class EmpController {
 	private OrgService orgService;
 
 	@InitBinder
-	protected void initBinder(HttpServletRequest request,
-			ServletRequestDataBinder binder) throws Exception {
+	protected void initBinder(ServletRequestDataBinder binder) {
 		// 对Date类型参数传递的处理
 		// DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");

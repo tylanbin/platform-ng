@@ -38,4 +38,5 @@ public class MD5Util {
 		System.out.println("098F6BCD4621D373CADE4E832627B4F6");
 		System.out.println(MD5Util.getValue(MD5Util.PREFIX + "admin"));
 	}
+	
 }

@@ -44,7 +44,7 @@ public abstract class GenericDaoImpl<T, PK extends Serializable> implements
 
 	@Override
 	public List<T> findAll(Map<String, Object> params) {
-		if (params.entrySet().size() > 0) {
+		if (!params.isEmpty()) {
 			StringBuffer sb = new StringBuffer("from " + clazz.getName()
 					+ " as o where 1=1");
 			List<Object> objs = new ArrayList<Object>();
