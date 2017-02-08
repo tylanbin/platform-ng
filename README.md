@@ -126,10 +126,10 @@ public class Foo implements java.io.Serializable {
 
 ```Java
 // 如果你的POJO类为me.lb.xxx.Pojo，则xxx就是所指的名称
-public static final String[] POJOFOLDER = { "demo1", "demo2" };
+String[] folders = { "demo1", "demo2" };
 ```
 
-* 直接执行 `me.lb.support.system.CodeGenerator`，即可生成代码
+* 直接执行 `me.lb.utils.InitCode`，即可生成代码（src/test/java下）
 * 代码生成说明（以POJO类为`me.lb.model.xxx.Pojo`为例）
 	* `me.lb.dao.xxx.PojoDao`为持久层接口
 	* `me.lb.dao.xxx.impl.PojoDaoImpl`为持久层实现
@@ -141,7 +141,7 @@ public static final String[] POJOFOLDER = { "demo1", "demo2" };
 
 ### 代码调整
 * 代码生成完毕后，需要手动调整修改如下几处
-1. 修改`me.lb.dao.xxx.impl.PojoDaoImpl`文件，带参数的`pagingQuery`方法（处理模糊查询的参数）
+1. 修改`me.lb.dao.xxx.impl.PojoDaoImpl`文件，带参数的`pagingQuery`方法（处理分页查询的方法）
 2. 修改`me.lb.controller.admin.xxx.PojoController`文件，`edit`方法（处理修改对象的哪些属性）
 3. 修改`src/main/webapp/web/admin/xxx/pojo/list.html`文件，修改对话框的表单控件（参考EasyUI文档）
 4. 其余代码不调整也可使用，但推荐根据情况进行修改（如业务代码、页面等）
