@@ -20,6 +20,7 @@ $(function() {
 			$(this).tree('collapseAll');
 			if (selected) {
 				$(this).tree('expandTo', $(this).tree('find', selected).target);
+				$(this).tree('select', $(this).tree('find', selected).target);
 			}
 		}
 	});

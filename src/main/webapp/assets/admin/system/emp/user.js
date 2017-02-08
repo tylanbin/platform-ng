@@ -101,6 +101,19 @@ function dlg_user() {
 	if (rows.length == 0) {
 		$.messager.alert('提示', '请选择要分配的条目！', 'info');
 	} else if (rows.length == 1) {
+		// 这个地方为了可以获取新的数据，再次获取
+		$.ajax({
+			type : 'get',
+			url : 'admin/system/role/tree',
+			dataType : 'json',
+			async : false,
+			success : function(data) {
+				tree_roles = data;
+			},
+			error : function() {
+				tree_roles = [];
+			}
+		});
 		// 载入用户的信息
 		var empId = rows[0].id;
 		$('#dg-user').datagrid({
@@ -117,7 +130,7 @@ function dlg_user() {
 						title : 'ID'
 					}, {
 						field : 'loginName',
-						width : 80,
+						width : 50,
 						title : '用户名',
 						editor : {
 							type : 'textbox',
@@ -139,7 +152,7 @@ function dlg_user() {
 						}
 					}, {
 						field : 'enabled',
-						width : 30,
+						width : 20,
 						title : '启用',
 						formatter : function(value, row, index) {
 							if (value == 1) {

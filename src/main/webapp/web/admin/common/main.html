@@ -31,6 +31,13 @@
 					});
 				}
 			},
+			onSelect : function(title, index) {
+				// 该方式可以在选中后自动刷新tab，但会使得效率下降
+				/* var content = $(this).tabs('getTab', index).panel('options').content;
+				$(this).tabs('getTab', index).panel({
+					content : content
+				}); */
+			}
 		});
 		// 获取用户信息
 		$.ajax({

@@ -45,15 +45,21 @@ public class MainController {
 		se.create(false, true);
 		// 初始化数据
 		try {
+			// 重建Activiti的表
+			InputStream input = this.getClass().getClassLoader().getResourceAsStream("sql/activiti.sql");
+			List<String> sqls = IOUtils.readLines(input, "utf-8");
+			if (!sqls.isEmpty()) {
+				jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+			}
 			if ("test".equals(type)) {
 				// 使用测试数据初始化
-				InputStream input = MainController.class.getClassLoader().getResourceAsStream("sql/test.sql");
-				List<String> sqls = IOUtils.readLines(input, "utf-8");
+				input = this.getClass().getClassLoader().getResourceAsStream("sql/test.sql");
+				sqls = IOUtils.readLines(input, "utf-8");
 				jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
 			} else if ("normal".equals(type)) {
 				// 使用正式数据初始化
-				InputStream input = MainController.class.getClassLoader().getResourceAsStream("sql/normal.sql");
-				List<String> sqls = IOUtils.readLines(input, "utf-8");
+				input = this.getClass().getClassLoader().getResourceAsStream("sql/normal.sql");
+				sqls = IOUtils.readLines(input, "utf-8");
 				jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
 			}
 		} catch (Exception e) {

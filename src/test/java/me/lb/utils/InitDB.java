@@ -19,11 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @TransactionConfiguration(defaultRollback = false)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-		"classpath:applicationContext-orm.xml",
-		"classpath:applicationContext-spring.xml",
-		"classpath:applicationContext-activiti.xml"
-})
+@ContextConfiguration(locations = "classpath:applicationContext-orm.xml")
 public class InitDB {
 
 	@Autowired
@@ -32,10 +28,17 @@ public class InitDB {
 	private LocalSessionFactoryBean sessionFactory;
 
 	@Test
-	public void db_init() {
+	public void db_init() throws Exception {
+		// 处理系统的表
 		Configuration cfg = sessionFactory.getConfiguration();
 		SchemaExport se = new SchemaExport(cfg);
 		se.create(false, true);
+		// 处理Activiti的表
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("sql/activiti.sql");
+		List<String> sqls = IOUtils.readLines(input, "utf-8");
+		if (!sqls.isEmpty()) {
+			jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+		}
 	}
 
 	@Test
@@ -44,7 +47,7 @@ public class InitDB {
 		String sqlName = "test.sql";
 		// 正式数据
 		// String sqlName = "normal.sql";
-		InputStream input = InitDB.class.getClassLoader().getResourceAsStream("sql/" + sqlName);
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("sql/" + sqlName);
 		List<String> sqls = IOUtils.readLines(input, "utf-8");
 		if (!sqls.isEmpty()) {
 			jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
