@@ -58,18 +58,19 @@ public class UserController {
 					// 为了避免更新导致的清空数据，仅处理需要更新的字段
 					userId = temp.getId();
 					User obj = userService.findById(temp.getId());
-					obj.setLoginName(temp.getLoginName());
+					obj.setLoginName(temp.getLoginName().trim());
 					obj.setEnabled(temp.getEnabled());
 					// 使用自定义的MD5进行编码
-					String md5Pass = MD5Util.getValue(MD5Util.PREFIX + temp.getLoginPass());
+					String md5Pass = MD5Util.getValue(MD5Util.PREFIX + temp.getLoginPass().trim());
 					obj.setLoginPass(md5Pass);
 					userService.update(obj);
 				} else {
 					// id不存在，需要存储
 					temp.setEmp(emp);
+					temp.setLoginName(temp.getLoginName().trim());
 					temp.setCreateDate(new Timestamp(new Date().getTime()));
 					// 使用自定义的MD5进行编码
-					String md5Pass = MD5Util.getValue(MD5Util.PREFIX + temp.getLoginPass());
+					String md5Pass = MD5Util.getValue(MD5Util.PREFIX + temp.getLoginPass().trim());
 					temp.setLoginPass(md5Pass);
 					userId = userService.save(temp);
 				}

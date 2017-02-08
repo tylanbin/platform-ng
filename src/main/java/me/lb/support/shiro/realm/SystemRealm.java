@@ -33,7 +33,7 @@ public class SystemRealm extends AuthorizingRealm {
 		// 获取登录用户
 		Collection<?> temp = principals.fromRealm(getName());
 		String loginName = (String) temp.iterator().next();
-		User loginUser = userService.findByLoginName(loginName);
+		User loginUser = userService.findByLoginName(loginName.trim());
 		// 取得用户的权限
 		Set<Role> roles = loginUser.getRoles();
 		Set<Perm> perms = new HashSet<Perm>();
@@ -59,7 +59,7 @@ public class SystemRealm extends AuthorizingRealm {
 			AuthenticationToken token) throws AuthenticationException {
 		// 登录认证
 		String userName = ((UsernamePasswordToken) token).getUsername();
-		User loginUser = userService.findByLoginName(userName);
+		User loginUser = userService.findByLoginName(userName.trim());
 		if (loginUser != null) {
 			String loginName = loginUser.getLoginName();
 			String loginPass = loginUser.getLoginPass();
