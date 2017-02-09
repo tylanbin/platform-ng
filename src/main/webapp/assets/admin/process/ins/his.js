@@ -19,42 +19,56 @@ $(function() {
 				}]],
 		columns : [[{
 					"field" : "id",
+					"title" : "实例ID"
+				}, {
+					// 流程实例名称存在BUG，不会记录到历史中
+					"field" : "name",
+					"hidden" : true
+				}, {
+					"field" : "processDefinitionId",
 					"title" : "编号"
 				}, {
-					"field" : "key",
+					"field" : "processDefinitionKey",
 					"title" : "KEY"
 				}, {
-					"field" : "name",
+					"field" : "processDefinitionName",
 					"title" : "名称"
 				}, {
-					"field" : "version",
-					"title" : "版本"
+					"field" : "startUserId",
+					"title" : "发起用户ID"
 				}, {
-					"field" : "category",
-					"hidden" : true
+					"field" : "startUser",
+					"title" : "发起员工"
 				}, {
-					"field" : "deploymentId",
-					"hidden" : true
-				}, {
-					"field" : "description",
-					"title" : "描述",
+					"field" : "startTime",
+					"title" : "发起时间",
 					formatter : function(value, row, index) {
 						if (value) {
-							if (value.length > 10) {
-								return value.substring(0, 10) + '...';
-							} else {
-								return value;
-							}
+							var date = new Date(value);
+							return date.format('yyyy-MM-dd HH:mm:ss');
 						}
 					}
 				}, {
-					"field" : "isSuspended",
-					"title" : "状态",
+					"field" : "endTime",
+					"title" : "结束时间",
 					formatter : function(value, row, index) {
 						if (value) {
-							return '挂起';
+							var date = new Date(value);
+							return date.format('yyyy-MM-dd HH:mm:ss');
+						}
+					}
+				}, {
+					"field" : "deleteReason",
+					"title" : "描述",
+					formatter : function(value, row, index) {
+						if (value) {
+							if (value == 'ACTIVITI_DELETED') {
+								return '强制停止执行';
+							} else {
+								return value;
+							}
 						} else {
-							return '激活';
+							return '正常结束';
 						}
 					}
 				}]],

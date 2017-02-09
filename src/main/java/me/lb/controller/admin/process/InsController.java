@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import me.lb.model.system.User;
+import me.lb.service.system.UserService;
 import me.lb.support.system.SystemContext;
 
 import org.activiti.bpmn.model.BpmnModel;
@@ -17,7 +19,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.runtime.NativeProcessInstanceQuery;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.apache.commons.io.IOUtils;
@@ -31,10 +33,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
 @RequestMapping(value = "/admin/process/ins")
 public class InsController {
+	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private RuntimeService runtimeService;
@@ -116,99 +123,80 @@ public class InsController {
 			if (!StringUtils.isEmpty(params)) {
 				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 			}
+			// 查询执行结束的流程实例
+			StringBuffer sql = new StringBuffer("from ACT_HI_PROCINST RES inner join ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_");
+			// 只查询结束的流程
 			if ("running".equals(type)) {
-				// 查询正在运行的流程
-				// 创建自定义查询（封装的不能按照流程定义名称模糊查询）
-				// 编写的sql需要参考activiti-engine-x.x.x.jar中的org.activiti.db.mapping包
-				StringBuffer sql = new StringBuffer("from ACT_RU_EXECUTION RES inner join ACT_RE_PROCDEF P on RES.PROC_DEF_ID_ = P.ID_");
-				sql.append(" where 1 = 1");// 方便添加后续的条件
-				// 追加sql
-				if (map.containsKey("pdKeyLike")) {
-					sql.append(" and P.KEY_ like #{pdKeyLike}");
-				}
-				if (map.containsKey("pdNameLike")) {
-					sql.append(" and P.NAME_ like #{pdNameLike}");
-				}
-				if (map.containsKey("piNameLike")) {
-					sql.append(" and RES.NAME_ like #{piNameLike}");
-				}
-				NativeProcessInstanceQuery q = runtimeService.createNativeProcessInstanceQuery();
-				// 先查询数据
-				q.sql("select distinct RES.*, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId " + sql);
-				// 处理参数
-				if (map.containsKey("pdKeyLike")) {
-					q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
-				}
-				if (map.containsKey("pdNameLike")) {
-					q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
-				}
-				if (map.containsKey("piNameLike")) {
-					q.parameter("piNameLike", "%" + map.get("piNameLike") + "%");
-				}
-				List<ProcessInstance> rows = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
-				// 再查询总数
-				long total = q.sql("select count(distinct RES.ID_) " + sql).count();
-				// 序列化查询结果为JSON
-				Map<String, Object> result = new HashMap<String, Object>();
-				result.put("total", total);
-				result.put("rows", rows);
-				return om.writeValueAsString(result);
+				sql.append(" where RES.END_TIME_ is NULL");
 			} else if ("his".equals(type)) {
-				// 查询执行结束的流程实例
-				StringBuffer sql = new StringBuffer("from ACT_HI_PROCINST RES inner join ${prefix}ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_");
-				// 只查询结束的流程
 				sql.append(" where RES.END_TIME_ is not NULL");
-				// 追加sql
-				if (map.containsKey("pdKeyLike")) {
-					sql.append(" and DEF.KEY_ = #{pdKeyLike}");
-				}
-				if (map.containsKey("pdNameLike")) {
-					sql.append(" and DEF.NAME_ like #{pdNameLike}");
-				}
-				if (map.containsKey("piNameLike")) {
-					sql.append(" and RES.NAME_ like #{piNameLike}");
-				}
-				if (map.containsKey("startedAfter")) {
-					sql.append(" and RES.START_TIME_ >= #{startedAfter}");
-				}
-				if (map.containsKey("finishedBefore")) {
-					sql.append(" and RES.END_TIME_ <= #{finishedBefore}");
-				}
-				NativeHistoricProcessInstanceQuery q = historyService.createNativeHistoricProcessInstanceQuery();
-				// 先查询数据
-				q.sql("select RES.* " + sql);
-				// 处理参数
-				if (map.containsKey("pdKeyLike")) {
-					q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
-				}
-				if (map.containsKey("pdNameLike")) {
-					q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
-				}
-				if (map.containsKey("piNameLike")) {
-					q.parameter("piNameLike", "%" + map.get("piNameLike") + "%");
-				}
-				if (map.containsKey("startedAfter")) {
-					q.parameter("startedAfter", map.get("startedAfter"));
-				}
-				if (map.containsKey("finishedBefore")) {
-					q.parameter("finishedBefore", map.get("finishedBefore"));
-				}
-				List<HistoricProcessInstance> rows = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
-				// 再查询总数
-				long total = q.sql("select count(distinct RES.ID_) " + sql).count();
-				// 序列化查询结果为JSON
-				Map<String, Object> result = new HashMap<String, Object>();
-				result.put("total", total);
-				result.put("rows", rows);
-				return om.writeValueAsString(result);
 			} else {
-				// TODO: 预留扩展
-				return "{ \"total\" : 0, \"rows\" : [] }";
+				sql.append(" where 1 = 1");
 			}
+			// 追加sql
+			if (map.containsKey("pdKeyLike")) {
+				sql.append(" and DEF.KEY_ = #{pdKeyLike}");
+			}
+			if (map.containsKey("pdNameLike")) {
+				sql.append(" and DEF.NAME_ like #{pdNameLike}");
+			}
+			if (map.containsKey("piNameLike")) {
+				sql.append(" and RES.NAME_ like #{piNameLike}");
+			}
+			if (map.containsKey("startedAfter")) {
+				sql.append(" and RES.START_TIME_ >= #{startedAfter}");
+			}
+			if (map.containsKey("finishedBefore")) {
+				sql.append(" and RES.END_TIME_ <= #{finishedBefore}");
+			}
+			NativeHistoricProcessInstanceQuery q = historyService.createNativeHistoricProcessInstanceQuery();
+			// 先查询数据
+			q.sql("select RES.* " + sql);
+			// 处理参数
+			if (map.containsKey("pdKeyLike")) {
+				q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
+			}
+			if (map.containsKey("pdNameLike")) {
+				q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
+			}
+			if (map.containsKey("piNameLike")) {
+				q.parameter("piNameLike", "%" + map.get("piNameLike") + "%");
+			}
+			if (map.containsKey("startedAfter")) {
+				q.parameter("startedAfter", map.get("startedAfter"));
+			}
+			if (map.containsKey("finishedBefore")) {
+				q.parameter("finishedBefore", map.get("finishedBefore"));
+			}
+			List<HistoricProcessInstance> rows = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+			// 再查询总数
+			long total = q.sql("select count(distinct RES.ID_) " + sql).count();
+			// 序列化查询结果为JSON
+			Map<String, Object> result = new HashMap<String, Object>();
+			result.put("total", total);
+			result.put("rows", detailHistoricProcessInstance(rows));
+			return om.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
 		}
     }
+	
+	// 私有方法
+	
+	private ArrayNode detailHistoricProcessInstance(List<HistoricProcessInstance> hpis) throws Exception {
+		ObjectMapper om = new ObjectMapper();
+		ArrayNode arr = om.createArrayNode();
+		for (HistoricProcessInstance hpi : hpis) {
+			ObjectNode on = (ObjectNode) om.readTree(om.writeValueAsString(hpi));
+			ProcessDefinition pd = repositoryService.getProcessDefinition(hpi.getProcessDefinitionId());
+			on.put("processDefinitionKey", pd.getKey());
+			on.put("processDefinitionName", pd.getName());
+			User user = userService.findById(Integer.valueOf(hpi.getStartUserId()));
+			on.put("startUser", user.getEmp().getName());
+			arr.add(on);
+		}
+		return arr;
+	}
 
 }

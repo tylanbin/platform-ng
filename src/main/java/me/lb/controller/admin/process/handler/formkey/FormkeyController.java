@@ -159,11 +159,13 @@ public class FormkeyController {
 				while (it.hasNext()) {
 					Map.Entry<String, String[]> me = it.next();
 					String name = me.getKey();
-					// 这样处理可以兼容复选框（,分隔）
-					String value = Arrays.toString(me.getValue());
-					value = value.substring(1, value.length() - 1);
-					// 记录到builder中
-					builder.addVariable(name, value);
+					if (!"piName".equals(name)) {
+						// 这样处理可以兼容复选框（,分隔）
+						String value = Arrays.toString(me.getValue());
+						value = value.substring(1, value.length() - 1);
+						// 记录到builder中
+						builder.addVariable(name, value);
+					}
 				}
 				// 设置发起人
 				identityService.setAuthenticatedUserId(String.valueOf(user.getId()));

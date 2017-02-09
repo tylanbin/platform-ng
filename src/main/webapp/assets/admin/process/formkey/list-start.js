@@ -6,7 +6,7 @@ $(function() {
 		idField : 'id',
 		rownumbers : true,
 		fitColumns : true,
-		singleSelect : false,
+		singleSelect : true,
 		pagination : true,
 		pageSize : 15,
 		pageList : [10, 15, 20],
@@ -81,16 +81,65 @@ function func_reload() {
 }
 
 function dlg_start() {
+	var row = $('#dg-list').datagrid('getSelected');
+	if (row) {
+		var html = '<div style="text-align: center;">没有需要填写的表单</div>';
+		$.ajax({
+			type : 'get',
+			url : 'admin/process/formkey/form/start',
+			dataType : 'html',
+			async : false,
+			success : function(data) {
+				html = data;
+			}
+		});
+		// 将表单的html填入form
+		$('#fm-current').html(html);
+		// 将表单使用EasyUI进行解析
+		$.parser.parse('#fm-current');
+		// 记录流程的信息
+		$('#start-pdId').val(row.id);
+		$('#start-piName').val(row.name);
+		$('#dlg-start').dialog('open');
+	} else {
+		$.messager.alert('提示', '请选择要启动的流程！', 'info');
+	}
 }
 function func_start() {
+	// 这里是利用html中的form进行提交，所以需要加上项目路径AppCore.baseUrl
+	var pdId = $('#start-pdId').val();
+	var piName = $('#start-piName').val();
+	$('#fm-current').form('submit', {
+		url : AppCore.baseUrl + 'admin/process/formkey/process/' + pdId + '/start',
+		onSubmit : function(param) {
+			param.piName = piName;// 追加参数
+			return $(this).form('validate');
+		},
+		success : function(data) {
+			var data = eval('(' + data + ')');
+			if (data.success) {
+				$('#dg-list').datagrid('reload');
+				$('#dg-list').datagrid('clearSelections');
+				$('#dlg-start').dialog('close');
+			} else {
+				$.messager.show({
+					title : '错误',
+					msg : data.msg,
+					showType : 'fade',
+					style : {
+						right : '',
+						bottom : ''
+					}
+				});
+			}
+		}
+	});
 }
 
 function func_view(type) {
-	var rows = $('#dg-list').datagrid('getSelections');
-	if (rows.length == 0) {
-		$.messager.alert('提示', '请选择要预览的条目！', 'info');
-	} else if (rows.length == 1) {
-		var url = AppCore.baseUrl + 'admin/process/def/' + rows[0].id + '/resource/' + type;
+	var row = $('#dg-list').datagrid('getSelected');
+	if (row) {
+		var url = AppCore.baseUrl + 'admin/process/def/' + row.id + '/resource/' + type;
 		if (type == 'xml') {
 			window.open(url);
 		} else {
@@ -99,6 +148,6 @@ function func_view(type) {
 			}).dialog('open');
 		}
 	} else {
-		$.messager.alert('提示', '预览时只可以选择一个！', 'info');
+		$.messager.alert('提示', '请选择要预览的流程！', 'info');
 	}
 }
