@@ -110,6 +110,98 @@ function func_deploy() {
 	});
 }
 
+function dlg_auth() {
+	var rows = $('#dg-list').datagrid('getSelections');
+	if (rows.length == 0) {
+		$.messager.alert('提示', '请选择要设置的条目！', 'info');
+	} else if (rows.length == 1) {
+		$('#auth-pdId').val(rows[0].id);
+		$('#auth-ids').combotree({
+		    url : 'admin/system/role/tree',
+		    method : 'get',
+		    required : true,
+			editable : false,
+			multiple : true,
+			cascadeCheck : false,
+			onBeforeSelect : function(node) {
+				// 不允许select节点，会自动check
+				return false;
+			},
+			onBeforeCheck : function(node) {
+				// 机构类型不允许选择
+				if (!$.isNumeric(node.id)) {
+					$.messager.show({
+						title : '提示',
+						msg : '不允许选择机构！',
+						showType : 'fade'
+					});
+					return false;
+				}
+			}
+		});
+		// 读取历史数据
+		$.ajax({
+			type : 'get',
+			url : 'admin/process/def/' + rows[0].id + '/auth',
+			dataType : 'json',
+			async : false,
+			success : function(data) {
+				$('#auth-ids').combotree('setValues', data);
+			}
+		});
+		$('#dlg-auth').dialog('open');
+	} else {
+		$.messager.alert('提示', '设置发起人时只可以选择一个！', 'info');
+	}
+}
+function func_auth() {
+	var pdId = $('#auth-pdId').val();
+	var ids = $('#auth-ids').combo('getValues');
+	$.ajax({
+		type : 'post',
+		url : 'admin/process/def/' + pdId + '/auth',
+		data : {
+			ids : ids.join(',')
+		},
+		dataType : 'json',
+		async : true,
+		success : function(data) {
+			if (data.success) {
+				$('#dg-list').datagrid('reload');
+				$('#dg-list').datagrid('clearSelections');
+				$('#dlg-auth').dialog('close');
+			} else {
+				// 出错也需要重载
+				$('#dg-list').datagrid('reload');
+				$('#dg-list').datagrid('clearSelections');
+				$.messager.show({
+					title : '错误',
+					msg : data.msg,
+					showType : 'fade',
+					style : {
+						right : '',
+						bottom : ''
+					}
+				});
+			}
+		},
+		error : function() {
+			// 出错也需要重载
+			$('#dg-list').datagrid('reload');
+			$('#dg-list').datagrid('clearSelections');
+			$.messager.show({
+				title : '错误',
+				msg : '服务器正忙，请稍后再试！',
+				showType : 'fade',
+				style : {
+					right : '',
+					bottom : ''
+				}
+			});
+		}
+	});
+}
+
 function func_del() {
 	var rows = $('#dg-list').datagrid('getSelections');
 	if (rows.length > 0) {

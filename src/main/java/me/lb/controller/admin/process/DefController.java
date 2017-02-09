@@ -16,6 +16,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +64,7 @@ public class DefController {
 			return "{ \"msg\" : \"上传失败！\" }";
 		}
 	}
-
+	
 	/**
 	 * 批量删除流程部署
 	 * @param ids deploymentId的集合
@@ -80,6 +82,57 @@ public class DefController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"msg\" : \"操作失败！\" }";
+		}
+	}
+	
+	/**
+	 * 为流程定义设置发起人/角色
+	 * @param pdIds 流程定义集合
+	 * @param ids 设置的角色id集合
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/{pdId}/auth", method = RequestMethod.POST)
+	public String auth(@PathVariable String pdId, String ids) {
+		try {
+			// 设置之前需要全部先清除
+			List<IdentityLink> olds = repositoryService.getIdentityLinksForProcessDefinition(pdId);
+			for (IdentityLink il : olds) {
+				if (IdentityLinkType.ASSIGNEE.equals(il.getType())) {
+					repositoryService.deleteCandidateStarterUser(pdId, il.getUserId());
+				} else {
+					repositoryService.deleteCandidateStarterGroup(pdId, il.getGroupId());
+				}
+			}
+			// 现在默认只分配角色
+			String[] temp = ids.split(",");
+			for (String id : temp) {
+				repositoryService.addCandidateStarterGroup(pdId, id);
+			}
+			return "{ \"success\" : true }";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"msg\" : \"上传失败！\" }";
+		}
+	}
+
+	/**
+	 * 获取流程定义已设置的发起角色
+	 * @param pdId 流程定义id
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/{pdId}/auth", method = RequestMethod.GET)
+	public String getAuth(@PathVariable String pdId) {
+		try {
+			ObjectMapper om = new ObjectMapper();
+			List<IdentityLink> olds = repositoryService.getIdentityLinksForProcessDefinition(pdId);
+			List<Integer> ids = new ArrayList<Integer>();
+			for (IdentityLink il : olds) {
+				ids.add(Integer.valueOf(il.getGroupId()));
+			}
+			return om.writeValueAsString(ids);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "[]";
 		}
 	}
 	
@@ -182,5 +235,5 @@ public class DefController {
 			return "{ \"total\" : 0, \"rows\" : [] }";
 		}
 	}
-
+	
 }

@@ -34,6 +34,7 @@
 			<table id="dg-list" data-options="title:'列表',toolbar:'#tb-list'"></table>
 			<div id="tb-list">
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="dlg_deploy()">部署</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-key',plain:true" onclick="dlg_auth()">授权</a>
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="func_del()">删除</a>
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-flag',plain:true" onclick="func_state()">激活/挂起</a>
 				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-image',plain:true" onclick="func_view('img')">流程图</a>
@@ -73,6 +74,27 @@
 		<div id="dlg-btn-deploy">
 			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_deploy()">确定</a>
 			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-deploy').dialog('close');">取消</a>
+		</div>
+	</div>
+	<!-- 设置发起人 -->
+	<div id="dlg-auth" class="easyui-dialog" style="width:420px;padding:10px;"
+		data-options="title:'部署',closed:true,buttons:'#dlg-btn-auth',resizable:true,modal:true">
+		<div style="margin:5px;">
+			<input type="hidden" id="auth-pdId" />
+			<div style="text-align: center;">
+				<table style="border-width:0;" align="center">
+					<tr>
+						<td style="text-align: right;">选择角色：</td>
+						<td style="text-align: left;">
+							<select id="auth-ids" class="easyui-combotree" style="width:300px;"></select>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="dlg-btn-auth">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_auth()">确定</a>
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-auth').dialog('close');">取消</a>
 		</div>
 	</div>
 	<!-- 预览 -->

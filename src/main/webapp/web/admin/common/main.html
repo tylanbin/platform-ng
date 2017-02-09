@@ -137,18 +137,23 @@
 	</div>
 	<div data-options="region:'west',title:'&nbsp;菜单栏',split:true,iconCls:'icon-table'" style="width:180px;">
 		<div class="easyui-accordion" data-options="fit:true,border:false,selected:0">
-			<div data-options="title:'&nbsp;基础管理功能',iconCls:'icon-server'" style="padding:8px;">
+			<div data-options="title:'&nbsp;工作空间',iconCls:'icon-page'" style="padding:8px;">
 				<ul class="easyui-tree" data-options="onBeforeSelect:function(node){return false;}">
-					<li><a onclick="tab_add('组织机构管理','../system/org/list.html')">组织机构管理</a></li>
-					<li><a onclick="tab_add('人员用户管理','../system/emp/list.html')">人员用户管理</a></li>
-					<li><a onclick="tab_add('权限资源管理','../system/perm/list.html')">权限资源管理</a></li>
-					<li><a onclick="tab_add('系统角色管理','../system/role/list.html')">系统角色管理</a></li>
+					<li><a onclick="tab_add('可发起的流程','../process/formkey/list-start.html')">可发起的流程</a></li>
 				</ul>
 			</div>
 			<div data-options="title:'&nbsp;流程管理功能',iconCls:'icon-page'" style="padding:8px;">
 				<ul class="easyui-tree" data-options="onBeforeSelect:function(node){return false;}">
 					<li><a onclick="tab_add('流程模型管理','../process/model/list.html')">流程模型管理</a></li>
 					<li><a onclick="tab_add('流程定义管理','../process/def/list.html')">流程定义管理</a></li>
+				</ul>
+			</div>
+			<div data-options="title:'&nbsp;基础管理功能',iconCls:'icon-server'" style="padding:8px;">
+				<ul class="easyui-tree" data-options="onBeforeSelect:function(node){return false;}">
+					<li><a onclick="tab_add('组织机构管理','../system/org/list.html')">组织机构管理</a></li>
+					<li><a onclick="tab_add('人员用户管理','../system/emp/list.html')">人员用户管理</a></li>
+					<li><a onclick="tab_add('权限资源管理','../system/perm/list.html')">权限资源管理</a></li>
+					<li><a onclick="tab_add('系统角色管理','../system/role/list.html')">系统角色管理</a></li>
 				</ul>
 			</div>
 			<div data-options="title:'&nbsp;新增管理功能',iconCls:'icon-add'" style="padding:8px;">
