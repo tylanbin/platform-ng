@@ -10,4 +10,8 @@ $(function() {
 		// 封装请求路径，使业务和视图进行分离
 		options.url = AppCore.baseUrl + originalOptions.url;
 	});
+	$.ajaxPrefilter("html", function(options, originalOptions, jqXHR) {
+		// 封装请求路径，使业务和视图进行分离
+		options.url = AppCore.baseUrl + originalOptions.url;
+	});
 })

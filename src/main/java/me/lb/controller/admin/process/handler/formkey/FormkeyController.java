@@ -20,10 +20,12 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,39 +58,6 @@ public class FormkeyController {
 	private RepositoryService repositoryService;
 
 	/**
-	 * 获取开始节点设置的form
-	 * @param pdId 流程定义id
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/form/start", method = RequestMethod.GET)
-	public Object getStartFormKey(String pdId) {
-		try {
-			// 在部署流程时，将设计的表单一同压缩在zip中进行部署，这里就可以直接获取表单内容了
-			Object form = formService.getRenderedStartForm(pdId);
-			return form;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "";
-		}
-	}
-	
-	/**
-	 * 获取任务节点设置的form
-	 * @param taskId 流程实例的任务节点id（实例id）
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/form/task", method = RequestMethod.GET)
-	public Object getTaskFormKey(String taskId) {
-		try {
-			Object form = formService.getRenderedTaskForm(taskId);
-			return form;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "";
-		}
-	}
-	
-	/**
 	 * 可发起的流程定义
 	 */
 	@ResponseBody
@@ -102,24 +71,46 @@ public class FormkeyController {
 			if (!StringUtils.isEmpty(params)) {
 				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 			}
-			ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery()
-					.startableByUser(String.valueOf(user.getId())).latestVersion().active();
+			// 由于封装的查询不支持latestVersion与nameLike并列，所以这里改为自定义查询
+			// 编写的sql需要参考activiti-engine-x.x.x.jar中的org.activiti.db.mapping包
+			StringBuffer sql = new StringBuffer("from ACT_RE_PROCDEF RES where 1=1");
+			// 最新的版本
+			sql.append(" and RES.VERSION_ = (select max(VERSION_) from ACT_RE_PROCDEF where KEY_ = RES.KEY_)");
+			// 可以由用户发起
+			sql.append(" and (");
+			sql.append(" exists (select ID_  from ACT_RU_IDENTITYLINK IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.USER_ID_ = #{userId})");
+			sql.append(" or exists (select ID_ from ACT_RU_IDENTITYLINK IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.GROUP_ID_ IN (select MS.GROUP_ID_ from ACT_ID_MEMBERSHIP MS where MS.USER_ID_ = #{userId}))");
+			sql.append(")");
 			// 级联查询参数
 			if (map.containsKey("pdKeyLike")) {
-				query = query.processDefinitionKeyLike("%" + map.get("pdKey") + "%");
+				sql.append(" and RES.KEY_ like #{pdKeyLike}");
 			}
 			if (map.containsKey("pdNameLike")) {
-				query = query.processDefinitionNameLike("%" + map.get("pdName") + "%");
+				sql.append(" and RES.NAME_ like #{pdNameLike}");
 			}
 			if (map.containsKey("pdCategoryLike")) {
-				query = query.processDefinitionCategoryLike("%" + map.get("pdCategory") + "%");
+				sql.append(" and RES.CATEGORY_ like #{pdCategoryLike}");
 			}
-			// 查询结果排序
-			query = query.orderByDeploymentId().desc();
-			// 查询结果（分页查询）
-			long total = query.count();
-			List<ProcessDefinition> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
-			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要使用值对象进行处理
+			// 按照key顺序排序
+			sql.append(" order by RES.KEY_ asc");
+			// 创建自定义查询
+			NativeProcessDefinitionQuery q = repositoryService.createNativeProcessDefinitionQuery();
+			// 先查询数据
+			q.sql("select RES.* " + sql);
+			q.parameter("userId", user.getId());
+			if (map.containsKey("pdKeyLike")) {
+				q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
+			}
+			if (map.containsKey("pdNameLike")) {
+				q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
+			}
+			if (map.containsKey("pdCategoryLike")) {
+				q.parameter("pdCategoryLike", "%" + map.get("pdCategoryLike") + "%");
+			}
+			List<ProcessDefinition> list = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+			// 再查询总数
+			long total = q.sql("select count(RES.ID_) " + sql).count();
+			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要进行处理
 			List<Object> datas = new ArrayList<Object>();
 			for (ProcessDefinition pd : list) {
 				datas.add(ActivitiUtil.convertProcessDefinitionToMap(pd));
@@ -133,6 +124,23 @@ public class FormkeyController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
+		}
+	}
+	
+	/**
+	 * 获取开始节点设置的form
+	 * @param pdId 流程定义id
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/process/{pdId}/form", method = RequestMethod.GET)
+	public Object getStartFormKey(@PathVariable String pdId) {
+		try {
+			// 在部署流程时，将设计的表单一同压缩在zip中进行部署，这里就可以直接获取表单内容了
+			Object form = formService.getRenderedStartForm(pdId);
+			return form;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
 		}
 	}
 	
@@ -189,13 +197,59 @@ public class FormkeyController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/task/todoList", method = RequestMethod.GET)
-	public String todoList(HttpSession session) {
+	public String todoList(String params, HttpSession session) {
 		try {
-			// TODO: 缺少待办任务列表
-			return "{ \"total\" : 0, \"rows\" : [] }";
+			User user = UserUtil.getUserFromSession(session);
+	        ObjectMapper om = new ObjectMapper();
+			Map<String, Object> map = new HashMap<String, Object>();
+			if (!StringUtils.isEmpty(params)) {
+				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+			}
+			TaskQuery query = taskService.createTaskQuery().taskCandidateOrAssigned(String.valueOf(user.getId())).active();
+			// 级联查询参数
+			if (map.containsKey("pdKeyLike")) {
+				query = query.processDefinitionKeyLike("%" + map.get("pdKeyLike") + "%");
+			}
+			if (map.containsKey("pdNameLike")) {
+				query = query.processDefinitionNameLike("%" + map.get("pdNameLike") + "%");
+			}
+			if (map.containsKey("taskNameLike")) {
+				query = query.taskNameLikeIgnoreCase("%" + map.get("taskNameLike") + "%");
+			}
+			// 查询结果排序
+			query = query.orderByTaskCreateTime().desc();
+			// 查询结果（分页查询）
+			long total = query.count();
+			List<Task> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要进行处理
+			List<Object> datas = new ArrayList<Object>();
+			for (Task t : list) {
+				datas.add(ActivitiUtil.convertTaskToMap(t));
+			}
+			// 序列化查询结果为JSON
+			Map<String, Object> result = new HashMap<String, Object>();
+			result.put("total", total);
+			result.put("rows", datas);
+			return om.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
+		}
+	}
+	
+	/**
+	 * 获取任务节点设置的form
+	 * @param taskId 流程实例的任务节点id（实例id）
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/task/{taskId}/form", method = RequestMethod.GET)
+	public Object getTaskFormKey(@PathVariable String taskId) {
+		try {
+			Object form = formService.getRenderedTaskForm(taskId);
+			return form;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
 		}
 	}
 

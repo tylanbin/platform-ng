@@ -164,27 +164,27 @@ public class ModelController {
 		// 查询数据集合的方法
 		try {
 			ObjectMapper om = new ObjectMapper();
-			Map<String, Object> map = null;
+			Map<String, Object> map = new HashMap<String, Object>();
 			if (!StringUtils.isEmpty(params)) {
 				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 			}
 			// 处理参数，拼接sql
 			// 编写的sql需要参考activiti-engine-x.x.x.jar中的org.activiti.db.mapping包
 			StringBuffer sql = new StringBuffer("from ACT_RE_MODEL RES where 1=1");
-			if (map != null && map.containsKey("nameLike")) {
+			if (map.containsKey("nameLike")) {
 				sql.append(" and RES.NAME_ like #{nameLike}");
 			}
-			if (map != null && map.containsKey("keyLike")) {
+			if (map.containsKey("keyLike")) {
 				sql.append(" and RES.KEY_ like #{keyLike}");
 			}
 			// 创建自定义查询
 			NativeModelQuery q = repositoryService.createNativeModelQuery();
 			// 先查询数据
 			q.sql("select distinct RES.* " + sql);
-			if (map != null && map.containsKey("nameLike")) {
+			if (map.containsKey("nameLike")) {
 				q.parameter("nameLike", "%" + map.get("nameLike") + "%");
 			}
-			if (map != null && map.containsKey("keyLike")) {
+			if (map.containsKey("keyLike")) {
 				q.parameter("keyLike", "%" + map.get("keyLike") + "%");
 			}
 			List<Model> rows = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());

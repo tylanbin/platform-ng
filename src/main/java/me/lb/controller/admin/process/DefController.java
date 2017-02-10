@@ -14,8 +14,8 @@ import me.lb.utils.ActivitiUtil;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.apache.commons.io.FilenameUtils;
@@ -195,31 +195,48 @@ public class DefController {
 			if (!StringUtils.isEmpty(params)) {
 				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
 			}
-			// 分类别查询数据（这里只显示最新版本，去掉latestVersion显示全部）
-			ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().latestVersion();
+			// 由于封装的查询不支持latestVersion与nameLike并列，所以这里改为自定义查询
+			// 编写的sql需要参考activiti-engine-x.x.x.jar中的org.activiti.db.mapping包
+			StringBuffer sql = new StringBuffer("from ACT_RE_PROCDEF RES where 1=1");
+			// 最新的版本
+			sql.append(" and RES.VERSION_ = (select max(VERSION_) from ACT_RE_PROCDEF where KEY_ = RES.KEY_)");
+			// 分类别
 			if ("all".equals(type)) {
 				// 查询全部流程定义
 			} else if ("active".equals(type)) {
-				query = query.active();
+				sql.append(" and RES.SUSPENSION_STATE_ = 1");
 			} else if ("suspended".equals(type)) {
-				query = query.suspended();
+				sql.append(" and RES.SUSPENSION_STATE_ = 2");
 			}
 			// 级联查询参数
 			if (map.containsKey("pdKeyLike")) {
-				query = query.processDefinitionKeyLike("%" + map.get("pdKey") + "%");
+				sql.append(" and RES.KEY_ like #{pdKeyLike}");
 			}
 			if (map.containsKey("pdNameLike")) {
-				query = query.processDefinitionNameLike("%" + map.get("pdName") + "%");
+				sql.append(" and RES.NAME_ like #{pdNameLike}");
 			}
 			if (map.containsKey("pdCategoryLike")) {
-				query = query.processDefinitionCategoryLike("%" + map.get("pdCategory") + "%");
+				sql.append(" and RES.CATEGORY_ like #{pdCategoryLike}");
 			}
-			// 查询结果排序
-			query = query.orderByProcessDefinitionKey().desc();
-			// 查询结果（分页查询）
-			long total = query.count();
-			List<ProcessDefinition> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
-			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要使用值对象进行处理
+			// 按照key顺序排序
+			sql.append(" order by RES.KEY_ asc");
+			// 创建自定义查询
+			NativeProcessDefinitionQuery q = repositoryService.createNativeProcessDefinitionQuery();
+			// 先查询数据
+			q.sql("select RES.* " + sql);
+			if (map.containsKey("pdKeyLike")) {
+				q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
+			}
+			if (map.containsKey("pdNameLike")) {
+				q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
+			}
+			if (map.containsKey("pdCategoryLike")) {
+				q.parameter("pdCategoryLike", "%" + map.get("pdCategoryLike") + "%");
+			}
+			List<ProcessDefinition> list = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+			// 再查询总数
+			long total = q.sql("select count(RES.ID_) " + sql).count();
+			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要进行处理
 			List<Object> datas = new ArrayList<Object>();
 			for (ProcessDefinition pd : list) {
 				datas.add(ActivitiUtil.convertProcessDefinitionToMap(pd));

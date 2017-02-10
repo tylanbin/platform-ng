@@ -13,10 +13,6 @@ $(function() {
 		url : 'admin/process/formkey/process/startList',
 		queryParams : {},
 		method : 'get',
-		frozenColumns : [[{
-					field : 'ck',
-					checkbox : true
-				}]],
 		columns : [[{
 					"field" : "id",
 					"title" : "编号"
@@ -86,7 +82,7 @@ function dlg_start() {
 		var html = '<div style="text-align: center;">没有需要填写的表单</div>';
 		$.ajax({
 			type : 'get',
-			url : 'admin/process/formkey/form/start',
+			url : 'admin/process/formkey/process/' + row.id + '/form',
 			dataType : 'html',
 			async : false,
 			success : function(data) {

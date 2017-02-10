@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Task;
 
 /**
  * Activiti工具类
@@ -30,6 +31,26 @@ public class ActivitiUtil {
 		map.put("tenantId", pd.getTenantId());
 		map.put("isSuspended", pd.isSuspended());
 		map.put("hasStartFormKey", pd.hasStartFormKey());
+		return map;
+	}
+	
+	/**
+	 * 将任务实例转换为Map
+	 * @param task 任务实例
+	 * @return 封装后的Map
+	 */
+	public static Map<String, Object> convertTaskToMap(Task task) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", task.getId());
+		map.put("taskDefinitionKey", task.getTaskDefinitionKey());
+		map.put("name", task.getName());
+		map.put("createTime", task.getCreateTime());
+		map.put("processDefinitionId", task.getProcessDefinitionId());
+		map.put("processInstanceId", task.getProcessInstanceId());
+		map.put("formKey", task.getFormKey());
+		map.put("description", task.getDescription());
+		map.put("tenantId", task.getTenantId());
+		map.put("assignee", task.getAssignee());
 		return map;
 	}
 
