@@ -16,6 +16,8 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -113,9 +115,46 @@ public class InsController {
 		}
 	}
 	
+	/**
+	 * 查看流程实例的历史数据
+	 * @param piId 流程实例id
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/{piId}/tasks", method = RequestMethod.GET)
+	public String hisTasks(@PathVariable String piId) {
+		try {
+			ObjectMapper om = new ObjectMapper();
+			List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery()
+					.processInstanceId(piId)
+					.orderByTaskId().asc()
+					.list();
+			return om.writeValueAsString(detailHistoricTaskInstance(list));
+		} catch (Exception e) {
+			return "[]";
+		}
+	}
+	
+	/**
+	 * 查看流程实例的历史数据
+	 * @param piId 流程实例id
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/{piId}/datas", method = RequestMethod.GET)
+	public String hisDatas(@PathVariable String piId) {
+		try {
+			ObjectMapper om = new ObjectMapper();
+			List<HistoricVariableInstance> list = historyService.createHistoricVariableInstanceQuery()
+					.processInstanceId(piId)
+					.list();
+			return om.writeValueAsString(list);
+		} catch (Exception e) {
+			return "[]";
+		}
+	}
+	
 	@ResponseBody
 	@RequestMapping(value = "/data/{type}", method = RequestMethod.GET)
-    public String running(@PathVariable String type, String params) {
+    public String data(@PathVariable String type, String params) {
 		try {
 			// 处理查询参数
 			ObjectMapper om = new ObjectMapper();
@@ -184,6 +223,10 @@ public class InsController {
 	
 	// 私有方法
 	
+	/**
+	 * 将历史流程实例的信息详细化
+	 * @param hpis 历史流程实例集合
+	 */
 	private ArrayNode detailHistoricProcessInstance(List<HistoricProcessInstance> hpis) throws Exception {
 		ObjectMapper om = new ObjectMapper();
 		ArrayNode arr = om.createArrayNode();
@@ -194,6 +237,26 @@ public class InsController {
 			on.put("processDefinitionName", pd.getName());
 			User user = userService.findById(Integer.valueOf(hpi.getStartUserId()));
 			on.put("startUser", user.getEmp().getName());
+			arr.add(on);
+		}
+		return arr;
+	}
+	
+	/**
+	 * 将历史任务的信息详细化
+	 * @param htis 历史任务集合
+	 */
+	private ArrayNode detailHistoricTaskInstance(List<HistoricTaskInstance> htis) throws Exception {
+		ObjectMapper om = new ObjectMapper();
+		ArrayNode arr = om.createArrayNode();
+		for (HistoricTaskInstance hti : htis) {
+			ObjectNode on = (ObjectNode) om.readTree(om.writeValueAsString(hti));
+			if (!StringUtils.isEmpty(hti.getAssignee())) {
+				User user = userService.findById(Integer.valueOf(hti.getAssignee()));
+				on.put("assigneeName", user.getEmp().getName());
+			} else {
+				on.put("assigneeName", "");
+			}
 			arr.add(on);
 		}
 		return arr;
