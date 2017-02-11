@@ -1,6 +1,7 @@
 package me.lb.controller.admin.process;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,11 +65,12 @@ public class InsController {
 			ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(piId).singleResult();
 			BpmnModel bpmnModel = repositoryService.getBpmnModel(pi.getProcessDefinitionId());
 			// 取得当前正在执行中的节点
-			List<String> activeActivityIds = runtimeService.getActiveActivityIds(piId);
+			List<String> currentIds = runtimeService.getActiveActivityIds(piId);
 			ProcessEngineConfigurationImpl config = processEngineFactory.getProcessEngineConfiguration();
 			Context.setProcessEngineConfiguration(config);
 			// 生成图片
-			InputStream input = config.getProcessDiagramGenerator().generateDiagram(bpmnModel, "png", activeActivityIds);
+			InputStream input = config.getProcessDiagramGenerator()
+					.generateDiagram(bpmnModel, "png", currentIds, Collections.<String>emptyList(), "黑体", "黑体", null, 1.0);
 			IOUtils.copy(input, response.getOutputStream());
 			response.flushBuffer();
 		} catch (Exception e) {
