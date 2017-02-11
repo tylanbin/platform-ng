@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<!-- styles -->
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui/themes/custom/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="../../../../assets/common/jquery-easyui-custom/easyui.custom.css">
+<!-- scripts -->
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../../../../assets/common/jquery-easyui-custom/easyui.custom.js"></script>
+
+<script type="text/javascript" src="../../../../assets/common/framework.js"></script>
+<!-- 时间处理js -->
+<script type="text/javascript" src="../../../../assets/common/js.Date.js"></script>
+<!-- JSON2 -->
+<!--[if lt IE 8]>
+<script type="text/javascript" src="../../../../assets/common/json-js/json2.js"></script>
+<![endif]-->
+<!-- page scripts -->
+<script type="text/javascript" src="../../../../assets/admin/process/formkey/list-hisProcs.js"></script>
+</head>
+
+<body>
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'center',border:false">
+			<table id="dg-list" data-options="title:'列表',toolbar:'#tb-list'"></table>
+			<div id="tb-list">
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-group',plain:true" onclick="func_task()">历史节点</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-table',plain:true" onclick="func_data()">历史数据</a>
+				<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="func_reload()">刷新</a>
+				<input id="searchbox" class="easyui-searchbox" data-options="width:200,searcher:search,prompt:'请输入查询内容',menu:'#searchMenu'">
+				<div id="searchMenu">
+					<div data-options="name:'pdNameLike'">名称</div>
+					<div data-options="name:'pdKeyLike'">KEY</div>
+					<!-- <div data-options="name:'piNameLike'">实例名称</div>
+					<div data-options="name:'startedAfter'">startedAfter</div>
+					<div data-options="name:'finishedBefore'">finishedBefore</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 查看历史任务 -->
+	<div id="dlg-task" class="easyui-dialog" style="width:680px;"
+		data-options="title:'历史节点',closed:true,buttons:'#dlg-btn-task',resizable:true,maximizable:true,modal:true">
+		<div style="margin:5px;">
+			<table id="dg-task" style="height: 280px;"></table>
+		</div>
+		<div id="dlg-btn-task">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-task').dialog('close');">关闭</a>
+		</div>
+	</div>
+	<!-- 查看历史数据 -->
+	<div id="dlg-data" class="easyui-dialog" style="width:400px;"
+		data-options="title:'历史数据',closed:true,buttons:'#dlg-btn-data',resizable:true,maximizable:true,modal:true">
+		<div style="margin:5px;">
+			<table id="dg-data" style="height: 280px;"></table>
+		</div>
+		<div id="dlg-btn-data">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-data').dialog('close');">关闭</a>
+		</div>
+	</div>
+</body>
+</html>

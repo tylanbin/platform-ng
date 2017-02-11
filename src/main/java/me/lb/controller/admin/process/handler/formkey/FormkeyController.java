@@ -1,5 +1,6 @@
 package me.lb.controller.admin.process.handler.formkey;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,15 +12,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import me.lb.model.system.User;
+import me.lb.service.system.UserService;
 import me.lb.support.system.SystemContext;
 import me.lb.utils.ActivitiUtil;
 import me.lb.utils.UserUtil;
 
 import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -36,6 +44,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 外置表单（formkey）类型流程的处理
@@ -47,16 +57,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class FormkeyController {
 	
 	@Autowired
+	private UserService userService;
+	
+	@Autowired
 	private FormService formService;
 	@Autowired
 	private TaskService taskService;
 	@Autowired
 	private RuntimeService runtimeService;
 	@Autowired
+	private HistoryService historyService;
+	@Autowired
 	private IdentityService identityService;
 	@Autowired
 	private RepositoryService repositoryService;
 
+	// 流程部分
+	
 	/**
 	 * 可发起的流程定义
 	 */
@@ -192,6 +209,8 @@ public class FormkeyController {
 		}
 	}
 	
+	// 任务部分
+	
 	/**
 	 * 待办任务
 	 */
@@ -301,6 +320,8 @@ public class FormkeyController {
 				value = value.substring(1, value.length() - 1);
 				params.put(name, value);
 			}
+			// 将提交的数据与任务进行绑定，便于查询任务的数据
+			taskService.setVariablesLocal(taskId, params);
 			// 提交表单并完成任务
 			formService.submitTaskFormData(taskId, params);
 			return "{ \"success\" : true }";
@@ -308,6 +329,178 @@ public class FormkeyController {
 			e.printStackTrace();
 			return "{ \"msg\" : \"操作失败！\" }";
 		}
+	}
+	
+	// 历史部分
+	
+	@ResponseBody
+	@RequestMapping(value = "/process/hisList", method = RequestMethod.GET)
+    public String hisProcs(String params, HttpSession session) {
+		try {
+			User user = UserUtil.getUserFromSession(session);
+			// 处理查询参数
+			ObjectMapper om = new ObjectMapper();
+			Map<String, Object> map = new HashMap<String, Object>();
+			if (!StringUtils.isEmpty(params)) {
+				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+			}
+			// 查询执行结束的流程实例
+			StringBuffer sql = new StringBuffer("from ACT_HI_PROCINST RES inner join ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_");
+			sql.append(" where exists(select LINK.USER_ID_ from ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{userId} and LINK.PROC_INST_ID_ = RES.ID_)");
+			// 追加sql
+			if (map.containsKey("pdKeyLike")) {
+				sql.append(" and DEF.KEY_ = #{pdKeyLike}");
+			}
+			if (map.containsKey("pdNameLike")) {
+				sql.append(" and DEF.NAME_ like #{pdNameLike}");
+			}
+			if (map.containsKey("piNameLike")) {
+				sql.append(" and RES.NAME_ like #{piNameLike}");
+			}
+			if (map.containsKey("startedAfter")) {
+				sql.append(" and RES.START_TIME_ >= #{startedAfter}");
+			}
+			if (map.containsKey("finishedBefore")) {
+				sql.append(" and RES.END_TIME_ <= #{finishedBefore}");
+			}
+			NativeHistoricProcessInstanceQuery q = historyService.createNativeHistoricProcessInstanceQuery();
+			// 先查询数据
+			q.sql("select RES.* " + sql);
+			q.parameter("userId", user.getId());
+			// 处理参数
+			if (map.containsKey("pdKeyLike")) {
+				q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
+			}
+			if (map.containsKey("pdNameLike")) {
+				q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
+			}
+			if (map.containsKey("piNameLike")) {
+				q.parameter("piNameLike", "%" + map.get("piNameLike") + "%");
+			}
+			if (map.containsKey("startedAfter")) {
+				q.parameter("startedAfter", map.get("startedAfter"));
+			}
+			if (map.containsKey("finishedBefore")) {
+				q.parameter("finishedBefore", map.get("finishedBefore"));
+			}
+			List<HistoricProcessInstance> rows = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+			// 再查询总数
+			long total = q.sql("select count(distinct RES.ID_) " + sql).count();
+			// 序列化查询结果为JSON
+			Map<String, Object> result = new HashMap<String, Object>();
+			result.put("total", total);
+			result.put("rows", detailHistoricProcessInstance(rows));
+			return om.writeValueAsString(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"total\" : 0, \"rows\" : [] }";
+		}
+    }
+	
+	/**
+	 * 参与过的任务
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/task/hisList", method = RequestMethod.GET)
+	public String hisTasks(String params, HttpSession session) {
+		try {
+			User user = UserUtil.getUserFromSession(session);
+			// 处理查询参数
+			ObjectMapper om = new ObjectMapper();
+			Map<String, Object> map = new HashMap<String, Object>();
+			if (!StringUtils.isEmpty(params)) {
+				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+			}
+			HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery()
+					.taskAssignee(String.valueOf(user.getId())).finished();
+			// 级联查询参数
+			if (map.containsKey("keyLike")) {
+				query = query.taskDefinitionKeyLike("%" + map.get("keyLike") + "%");
+			}
+			if (map.containsKey("nameLike")) {
+				query = query.taskNameLike("%" + map.get("nameLike") + "%");
+			}
+			// 处理时间（预留）
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			if (map.containsKey("dateAfter")) {
+				query = query.taskCompletedAfter(sdf.parse(String.valueOf(map.get("dateAfter"))));
+			}
+			if (map.containsKey("dateBefore")) {
+				query = query.taskCompletedBefore(sdf.parse(String.valueOf(map.get("dateBefore"))));
+			}
+			// 查询结果排序
+			query = query.orderByTaskCreateTime().desc();
+			// 查询结果（分页查询）
+			long total = query.count();
+			List<HistoricTaskInstance> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+			// 序列化查询结果为JSON
+			Map<String, Object> result = new HashMap<String, Object>();
+			result.put("total", total);
+			result.put("rows", detailHistoricTaskInstance(list));
+			// 不是自己的实体类，不需要进行输出过滤
+			return om.writeValueAsString(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{ \"total\" : 0, \"rows\" : [] }";
+		}
+	}
+	
+	/**
+	 * 查看任务的历史数据
+	 * @param taskId 历史任务id
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/task/{taskId}/datas", method = RequestMethod.GET)
+	public String datas(@PathVariable String taskId) {
+		try {
+			ObjectMapper om = new ObjectMapper();
+			List<HistoricVariableInstance> list = historyService.createHistoricVariableInstanceQuery()
+					.taskId(taskId).list();
+			return om.writeValueAsString(list);
+		} catch (Exception e) {
+			return "[]";
+		}
+	}
+	
+	// 私有方法
+	
+	/**
+	 * 将历史流程实例的信息详细化
+	 * @param hpis 历史流程实例集合
+	 */
+	private ArrayNode detailHistoricProcessInstance(List<HistoricProcessInstance> hpis) throws Exception {
+		ObjectMapper om = new ObjectMapper();
+		ArrayNode arr = om.createArrayNode();
+		for (HistoricProcessInstance hpi : hpis) {
+			ObjectNode on = (ObjectNode) om.readTree(om.writeValueAsString(hpi));
+			ProcessDefinition pd = repositoryService.getProcessDefinition(hpi.getProcessDefinitionId());
+			on.put("processDefinitionKey", pd.getKey());
+			on.put("processDefinitionName", pd.getName());
+			User user = userService.findById(Integer.valueOf(hpi.getStartUserId()));
+			on.put("startUser", user.getEmp().getName());
+			arr.add(on);
+		}
+		return arr;
+	}
+	
+	/**
+	 * 将历史任务的信息详细化
+	 * @param htis 历史任务集合
+	 */
+	private ArrayNode detailHistoricTaskInstance(List<HistoricTaskInstance> htis) throws Exception {
+		ObjectMapper om = new ObjectMapper();
+		ArrayNode arr = om.createArrayNode();
+		for (HistoricTaskInstance hti : htis) {
+			ObjectNode on = (ObjectNode) om.readTree(om.writeValueAsString(hti));
+			if (!StringUtils.isEmpty(hti.getAssignee())) {
+				User user = userService.findById(Integer.valueOf(hti.getAssignee()));
+				on.put("assigneeName", user.getEmp().getName());
+			} else {
+				on.put("assigneeName", "");
+			}
+			arr.add(on);
+		}
+		return arr;
 	}
 	
 }

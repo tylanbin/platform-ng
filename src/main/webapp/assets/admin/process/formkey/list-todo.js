@@ -151,11 +151,11 @@ function func_claim() {
 			success : function(data) {
 				if (data.success) {
 					$('#dg-list').datagrid('reload');
-					$('#dg-list').datagrid('clearSelections');
+					// $('#dg-list').datagrid('clearSelections');
 				} else {
 					// 出错也需要重载
 					$('#dg-list').datagrid('reload');
-					$('#dg-list').datagrid('clearSelections');
+					// $('#dg-list').datagrid('clearSelections');
 					$.messager.show({
 						title : '错误',
 						msg : data.msg,
@@ -170,7 +170,7 @@ function func_claim() {
 			error : function() {
 				// 出错也需要重载
 				$('#dg-list').datagrid('reload');
-				$('#dg-list').datagrid('clearSelections');
+				// $('#dg-list').datagrid('clearSelections');
 				$.messager.show({
 					title : '错误',
 					msg : '服务器正忙，请稍后再试！',
