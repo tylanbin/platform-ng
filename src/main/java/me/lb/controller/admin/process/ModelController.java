@@ -114,7 +114,7 @@ public class ModelController {
 	 * @param id 流程模型id
 	 */
 	@RequestMapping(value = "/{id}/resource/{type}", method = RequestMethod.GET)
-	public void getJson(@PathVariable String id, String type, HttpServletResponse response) {
+	public void getJson(@PathVariable String id, @PathVariable String type, HttpServletResponse response) {
 		try {
 			Model model = repositoryService.getModel(id);
             byte[] editorSource = repositoryService.getModelEditorSource(id);

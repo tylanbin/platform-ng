@@ -1,7 +1,6 @@
 package me.lb.controller.admin.system;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +39,7 @@ public class UserController {
 		try {
 			ObjectMapper om = new ObjectMapper();
 			Emp emp = empService.findById(empId);
-			List<User> list = new ArrayList<User>();
+			List<User> list = om.readValue(objs, new TypeReference<List<User>>() {});
 			// 先完成验证
 			for (User temp : list) {
 				if (temp.getId() == null) {
