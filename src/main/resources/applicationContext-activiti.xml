@@ -29,7 +29,7 @@
 		<property name="mailServerHost" value="smtp.163.com" />
 		<property name="mailServerDefaultFrom" value="tylanbin_mi01@163.com" />
 		<property name="mailServerUsername" value="tylanbin_mi01@163.com" />
-		<property name="mailServerPassword" value="lanbin" />
+		<property name="mailServerPassword" value="***" />
 	</bean>
 
 	<!-- 常用服务的注入 -->

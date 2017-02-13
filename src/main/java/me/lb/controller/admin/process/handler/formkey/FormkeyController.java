@@ -82,62 +82,67 @@ public class FormkeyController {
 	public String startList(String params, HttpSession session) {
 		try {
 			User user = UserUtil.getUserFromSession(session);
-			// 处理查询参数
-			ObjectMapper om = new ObjectMapper();
-			Map<String, Object> map = new HashMap<String, Object>();
-			if (!StringUtils.isEmpty(params)) {
-				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+			if (user != null) {
+				// 处理查询参数
+				ObjectMapper om = new ObjectMapper();
+				Map<String, Object> map = new HashMap<String, Object>();
+				if (!StringUtils.isEmpty(params)) {
+					map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+				}
+				// 由于封装的查询不支持latestVersion与nameLike并列，所以这里改为自定义查询
+				// 编写的sql需要参考activiti-engine-x.x.x.jar中的org.activiti.db.mapping包
+				StringBuffer sql = new StringBuffer("from ACT_RE_PROCDEF RES where 1=1");
+				// 最新的版本
+				sql.append(" and RES.VERSION_ = (select max(VERSION_) from ACT_RE_PROCDEF where KEY_ = RES.KEY_)");
+				// 可以由用户发起
+				sql.append(" and (");
+				sql.append(" exists (select ID_  from ACT_RU_IDENTITYLINK IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.USER_ID_ = #{userId})");
+				sql.append(" or exists (select ID_ from ACT_RU_IDENTITYLINK IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.GROUP_ID_ IN (select MS.GROUP_ID_ from ACT_ID_MEMBERSHIP MS where MS.USER_ID_ = #{userId}))");
+				sql.append(")");
+				// 级联查询参数
+				if (map.containsKey("pdKeyLike")) {
+					sql.append(" and RES.KEY_ like #{pdKeyLike}");
+				}
+				if (map.containsKey("pdNameLike")) {
+					sql.append(" and RES.NAME_ like #{pdNameLike}");
+				}
+				if (map.containsKey("pdCategoryLike")) {
+					sql.append(" and RES.CATEGORY_ like #{pdCategoryLike}");
+				}
+				// 按照key顺序排序
+				sql.append(" order by RES.KEY_ asc");
+				// 创建自定义查询
+				NativeProcessDefinitionQuery q = repositoryService.createNativeProcessDefinitionQuery();
+				// 先查询数据
+				q.sql("select RES.* " + sql);
+				q.parameter("userId", user.getId());
+				if (map.containsKey("pdKeyLike")) {
+					q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
+				}
+				if (map.containsKey("pdNameLike")) {
+					q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
+				}
+				if (map.containsKey("pdCategoryLike")) {
+					q.parameter("pdCategoryLike", "%" + map.get("pdCategoryLike") + "%");
+				}
+				List<ProcessDefinition> list = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+				// 再查询总数
+				long total = q.sql("select count(RES.ID_) " + sql).count();
+				// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要进行处理
+				List<Object> datas = new ArrayList<Object>();
+				for (ProcessDefinition pd : list) {
+					datas.add(ActivitiUtil.convertProcessDefinitionToMap(pd));
+				}
+				// 序列化查询结果为JSON
+				Map<String, Object> result = new HashMap<String, Object>();
+				result.put("total", total);
+				result.put("rows", datas);
+				// 不是自己的实体类，不需要进行输出过滤
+				return om.writeValueAsString(result);
+			} else {
+				// 没有登录的用户
+				return "{ \"total\" : 0, \"rows\" : [] }";
 			}
-			// 由于封装的查询不支持latestVersion与nameLike并列，所以这里改为自定义查询
-			// 编写的sql需要参考activiti-engine-x.x.x.jar中的org.activiti.db.mapping包
-			StringBuffer sql = new StringBuffer("from ACT_RE_PROCDEF RES where 1=1");
-			// 最新的版本
-			sql.append(" and RES.VERSION_ = (select max(VERSION_) from ACT_RE_PROCDEF where KEY_ = RES.KEY_)");
-			// 可以由用户发起
-			sql.append(" and (");
-			sql.append(" exists (select ID_  from ACT_RU_IDENTITYLINK IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.USER_ID_ = #{userId})");
-			sql.append(" or exists (select ID_ from ACT_RU_IDENTITYLINK IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.GROUP_ID_ IN (select MS.GROUP_ID_ from ACT_ID_MEMBERSHIP MS where MS.USER_ID_ = #{userId}))");
-			sql.append(")");
-			// 级联查询参数
-			if (map.containsKey("pdKeyLike")) {
-				sql.append(" and RES.KEY_ like #{pdKeyLike}");
-			}
-			if (map.containsKey("pdNameLike")) {
-				sql.append(" and RES.NAME_ like #{pdNameLike}");
-			}
-			if (map.containsKey("pdCategoryLike")) {
-				sql.append(" and RES.CATEGORY_ like #{pdCategoryLike}");
-			}
-			// 按照key顺序排序
-			sql.append(" order by RES.KEY_ asc");
-			// 创建自定义查询
-			NativeProcessDefinitionQuery q = repositoryService.createNativeProcessDefinitionQuery();
-			// 先查询数据
-			q.sql("select RES.* " + sql);
-			q.parameter("userId", user.getId());
-			if (map.containsKey("pdKeyLike")) {
-				q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
-			}
-			if (map.containsKey("pdNameLike")) {
-				q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
-			}
-			if (map.containsKey("pdCategoryLike")) {
-				q.parameter("pdCategoryLike", "%" + map.get("pdCategoryLike") + "%");
-			}
-			List<ProcessDefinition> list = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
-			// 再查询总数
-			long total = q.sql("select count(RES.ID_) " + sql).count();
-			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要进行处理
-			List<Object> datas = new ArrayList<Object>();
-			for (ProcessDefinition pd : list) {
-				datas.add(ActivitiUtil.convertProcessDefinitionToMap(pd));
-			}
-			// 序列化查询结果为JSON
-			Map<String, Object> result = new HashMap<String, Object>();
-			result.put("total", total);
-			result.put("rows", datas);
-			// 不是自己的实体类，不需要进行输出过滤
-			return om.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
@@ -219,37 +224,42 @@ public class FormkeyController {
 	public String todoList(String params, HttpSession session) {
 		try {
 			User user = UserUtil.getUserFromSession(session);
-	        ObjectMapper om = new ObjectMapper();
-			Map<String, Object> map = new HashMap<String, Object>();
-			if (!StringUtils.isEmpty(params)) {
-				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+			if (user != null) {
+				ObjectMapper om = new ObjectMapper();
+				Map<String, Object> map = new HashMap<String, Object>();
+				if (!StringUtils.isEmpty(params)) {
+					map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+				}
+				TaskQuery query = taskService.createTaskQuery().taskCandidateOrAssigned(String.valueOf(user.getId())).active();
+				// 级联查询参数
+				if (map.containsKey("pdKeyLike")) {
+					query = query.processDefinitionKeyLike("%" + map.get("pdKeyLike") + "%");
+				}
+				if (map.containsKey("pdNameLike")) {
+					query = query.processDefinitionNameLike("%" + map.get("pdNameLike") + "%");
+				}
+				if (map.containsKey("taskNameLike")) {
+					query = query.taskNameLikeIgnoreCase("%" + map.get("taskNameLike") + "%");
+				}
+				// 查询结果排序
+				query = query.orderByTaskCreateTime().desc();
+				// 查询结果（分页查询）
+				long total = query.count();
+				List<Task> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+				// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要进行处理
+				List<Object> datas = new ArrayList<Object>();
+				for (Task t : list) {
+					datas.add(ActivitiUtil.convertTaskToMap(t));
+				}
+				// 序列化查询结果为JSON
+				Map<String, Object> result = new HashMap<String, Object>();
+				result.put("total", total);
+				result.put("rows", datas);
+				return om.writeValueAsString(result);
+			} else {
+				// 没有登录的用户
+				return "{ \"total\" : 0, \"rows\" : [] }";
 			}
-			TaskQuery query = taskService.createTaskQuery().taskCandidateOrAssigned(String.valueOf(user.getId())).active();
-			// 级联查询参数
-			if (map.containsKey("pdKeyLike")) {
-				query = query.processDefinitionKeyLike("%" + map.get("pdKeyLike") + "%");
-			}
-			if (map.containsKey("pdNameLike")) {
-				query = query.processDefinitionNameLike("%" + map.get("pdNameLike") + "%");
-			}
-			if (map.containsKey("taskNameLike")) {
-				query = query.taskNameLikeIgnoreCase("%" + map.get("taskNameLike") + "%");
-			}
-			// 查询结果排序
-			query = query.orderByTaskCreateTime().desc();
-			// 查询结果（分页查询）
-			long total = query.count();
-			List<Task> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
-			// 直接使用该list会出现异常（Direct self-reference leading to cycle），所以需要进行处理
-			List<Object> datas = new ArrayList<Object>();
-			for (Task t : list) {
-				datas.add(ActivitiUtil.convertTaskToMap(t));
-			}
-			// 序列化查询结果为JSON
-			Map<String, Object> result = new HashMap<String, Object>();
-			result.put("total", total);
-			result.put("rows", datas);
-			return om.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
@@ -338,59 +348,65 @@ public class FormkeyController {
     public String hisProcs(String params, HttpSession session) {
 		try {
 			User user = UserUtil.getUserFromSession(session);
-			// 处理查询参数
-			ObjectMapper om = new ObjectMapper();
-			Map<String, Object> map = new HashMap<String, Object>();
-			if (!StringUtils.isEmpty(params)) {
-				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+			if (user != null) {
+				// 处理查询参数
+				ObjectMapper om = new ObjectMapper();
+				Map<String, Object> map = new HashMap<String, Object>();
+				if (!StringUtils.isEmpty(params)) {
+					map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+				}
+				// 查询执行结束的流程实例
+				StringBuffer sql = new StringBuffer("from ACT_HI_PROCINST RES inner join ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_");
+				sql.append(" where exists(select LINK.USER_ID_ from ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{userId} and LINK.PROC_INST_ID_ = RES.ID_)");
+				// 追加sql
+				if (map.containsKey("pdKeyLike")) {
+					sql.append(" and DEF.KEY_ = #{pdKeyLike}");
+				}
+				if (map.containsKey("pdNameLike")) {
+					sql.append(" and DEF.NAME_ like #{pdNameLike}");
+				}
+				if (map.containsKey("piNameLike")) {
+					sql.append(" and RES.NAME_ like #{piNameLike}");
+				}
+				if (map.containsKey("startedAfter")) {
+					sql.append(" and RES.START_TIME_ >= #{startedAfter}");
+				}
+				if (map.containsKey("finishedBefore")) {
+					sql.append(" and RES.END_TIME_ <= #{finishedBefore}");
+				}
+				NativeHistoricProcessInstanceQuery q = historyService.createNativeHistoricProcessInstanceQuery();
+				// 先查询数据
+				q.sql("select RES.* " + sql);
+				q.parameter("userId", user.getId());
+				// 处理参数
+				if (map.containsKey("pdKeyLike")) {
+					q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
+				}
+				if (map.containsKey("pdNameLike")) {
+					q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
+				}
+				if (map.containsKey("piNameLike")) {
+					q.parameter("piNameLike", "%" + map.get("piNameLike") + "%");
+				}
+				if (map.containsKey("startedAfter")) {
+					q.parameter("startedAfter", map.get("startedAfter"));
+				}
+				if (map.containsKey("finishedBefore")) {
+					q.parameter("finishedBefore", map.get("finishedBefore"));
+				}
+				List<HistoricProcessInstance> rows = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+				// 再查询总数
+				long total = q.sql("select count(distinct RES.ID_) " + sql).count();
+				// 序列化查询结果为JSON
+				Map<String, Object> result = new HashMap<String, Object>();
+				result.put("total", total);
+				result.put("rows", detailHistoricProcessInstance(rows));
+				return om.writeValueAsString(result);
+				
+			} else {
+				// 没有登录的用户
+				return "{ \"total\" : 0, \"rows\" : [] }";
 			}
-			// 查询执行结束的流程实例
-			StringBuffer sql = new StringBuffer("from ACT_HI_PROCINST RES inner join ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_");
-			sql.append(" where exists(select LINK.USER_ID_ from ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{userId} and LINK.PROC_INST_ID_ = RES.ID_)");
-			// 追加sql
-			if (map.containsKey("pdKeyLike")) {
-				sql.append(" and DEF.KEY_ = #{pdKeyLike}");
-			}
-			if (map.containsKey("pdNameLike")) {
-				sql.append(" and DEF.NAME_ like #{pdNameLike}");
-			}
-			if (map.containsKey("piNameLike")) {
-				sql.append(" and RES.NAME_ like #{piNameLike}");
-			}
-			if (map.containsKey("startedAfter")) {
-				sql.append(" and RES.START_TIME_ >= #{startedAfter}");
-			}
-			if (map.containsKey("finishedBefore")) {
-				sql.append(" and RES.END_TIME_ <= #{finishedBefore}");
-			}
-			NativeHistoricProcessInstanceQuery q = historyService.createNativeHistoricProcessInstanceQuery();
-			// 先查询数据
-			q.sql("select RES.* " + sql);
-			q.parameter("userId", user.getId());
-			// 处理参数
-			if (map.containsKey("pdKeyLike")) {
-				q.parameter("pdKeyLike", "%" + map.get("pdKeyLike") + "%");
-			}
-			if (map.containsKey("pdNameLike")) {
-				q.parameter("pdNameLike", "%" + map.get("pdNameLike") + "%");
-			}
-			if (map.containsKey("piNameLike")) {
-				q.parameter("piNameLike", "%" + map.get("piNameLike") + "%");
-			}
-			if (map.containsKey("startedAfter")) {
-				q.parameter("startedAfter", map.get("startedAfter"));
-			}
-			if (map.containsKey("finishedBefore")) {
-				q.parameter("finishedBefore", map.get("finishedBefore"));
-			}
-			List<HistoricProcessInstance> rows = q.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
-			// 再查询总数
-			long total = q.sql("select count(distinct RES.ID_) " + sql).count();
-			// 序列化查询结果为JSON
-			Map<String, Object> result = new HashMap<String, Object>();
-			result.put("total", total);
-			result.put("rows", detailHistoricProcessInstance(rows));
-			return om.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";
@@ -405,40 +421,46 @@ public class FormkeyController {
 	public String hisTasks(String params, HttpSession session) {
 		try {
 			User user = UserUtil.getUserFromSession(session);
-			// 处理查询参数
-			ObjectMapper om = new ObjectMapper();
-			Map<String, Object> map = new HashMap<String, Object>();
-			if (!StringUtils.isEmpty(params)) {
-				map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+			if (user != null) {
+				// 处理查询参数
+				ObjectMapper om = new ObjectMapper();
+				Map<String, Object> map = new HashMap<String, Object>();
+				if (!StringUtils.isEmpty(params)) {
+					map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
+				}
+				HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery()
+						.taskAssignee(String.valueOf(user.getId())).finished();
+				// 级联查询参数
+				if (map.containsKey("keyLike")) {
+					query = query.taskDefinitionKeyLike("%" + map.get("keyLike") + "%");
+				}
+				if (map.containsKey("nameLike")) {
+					query = query.taskNameLike("%" + map.get("nameLike") + "%");
+				}
+				// 处理时间（预留）
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				if (map.containsKey("dateAfter")) {
+					query = query.taskCompletedAfter(sdf.parse(String.valueOf(map.get("dateAfter"))));
+				}
+				if (map.containsKey("dateBefore")) {
+					query = query.taskCompletedBefore(sdf.parse(String.valueOf(map.get("dateBefore"))));
+				}
+				// 查询结果排序
+				query = query.orderByTaskCreateTime().desc();
+				// 查询结果（分页查询）
+				long total = query.count();
+				List<HistoricTaskInstance> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
+				// 序列化查询结果为JSON
+				Map<String, Object> result = new HashMap<String, Object>();
+				result.put("total", total);
+				result.put("rows", detailHistoricTaskInstance(list));
+				// 不是自己的实体类，不需要进行输出过滤
+				return om.writeValueAsString(result);
+				
+			} else {
+				// 没有登录的用户
+				return "{ \"total\" : 0, \"rows\" : [] }";
 			}
-			HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery()
-					.taskAssignee(String.valueOf(user.getId())).finished();
-			// 级联查询参数
-			if (map.containsKey("keyLike")) {
-				query = query.taskDefinitionKeyLike("%" + map.get("keyLike") + "%");
-			}
-			if (map.containsKey("nameLike")) {
-				query = query.taskNameLike("%" + map.get("nameLike") + "%");
-			}
-			// 处理时间（预留）
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			if (map.containsKey("dateAfter")) {
-				query = query.taskCompletedAfter(sdf.parse(String.valueOf(map.get("dateAfter"))));
-			}
-			if (map.containsKey("dateBefore")) {
-				query = query.taskCompletedBefore(sdf.parse(String.valueOf(map.get("dateBefore"))));
-			}
-			// 查询结果排序
-			query = query.orderByTaskCreateTime().desc();
-			// 查询结果（分页查询）
-			long total = query.count();
-			List<HistoricTaskInstance> list = query.listPage(SystemContext.getOffset(), SystemContext.getPageSize());
-			// 序列化查询结果为JSON
-			Map<String, Object> result = new HashMap<String, Object>();
-			result.put("total", total);
-			result.put("rows", detailHistoricTaskInstance(list));
-			// 不是自己的实体类，不需要进行输出过滤
-			return om.writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

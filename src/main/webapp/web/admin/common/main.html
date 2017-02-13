@@ -80,8 +80,57 @@
 	function tab_close() {
 		$('#tabs').tabs('close', menuOfTab);
 	}
+	function dlg_change() {
+		$('#fm-change').form('clear');
+		$('#dlg-change').dialog('open');
+	}
 	function func_change() {
-		
+		// 这里是利用html中的form进行提交，所以需要加上项目路径AppCore.baseUrl
+		var newPass = $('#fm-change [name="newPass"]').val();
+		var rePass = $('#fm-change [name="rePass"]').val();
+		if (newPass == rePass) {
+			$('#fm-change').form('submit', {
+				url : AppCore.baseUrl + 'admin/common/change',
+				onSubmit : function(param) {
+					return $(this).form('validate');
+				},
+				success : function(data) {
+					var data = eval('(' + data + ')');
+					if (data.success) {
+						// 成功后需要注销账号
+						$('#dlg-change').dialog('close');
+						$.messager.alert({
+							title : '提示',
+							msg : '修改成功，需要重新登录！',
+							icon : 'info',
+							fn : function() {
+								func_logout();
+							}
+						});
+					} else {
+						$.messager.show({
+							title : '错误',
+							msg : data.msg,
+							showType : 'fade',
+							style : {
+								right : '',
+								bottom : ''
+							}
+						});
+					}
+				}
+			});
+		} else {
+			$.messager.show({
+				title : '错误',
+				msg : '两次输入的密码不一致！',
+				showType : 'fade',
+				style : {
+					right : '',
+					bottom : ''
+				}
+			});
+		}
 	}
 	function func_logout() {
 		$.ajax({
@@ -91,7 +140,7 @@
 			async : true,
 			success : function(data) {
 				if (data.success) {
-					window.location.href = 'admin/common/login';
+					window.location.href = AppCore.baseUrl + 'web/admin/common/login.html';
 				} else {
 					$.messager.show({
 						title : '错误',
@@ -131,7 +180,7 @@
 		<!-- 右上角工具条 -->
 		<ul id="nav">
 			<li>欢迎使用，<b class="username">admin</b></li>
-			<li><a href="javascript:;" onclick="func_change()">修改密码</a></li>
+			<li><a href="javascript:;" onclick="dlg_change()">修改密码</a></li>
 			<li><a href="javascript:;" onclick="func_logout()">退出</a></li>
 		</ul>
 	</div>
@@ -173,10 +222,38 @@
 		<div data-options="fit:true" class="easyui-tabs" id="tabs">
 			<div title="主页"></div>
 		</div>
+		<div id="menu" class="easyui-menu">
+			<div data-options="iconCls:'icon-reload'" onclick="tab_refresh()">刷新</div>
+			<div data-options="iconCls:'icon-cancel'" onclick="tab_close()">关闭</div>
+		</div>
 	</div>
-	<div id="menu" class="easyui-menu">
-		<div data-options="iconCls:'icon-reload'" onclick="tab_refresh()">刷新</div>
-		<div data-options="iconCls:'icon-cancel'" onclick="tab_close()">关闭</div>
+	<!-- 修改密码 -->
+	<div id="dlg-change" class="easyui-dialog" style="width:320px;padding:20px 30px;"
+		data-options="title:'修改密码',closed:true,modal:true,buttons:'#dlg-btn-change'">
+		<form id="fm-change" method="post">
+			<input type="hidden" id="id-change" />
+			<input type="hidden" id="orgId-change" name="orgId" />
+			<div style="text-align: center;">
+				<table style="border-width:0;" align="center">
+					<tr>
+						<td style="text-align: right;">旧密码：</td>
+						<td><input type="password" name="oldPass" class="easyui-textbox" data-options="required:true" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">新密码：</td>
+						<td><input type="password" name="newPass" class="easyui-textbox" data-options="required:true,validType:'loginPass'" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">重复新密码：</td>
+						<td><input type="password" name="rePass" class="easyui-textbox" data-options="required:true,validType:'loginPass'" /></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+		<div id="dlg-btn-change">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_change()">确定</a>
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-change').dialog('close');">取消</a>
+		</div>
 	</div>
 </body>
 </html>

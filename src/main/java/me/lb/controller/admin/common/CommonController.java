@@ -23,11 +23,15 @@ public class CommonController {
 	@RequestMapping(value = "/getLoginInfo")
 	public String getLoginInfo(HttpSession session) {
 		try {
-			User u = UserUtil.getUserFromSession(session);
-			return JsonWriter.getInstance()
-					.filter(User.class, "roles")
-					.filter(Emp.class, "org", "users")
-					.getWriter().writeValueAsString(u);
+			User user = UserUtil.getUserFromSession(session);
+			if (user != null) {
+				return JsonWriter.getInstance()
+						.filter(User.class, "roles")
+						.filter(Emp.class, "org", "users")
+						.getWriter().writeValueAsString(user);
+			} else {
+				return "{}";
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
