@@ -1,8 +1,10 @@
 package me.lb.model.system;
 
 import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -135,7 +137,14 @@ public class User implements java.io.Serializable {
 	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	@JoinTable(name = "ng_sys_user_role", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "roleId") })
 	public Set<Role> getRoles() {
-		return this.roles;
+		Set<Role> set = new TreeSet<Role>(new Comparator<Role>() {
+			@Override
+			public int compare(Role o1, Role o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+		set.addAll(this.roles);
+		return set;
 	}
 
 	public void setRoles(Set<Role> roles) {

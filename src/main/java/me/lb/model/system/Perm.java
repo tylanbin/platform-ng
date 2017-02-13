@@ -1,7 +1,9 @@
 package me.lb.model.system;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -110,7 +112,14 @@ public class Perm implements java.io.Serializable {
 
 	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "perms")
 	public Set<Role> getRoles() {
-		return this.roles;
+		Set<Role> set = new TreeSet<Role>(new Comparator<Role>() {
+			@Override
+			public int compare(Role o1, Role o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+		set.addAll(this.roles);
+		return set;
 	}
 
 	public void setRoles(Set<Role> roles) {
@@ -119,7 +128,14 @@ public class Perm implements java.io.Serializable {
 
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "perm")
 	public Set<Perm> getPerms() {
-		return this.perms;
+		Set<Perm> set = new TreeSet<Perm>(new Comparator<Perm>() {
+			@Override
+			public int compare(Perm o1, Perm o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+		set.addAll(this.perms);
+		return set;
 	}
 
 	public void setPerms(Set<Perm> perms) {

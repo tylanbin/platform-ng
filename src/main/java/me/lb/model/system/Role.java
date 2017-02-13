@@ -1,7 +1,9 @@
 package me.lb.model.system;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -96,7 +98,14 @@ public class Role implements java.io.Serializable {
 
 	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "roles")
 	public Set<User> getUsers() {
-		return this.users;
+		Set<User> set = new TreeSet<User>(new Comparator<User>() {
+			@Override
+			public int compare(User o1, User o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+		set.addAll(this.users);
+		return set;
 	}
 
 	public void setUsers(Set<User> users) {
@@ -106,7 +115,14 @@ public class Role implements java.io.Serializable {
 	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	@JoinTable(name = "ng_sys_role_perm", joinColumns = { @JoinColumn(name = "roleId") }, inverseJoinColumns = { @JoinColumn(name = "permId") })
 	public Set<Perm> getPerms() {
-		return this.perms;
+		Set<Perm> set = new TreeSet<Perm>(new Comparator<Perm>() {
+			@Override
+			public int compare(Perm o1, Perm o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+		set.addAll(this.perms);
+		return set;
 	}
 
 	public void setPerms(Set<Perm> perms) {

@@ -61,8 +61,12 @@ public class UserController {
 					obj.setLoginName(temp.getLoginName().trim());
 					obj.setEnabled(temp.getEnabled());
 					// 使用自定义的MD5进行编码
-					String md5Pass = MD5Util.getValue(MD5Util.PREFIX + temp.getLoginPass().trim());
-					obj.setLoginPass(md5Pass);
+					if (obj.getLoginPass().equals(temp.getLoginPass().trim())) {
+						// 如果密码相同，避免再次进行MD5编码
+					} else {
+						String md5Pass = MD5Util.getValue(MD5Util.PREFIX + temp.getLoginPass().trim());
+						obj.setLoginPass(md5Pass);
+					}
 					userService.update(obj);
 				} else {
 					// id不存在，需要存储

@@ -1,7 +1,9 @@
 package me.lb.model.system;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -127,7 +129,14 @@ public class Org implements java.io.Serializable {
 
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "org")
 	public Set<Emp> getEmps() {
-		return this.emps;
+		Set<Emp> set = new TreeSet<Emp>(new Comparator<Emp>() {
+			@Override
+			public int compare(Emp o1, Emp o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+		set.addAll(this.emps);
+		return set;
 	}
 
 	public void setEmps(Set<Emp> emps) {
@@ -136,7 +145,14 @@ public class Org implements java.io.Serializable {
 
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "org")
 	public Set<Role> getRoles() {
-		return this.roles;
+		Set<Role> set = new TreeSet<Role>(new Comparator<Role>() {
+			@Override
+			public int compare(Role o1, Role o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+		set.addAll(this.roles);
+		return set;
 	}
 
 	public void setRoles(Set<Role> roles) {
@@ -145,7 +161,14 @@ public class Org implements java.io.Serializable {
 
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "org")
 	public Set<Org> getOrgs() {
-		return this.orgs;
+		Set<Org> set = new TreeSet<Org>(new Comparator<Org>() {
+			@Override
+			public int compare(Org o1, Org o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+		set.addAll(this.orgs);
+		return set;
 	}
 
 	public void setOrgs(Set<Org> orgs) {

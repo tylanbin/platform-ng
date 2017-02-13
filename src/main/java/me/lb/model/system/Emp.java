@@ -1,8 +1,10 @@
 package me.lb.model.system;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -207,7 +209,14 @@ public class Emp implements java.io.Serializable {
 
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "emp")
 	public Set<User> getUsers() {
-		return this.users;
+		Set<User> set = new TreeSet<User>(new Comparator<User>() {
+			@Override
+			public int compare(User o1, User o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+		set.addAll(this.users);
+		return set;
 	}
 
 	public void setUsers(Set<User> users) {
