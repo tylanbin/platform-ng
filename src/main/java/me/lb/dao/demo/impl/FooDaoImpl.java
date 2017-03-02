@@ -11,6 +11,7 @@ public class FooDaoImpl extends GenericDaoImpl<Foo> implements FooDao {
 
 	@Override
 	protected String getTableName() {
+		// 设置使用的表名
 		return "ng_demo_foo";
 	}
 
