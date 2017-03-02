@@ -1,24 +1,21 @@
 package me.lb.service.common.impl;
 
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import me.lb.dao.common.GenericDao;
 import me.lb.model.pagination.Pagination;
 import me.lb.service.common.GenericService;
 
-public class GenericServiceImpl<T, PK extends Serializable> implements
-		GenericService<T, PK> {
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class GenericServiceImpl<T> implements GenericService<T> {
 
 	@Autowired
-	protected GenericDao<T, PK> dao;
+	protected GenericDao<T> dao;
 
 	@Override
-	public T findById(PK id) {
+	public T findById(int id) {
 		return dao.findById(id);
 	}
 
@@ -33,18 +30,18 @@ public class GenericServiceImpl<T, PK extends Serializable> implements
 	}
 
 	@Override
-	public PK save(T entity) {
-		return dao.save(entity);
+	public void save(T obj) {
+		dao.save(obj);
 	}
 
 	@Override
-	public void update(T entity) {
-		dao.update(entity);
+	public void update(int id, T obj) {
+		dao.update(id, obj);
 	}
 
 	@Override
-	public void delete(T entity) {
-		dao.delete(entity);
+	public void delete(int id) {
+		dao.delete(id);
 	}
 
 	@Override
@@ -53,8 +50,8 @@ public class GenericServiceImpl<T, PK extends Serializable> implements
 	}
 
 	@Override
-	public void deleteAll(Collection<T> entities) {
-		dao.deleteAll(entities);
+	public void deleteAll(List<Integer> ids) {
+		dao.deleteAll(ids);
 	}
 
 	@Override
@@ -66,5 +63,6 @@ public class GenericServiceImpl<T, PK extends Serializable> implements
 	public Pagination<T> pagingQuery(Map<String, Object> params) {
 		return dao.pagingQuery(params);
 	}
+
 
 }

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.lb.model.common">
+
+	<insert id="save" parameterType="map" keyProperty="id" useGeneratedKeys="true">
+		insert into `${name}` (
+			<foreach item="col" index="i" collection="cols" open="" separator="," close="">
+				`${col}`
+			</foreach>
+		)
+		values (
+			<foreach item="val" index="i" collection="vals" open="" separator="," close="">
+				#{val}
+			</foreach>
+		)
+	</insert>
+	
+	<update id="update" parameterType="map">
+		update `${name}`
+		<set>
+			<foreach item="val" index="key" collection="datas" open="" separator="," close="">
+				`${key}` = #{val}
+			</foreach>
+		</set>
+		<where>
+			<if test="params != null and !params.isEmpty()">
+				<foreach item="val" index="key" collection="params" open="" separator=" " close="">
+					and `${key}` = #{val}
+				</foreach>
+			</if>
+		</where>
+	</update>
+	
+	<delete id="delete" parameterType="map">
+		delete from `${name}`
+		<where>
+			<if test="params != null and !params.isEmpty()">
+				<foreach item="val" index="key" collection="params" open="" separator=" " close="">
+					and `${key}` = #{val}
+				</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<delete id="deleteAll" parameterType="map">
+		delete from `${name}`
+		<where>
+			<if test="ids != null and !ids.isEmpty()">
+				`${col}` in
+				<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<select id="find" parameterType="map" resultType="map">
+		select * from `${name}`
+		<where>
+			<if test="params != null and !params.isEmpty()">
+				<foreach item="val" index="key" collection="params" open="" separator=" " close="">
+					<if test="val != null and val != ''">
+						and `${key}` = binary #{val}
+					</if>
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<select id="pagingFind" parameterType="map" resultType="map">
+		select * from `${name}`
+		<where>
+			<if test="params != null and !params.isEmpty()">
+				<foreach item="val" index="key" collection="params" open="" separator=" " close="">
+					<if test="val != null and val != ''">
+						and `${key}` = binary #{val}
+					</if>
+				</foreach>
+			</if>
+		</where>
+		limit #{offset}, #{limit}
+	</select>
+	<select id="pagingCount" parameterType="map" resultType="int">
+		select count(*) from `${name}`
+		<where>
+			<if test="params != null and !params.isEmpty()">
+				<foreach item="val" index="key" collection="params" open="" separator=" " close="">
+					<if test="val != null and val != ''">
+						and `${key}` = binary #{val}
+					</if>
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+</mapper>

@@ -1,139 +1,216 @@
 package me.lb.dao.common.impl;
 
-import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import me.lb.dao.common.GenericDao;
 import me.lb.model.pagination.Pagination;
+import me.lb.support.jackson.JsonWriter;
 import me.lb.support.system.SystemContext;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@SuppressWarnings("unchecked")
-public abstract class GenericDaoImpl<T, PK extends Serializable> implements
-		GenericDao<T, PK> {
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+public abstract class GenericDaoImpl<T> implements GenericDao<T> {
+	
 	@Autowired
-	protected SessionFactory sessionFactory;
-	protected Class<T> clazz;
-
+	protected SqlSessionTemplate sqlSessionTemplate;
+	
+	// 记录使用的通用的SQL配置文件
+	private static final String PKG = "me.lb.model.common.";
+	private Class<T> clazz;
+	
+	@SuppressWarnings("unchecked")
 	public GenericDaoImpl() {
-		clazz = (Class<T>) ((ParameterizedType) getClass()
-				.getGenericSuperclass()).getActualTypeArguments()[0];
+		clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
+	
+	// 记录使用的表名称
+	protected abstract String getTableName();
 
 	@Override
-	public T findById(PK id) {
-		return (T) sessionFactory.getCurrentSession().get(clazz, id);
+	public T findById(int id) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		// 构造参数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		map.put("params", params);
+		Map<String, Object> data = sqlSessionTemplate.selectOne(PKG + "find", map);
+		return convertMapToPojo(data);
 	}
 
 	@Override
 	public List<T> findAll() {
-		Query q = sessionFactory.getCurrentSession().createQuery(
-				"from " + clazz.getName());
-		return q.list();
+		// 构造参数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		List<Object> datas = sqlSessionTemplate.selectList(PKG + "find", map);
+		return convertMapToPojo(datas);
 	}
 
 	@Override
 	public List<T> findAll(Map<String, Object> params) {
-		if (!params.isEmpty()) {
-			StringBuffer sb = new StringBuffer("from " + clazz.getName()
-					+ " as o where 1=1");
-			List<Object> objs = new ArrayList<Object>();
-			Iterator<Map.Entry<String, Object>> it = params.entrySet()
-					.iterator();
-			while (it.hasNext()) {
-				Map.Entry<String, Object> me = it.next();
-				// 特殊处理Like
-				if (me.getKey().endsWith("Like")) {
-					sb.append(" and o." + me.getKey().substring(0, me.getKey().length() - 4) + " like ?");
-					objs.add("%" + me.getValue() + "%");
-				} else {
-					sb.append(" and o." + me.getKey() + " = ?");
-					objs.add(me.getValue());
-				}
-			}
-			Query q = sessionFactory.getCurrentSession().createQuery(
-					sb.toString());
-			for (int i = 0; i < objs.size(); i++) {
-				q.setParameter(i, objs.get(i));
-			}
-			return q.list();
-		} else {
-			return new ArrayList<T>();
+		// 构造参数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		map.put("params", params);
+		List<Object> datas = sqlSessionTemplate.selectList(PKG + "find", map);
+		return convertMapToPojo(datas);
+	}
+
+	@Override
+	public void save(T obj) {
+		// 将对象转化为map
+		Map<String, Object> datas = convertPojoToMap(obj);
+		// 拆分map为列与值的对应
+		List<String> cols = new ArrayList<String>();
+		List<Object> vals = new ArrayList<Object>();
+		Iterator<Map.Entry<String, Object>> it = datas.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Object> me = it.next();
+			cols.add(me.getKey());
+			vals.add(me.getValue());
 		}
+		// 构造参数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		map.put("cols", cols);
+		map.put("vals", vals);
+		sqlSessionTemplate.insert(PKG + "save", map);
 	}
 
 	@Override
-	public PK save(T entity) {
-		return (PK) sessionFactory.getCurrentSession().save(entity);
+	public void update(int id, T obj) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		// 将对象转化为map
+		Map<String, Object> datas = convertPojoToMap(obj);
+		// 构造参数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		map.put("datas", datas);
+		map.put("params", params);
+		sqlSessionTemplate.update(PKG + "update", map);
 	}
 
 	@Override
-	public void update(T entity) {
-		sessionFactory.getCurrentSession().update(entity);
-	}
-
-	@Override
-	public void delete(T entity) {
-		sessionFactory.getCurrentSession().delete(entity);
+	public void delete(int id) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		// 构造参数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		map.put("params", params);
+		sqlSessionTemplate.delete(PKG + "delete", map);
 	}
 
 	@Override
 	public void deleteAll() {
-		List<T> temp = this.findAll();
-		deleteAll(temp);
+		// 构造参数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		map.put("col", "id");
+		sqlSessionTemplate.delete(PKG + "deleteAll", map);
 	}
 
 	@Override
-	public void deleteAll(Collection<T> entities) {
-		Session s = sessionFactory.getCurrentSession();
-		Iterator<T> it = entities.iterator();
-		while (it.hasNext()) {
-			s.delete(it.next());
-		}
+	public void deleteAll(List<Integer> ids) {
+		// 构造参数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		map.put("col", "id");
+		map.put("ids", ids);
+		sqlSessionTemplate.delete(PKG + "deleteAll", map);
 	}
 
-	protected Pagination<T> getPagination(final String hql,
-			final List<Object> params) {
-		List<T> datas = null;
-		int count = 0;
-		int index = hql.indexOf("from");
-		if (index != -1) {
-			count = ((Long) objectQuery(
-					"select count(*) " + hql.substring(index), params))
-					.intValue();
-			Query query = sessionFactory.getCurrentSession().createQuery(hql);
-			if (params != null) {
-				for (int i = 0; i < params.size(); i++) {
-					query.setParameter(i, params.get(i));
-				}
-			}
-			query.setMaxResults(SystemContext.getPageSize());
-			query.setFirstResult(SystemContext.getOffset());
-			datas = query.list();
-		} else {
-			datas = new ArrayList<T>();
-		}
-		return new Pagination<T>(count, datas);
+	@Override
+	public Pagination<T> pagingQuery() {
+		// 先查询条数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		int total = sqlSessionTemplate.selectOne(PKG + "pagingCount", map);
+		// 再分页查询
+		map.put("offset", SystemContext.getOffset());
+		map.put("limit", SystemContext.getPageSize());
+		List<Object> datas = sqlSessionTemplate.selectList(PKG + "pagingFind", map);
+		return new Pagination<T>(total, convertMapToPojo(datas));
 	}
 
-	private Object objectQuery(final String hql, final List<Object> params) {
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		if (params != null) {
-			for (int i = 0; i < params.size(); i++) {
-				query.setParameter(i, params.get(i));
-			}
+	@Override
+	public Pagination<T> pagingQuery(Map<String, Object> params) {
+		// 先查询条数
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", getTableName());
+		map.put("params", params);
+		int total = sqlSessionTemplate.selectOne(PKG + "pagingCount", map);
+		// 再分页查询
+		map.put("offset", SystemContext.getOffset());
+		map.put("limit", SystemContext.getPageSize());
+		List<Object> datas = sqlSessionTemplate.selectList(PKG + "pagingFind", map);
+		return new Pagination<T>(total, convertMapToPojo(datas));
+	}
+	
+	/**
+	 * 将实体对象转换为map
+	 * @param obj 实体对象
+	 * @return map
+	 */
+	private Map<String, Object> convertPojoToMap(Object obj) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			ObjectMapper om = new ObjectMapper();
+			String json = JsonWriter.getInstance()
+					.filter(clazz).getWriter()
+					.writeValueAsString(obj);
+			map = om.readValue(json, new TypeReference<Map<String, Object>>() {});
+			// 默认id不处理
+			map.remove("id");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return query.uniqueResult();
+		return map;
+	}
+	
+	/**
+	 * 将map转换为实体对象
+	 * @param map map
+	 * @return 实体对象
+	 */
+	private T convertMapToPojo(Map<String, Object> map) {
+		T obj = null;
+		try {
+			ObjectMapper om = new ObjectMapper();
+			String json = om.writeValueAsString(map);
+			obj = om.readValue(json, clazz);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	
+	/**
+	 * 将map集合转换为实体对象集合
+	 * @param list map集合
+	 * @return 实体对象集合
+	 */
+	private List<T> convertMapToPojo(List<Object> list) {
+		List<T> objs = new ArrayList<T>();
+		try {
+			ObjectMapper om = new ObjectMapper();
+			String json = om.writeValueAsString(list);
+			objs = om.readValue(json, new TypeReference<List<T>>() {});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return objs;
 	}
 
 }

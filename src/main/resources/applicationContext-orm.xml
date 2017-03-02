@@ -17,7 +17,7 @@
 	<!-- 配置自动扫描注解的包 -->
 	<context:component-scan base-package="me.lb.dao" />
 
-	<!-- Hibernate配置 -->
+	<!-- MyBatis配置，使用sqlSessionTemplate会相对灵活 -->
 	<context:property-placeholder location="classpath:jdbc.properties" />
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="${jdbc.driver}" />
@@ -32,20 +32,12 @@
 		<property name="maxIdleTime" value="120" />
 		<!-- <property name="idleConnectionTestPeriod" value="300" /> -->
 	</bean>
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="packagesToScan">
-			<list>
-				<value>me.lb.model</value>
-			</list>
-		</property>
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
-				<prop key="hibernate.show_sql">false</prop>
-				<prop key="hibernate.format_sql">false</prop>
-			</props>
-		</property>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:mybatis.xml" />
+    </bean>  
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
 	
 	<!-- 增加jdbcTemplate，主要用于utils中 -->
@@ -54,8 +46,8 @@
 	</bean>
 
 	<!-- 事务管理器，在此设置是因为JUnit测试会使用 -->
-	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactory" />
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
 	</bean>
 
 </beans>

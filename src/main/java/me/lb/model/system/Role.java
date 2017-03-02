@@ -1,132 +1,49 @@
 package me.lb.model.system;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
-@Entity
-@Table(name = "ng_sys_role")
 // 加入该注解，动态过滤属性
 @JsonFilter("me.lb.model.system.Role")
-public class Role implements java.io.Serializable {
+public class Role implements Serializable {
 
-	// Fields
-
-	private static final long serialVersionUID = -3764199839627824865L;
-	private Integer id;
-	private Org org;
+	private static final long serialVersionUID = 7054859324355061454L;
+	private int id;
+	private Integer orgId;
 	private String name;
 	private String description;
-	private Set<User> users = new HashSet<User>(0);
-	private Set<Perm> perms = new HashSet<Perm>(0);
 
-	// Constructors
-
-	/** default constructor */
-	public Role() {
+	public int getId() {
+		return id;
 	}
 
-	/** minimal constructor */
-	public Role(String name) {
-		this.name = name;
-	}
-
-	/** full constructor */
-	public Role(Org org, String name, String description, Set<User> users,
-			Set<Perm> perms) {
-		this.org = org;
-		this.name = name;
-		this.description = description;
-		this.users = users;
-		this.perms = perms;
-	}
-
-	// Property accessors
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "orgId")
-	public Org getOrg() {
-		return this.org;
+	public Integer getOrgId() {
+		return orgId;
 	}
 
-	public void setOrg(Org org) {
-		this.org = org;
+	public void setOrgId(Integer orgId) {
+		this.orgId = orgId;
 	}
 
-	@Column(name = "name")
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	@Column(name = "description")
 	public String getDescription() {
-		return this.description;
+		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "roles")
-	public Set<User> getUsers() {
-		Set<User> set = new TreeSet<User>(new Comparator<User>() {
-			@Override
-			public int compare(User o1, User o2) {
-				return o1.getId() - o2.getId();
-			}
-		});
-		set.addAll(this.users);
-		return set;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
-
-	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-	@JoinTable(name = "ng_sys_role_perm", joinColumns = { @JoinColumn(name = "roleId") }, inverseJoinColumns = { @JoinColumn(name = "permId") })
-	public Set<Perm> getPerms() {
-		Set<Perm> set = new TreeSet<Perm>(new Comparator<Perm>() {
-			@Override
-			public int compare(Perm o1, Perm o2) {
-				return o1.getId() - o2.getId();
-			}
-		});
-		set.addAll(this.perms);
-		return set;
-	}
-
-	public void setPerms(Set<Perm> perms) {
-		this.perms = perms;
 	}
 
 	@Override

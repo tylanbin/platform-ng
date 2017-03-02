@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import me.lb.model.system.User;
-import me.lb.service.system.UserService;
 import me.lb.support.system.SystemContext;
 import me.lb.utils.ActivitiUtil;
 import me.lb.utils.UserUtil;
@@ -55,9 +54,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Controller
 @RequestMapping(value = "/admin/process/formkey")
 public class FormkeyController {
-	
-	@Autowired
-	private UserService userService;
 	
 	@Autowired
 	private FormService formService;
@@ -498,8 +494,9 @@ public class FormkeyController {
 			ProcessDefinition pd = repositoryService.getProcessDefinition(hpi.getProcessDefinitionId());
 			on.put("processDefinitionKey", pd.getKey());
 			on.put("processDefinitionName", pd.getName());
-			User user = userService.findById(Integer.valueOf(hpi.getStartUserId()));
-			on.put("startUser", user.getEmp().getName());
+			// FIXME
+			// User user = userService.findById(Integer.valueOf(hpi.getStartUserId()));
+			// on.put("startUser", user.getEmp().getName());
 			arr.add(on);
 		}
 		return arr;
@@ -515,8 +512,9 @@ public class FormkeyController {
 		for (HistoricTaskInstance hti : htis) {
 			ObjectNode on = (ObjectNode) om.readTree(om.writeValueAsString(hti));
 			if (!StringUtils.isEmpty(hti.getAssignee())) {
-				User user = userService.findById(Integer.valueOf(hti.getAssignee()));
-				on.put("assigneeName", user.getEmp().getName());
+				// FIXME
+				// User user = userService.findById(Integer.valueOf(hti.getAssignee()));
+				// on.put("assigneeName", user.getEmp().getName());
 			} else {
 				on.put("assigneeName", "");
 			}

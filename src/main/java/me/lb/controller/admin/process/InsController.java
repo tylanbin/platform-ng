@@ -8,8 +8,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import me.lb.model.system.User;
-import me.lb.service.system.UserService;
 import me.lb.support.system.SystemContext;
 
 import org.activiti.bpmn.model.BpmnModel;
@@ -42,9 +40,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Controller
 @RequestMapping(value = "/admin/process/ins")
 public class InsController {
-	
-	@Autowired
-	private UserService userService;
 	
 	@Autowired
 	private RuntimeService runtimeService;
@@ -237,8 +232,9 @@ public class InsController {
 			ProcessDefinition pd = repositoryService.getProcessDefinition(hpi.getProcessDefinitionId());
 			on.put("processDefinitionKey", pd.getKey());
 			on.put("processDefinitionName", pd.getName());
-			User user = userService.findById(Integer.valueOf(hpi.getStartUserId()));
-			on.put("startUser", user.getEmp().getName());
+			// FIXME
+			// User user = userService.findById(Integer.valueOf(hpi.getStartUserId()));
+			// on.put("startUser", user.getEmp().getName());
 			arr.add(on);
 		}
 		return arr;
@@ -254,8 +250,9 @@ public class InsController {
 		for (HistoricTaskInstance hti : htis) {
 			ObjectNode on = (ObjectNode) om.readTree(om.writeValueAsString(hti));
 			if (!StringUtils.isEmpty(hti.getAssignee())) {
-				User user = userService.findById(Integer.valueOf(hti.getAssignee()));
-				on.put("assigneeName", user.getEmp().getName());
+				// FIXME
+				// User user = userService.findById(Integer.valueOf(hti.getAssignee()));
+				// on.put("assigneeName", user.getEmp().getName());
 			} else {
 				on.put("assigneeName", "");
 			}

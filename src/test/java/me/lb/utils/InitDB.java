@@ -4,13 +4,10 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -24,15 +21,11 @@ public class InitDB {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	@Autowired
-	private LocalSessionFactoryBean sessionFactory;
 
 	@Test
 	public void db_init() throws Exception {
 		// 处理系统的表
-		Configuration cfg = sessionFactory.getConfiguration();
-		SchemaExport se = new SchemaExport(cfg);
-		se.create(false, true);
+		// FIXME
 		// 处理Activiti的表
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream("sql/activiti.sql");
 		List<String> sqls = IOUtils.readLines(input, "utf-8");

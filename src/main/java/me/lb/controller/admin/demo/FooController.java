@@ -1,5 +1,6 @@
 package me.lb.controller.admin.demo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +48,7 @@ public class FooController {
 			Foo obj = fooService.findById(id);
 			// TODO: 这里需要根据实际进行完善
 
-			fooService.update(obj);
+			fooService.update(id, obj);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,7 +61,7 @@ public class FooController {
 	public String delete(@PathVariable int id) {
 		// 删除某个对象的方法
 		try {
-			fooService.delete(fooService.findById(id));
+			fooService.delete(id);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,11 +111,12 @@ public class FooController {
 	public String batch_delete(String ids) {
 		// 批量删除的操作
 		try {
+			List<Integer> list = new ArrayList<Integer>();
 			String[] temp = ids.split(",");
 			for (String id : temp) {
-				Foo obj = fooService.findById(Integer.parseInt(id.trim()));
-				fooService.delete(obj);
+				list.add(Integer.valueOf(id));
 			}
+			fooService.deleteAll(list);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
 			e.printStackTrace();

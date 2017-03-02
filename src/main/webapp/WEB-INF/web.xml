@@ -50,24 +50,8 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<!-- 加大Hibernate的Session生存周期 -->
-	<filter>
-		<filter-name>openSessionInView</filter-name>
-		<filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
-		<!-- 如果不指定名字，默认是sessionFactory -->
-		<init-param>
-			<param-name>sessionFactoryBeanName</param-name>
-			<!-- 下边是Spring配置文件中的bean的id -->
-			<param-value>sessionFactory</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>openSessionInView</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
 	<!-- 设置Shiro安装框架的过滤器 -->
-	<filter>
+	<!-- <filter>
 		<filter-name>shiro</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 		<init-param>
@@ -78,7 +62,7 @@
 	<filter-mapping>
 		<filter-name>shiro</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 
 	<!-- 分页过滤器 -->
 	<filter>
