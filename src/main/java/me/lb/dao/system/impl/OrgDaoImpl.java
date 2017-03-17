@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OrgDaoImpl extends GenericDaoImpl<Org> implements OrgDao {
 
+	private static final String PKG = "me.lb.model.system.Org.";
+
 	@Override
 	protected String getTableName() {
 		// 设置使用的表名
@@ -18,8 +20,13 @@ public class OrgDaoImpl extends GenericDaoImpl<Org> implements OrgDao {
 	}
 
 	@Override
+	protected String[] getIgnored() {
+		return new String[] { "text", "children"};
+	}
+
+	@Override
 	public List<Org> findTopOrgs() {
-		return null;
+		return sqlSessionTemplate.selectList(PKG + "findTops");
 	}
 
 }

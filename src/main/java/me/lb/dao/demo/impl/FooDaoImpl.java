@@ -15,4 +15,9 @@ public class FooDaoImpl extends GenericDaoImpl<Foo> implements FooDao {
 		return "ng_demo_foo";
 	}
 
+	@Override
+	protected String[] getIgnored() {
+		return new String[0];
+	}
+
 }

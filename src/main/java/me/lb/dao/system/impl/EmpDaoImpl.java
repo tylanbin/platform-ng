@@ -14,5 +14,10 @@ public class EmpDaoImpl extends GenericDaoImpl<Emp> implements EmpDao {
 		// 设置使用的表名
 		return "ng_sys_emp";
 	}
+	
+	@Override
+	protected String[] getIgnored() {
+		return new String[0];
+	}
 
 }

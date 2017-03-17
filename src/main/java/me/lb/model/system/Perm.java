@@ -19,6 +19,16 @@ public class Perm implements Serializable {
 	// 构造EasyUI的树
 	private List<Perm> children;
 
+	public Perm() {
+	}
+
+	public Perm(String name, String token, String url, Integer parentId) {
+		this.name = name;
+		this.token = token;
+		this.url = url;
+		this.parentId = parentId;
+	}
+
 	public int getId() {
 		return id;
 	}

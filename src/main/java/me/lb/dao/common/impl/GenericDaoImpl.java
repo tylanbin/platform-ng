@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 	
@@ -34,6 +35,8 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 	
 	// 记录使用的表名称
 	protected abstract String getTableName();
+	// 记录新增修改时不处理的字段
+	protected abstract String[] getIgnored();
 
 	@Override
 	public T findById(int id) {
@@ -67,7 +70,7 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 	}
 
 	@Override
-	public void save(T obj) {
+	public int save(T obj) {
 		// 将对象转化为map
 		Map<String, Object> datas = convertPojoToMap(obj);
 		// 拆分map为列与值的对应
@@ -85,6 +88,7 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 		map.put("cols", cols);
 		map.put("vals", vals);
 		sqlSessionTemplate.insert(PKG + "save", map);
+		return Integer.valueOf(String.valueOf(map.get("id")));
 	}
 
 	@Override
@@ -167,8 +171,9 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			ObjectMapper om = new ObjectMapper();
+			// 处理过滤掉的属性
 			String json = JsonWriter.getInstance()
-					.filter(clazz).getWriter()
+					.filter(clazz, getIgnored()).getWriter()
 					.writeValueAsString(obj);
 			map = om.readValue(json, new TypeReference<Map<String, Object>>() {});
 			// 默认id不处理
@@ -206,7 +211,7 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 		try {
 			ObjectMapper om = new ObjectMapper();
 			String json = om.writeValueAsString(list);
-			objs = om.readValue(json, new TypeReference<List<T>>() {});
+			objs = om.readValue(json, TypeFactory.defaultInstance().constructCollectionType(List.class, clazz));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

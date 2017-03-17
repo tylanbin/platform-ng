@@ -30,8 +30,8 @@ public class GenericServiceImpl<T> implements GenericService<T> {
 	}
 
 	@Override
-	public void save(T obj) {
-		dao.save(obj);
+	public int save(T obj) {
+		return dao.save(obj);
 	}
 
 	@Override

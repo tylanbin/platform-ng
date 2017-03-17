@@ -18,6 +18,14 @@ public class User implements Serializable {
 	private Date createDate;
 	private int loginRange;
 
+	public User() {
+	}
+
+	public User(String loginName, String loginPass) {
+		this.loginName = loginName;
+		this.loginPass = loginPass;
+	}
+
 	public int getId() {
 		return id;
 	}

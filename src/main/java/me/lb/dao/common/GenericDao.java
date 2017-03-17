@@ -13,7 +13,7 @@ public interface GenericDao<T> {
 
 	public List<T> findAll(Map<String, Object> params);
 
-	public void save(T obj);
+	public int save(T obj);
 
 	public void update(int id, T obj);
 

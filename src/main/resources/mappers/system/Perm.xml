@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.lb.model.system.Perm">
+
+	<!-- 本文件中只包含特殊方法使用的sql -->
+	
+	<resultMap id="permMap" type="Perm">
+		<id property="id" column="id" />
+		<!-- 调用子查询递归查询树结构 -->
+		<collection property="children" ofType="Perm" column="id" select="findByParentId" />
+	</resultMap>
+    <select id="findTops" resultMap="permMap">
+		select * from ng_sys_perm where parentId is null
+	</select>
+	<select id="findByParentId" parameterType="int" resultMap="permMap">  
+        select * from ng_sys_perm where parentId = #{id}
+    </select>
+	
+</mapper>

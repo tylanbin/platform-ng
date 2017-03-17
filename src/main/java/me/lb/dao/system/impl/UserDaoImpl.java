@@ -14,5 +14,10 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao {
 		// 设置使用的表名
 		return "ng_sys_user";
 	}
+	
+	@Override
+	protected String[] getIgnored() {
+		return new String[0];
+	}
 
 }

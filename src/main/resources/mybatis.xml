@@ -3,21 +3,14 @@
 <configuration>
 	<!-- xml中可以使用类名的缩写 -->
 	<typeAliases>
-		<typeAlias type="me.lb.model.system.User" alias="User"/>
-		<typeAlias type="me.lb.model.system.Role" alias="Role"/>
 		<typeAlias type="me.lb.model.system.Perm" alias="Perm"/>
 		<typeAlias type="me.lb.model.system.Org" alias="Org"/>
-		<typeAlias type="me.lb.model.system.Emp" alias="Emp"/>
-		<typeAlias type="me.lb.model.demo.Foo" alias="Foo"/>
 	</typeAliases>
 	<!-- 配置映射文件，注意路径与包一致 -->
 	<mappers>
 		<mapper resource="mappers/common/Base.xml"/>
-		<!-- <mapper resource="mappers/system/User.xml"/>
-		<mapper resource="mappers/system/Role.xml"/>
+		<!-- 由于以下两个Dao包含特殊方法，所以需要额外使用xml文件 -->
 		<mapper resource="mappers/system/Perm.xml"/>
 		<mapper resource="mappers/system/Org.xml"/>
-		<mapper resource="mappers/system/Emp.xml"/>
-		<mapper resource="mappers/demo/Foo.xml"/> -->
 	</mappers>
 </configuration> 

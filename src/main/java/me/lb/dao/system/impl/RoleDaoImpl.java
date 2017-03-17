@@ -14,5 +14,10 @@ public class RoleDaoImpl extends GenericDaoImpl<Role> implements RoleDao {
 		// 设置使用的表名
 		return "ng_sys_role";
 	}
+	
+	@Override
+	protected String[] getIgnored() {
+		return new String[0];
+	}
 
 }

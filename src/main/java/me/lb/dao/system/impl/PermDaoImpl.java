@@ -10,16 +10,23 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class PermDaoImpl extends GenericDaoImpl<Perm> implements PermDao {
+	
+	private static final String PKG = "me.lb.model.system.Perm.";
 
 	@Override
 	protected String getTableName() {
 		// 设置使用的表名
 		return "ng_sys_perm";
 	}
+	
+	@Override
+	protected String[] getIgnored() {
+		return new String[] { "text", "children"};
+	}
 
 	@Override
 	public List<Perm> findTopPerms() {
-		return null;
+		return sqlSessionTemplate.selectList(PKG + "findTops");
 	}
 
 }
