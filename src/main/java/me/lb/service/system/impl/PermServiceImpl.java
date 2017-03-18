@@ -18,4 +18,9 @@ public class PermServiceImpl extends GenericServiceImpl<Perm> implements
 		return ((PermDao) dao).findTopPerms();
 	}
 
+	@Override
+	public List<Perm> findByRoleId(int roleId) {
+		return ((PermDao) dao).findByRoleId(roleId);
+	}
+
 }

@@ -15,5 +15,10 @@
 	<select id="findByParentId" parameterType="int" resultMap="permMap">  
         select * from ng_sys_perm where parentId = #{id}
     </select>
+    
+    <!-- 中间表的处理 -->
+    <select id="findByRoleId" parameterType="int" resultType="Perm">
+        select ng_sys_perm.* from ng_sys_role_perm, ng_sys_perm where ng_sys_role_perm.roleId = #{_parameter}
+    </select>
 	
 </mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.lb.model.system.Role">
+
+	<!-- 本文件中只包含特殊方法使用的sql -->
+	<select id="findByUserId" parameterType="int" resultType="Role">
+        select ng_sys_role.* from ng_sys_user_role, ng_sys_role where ng_sys_user_role.userId = #{_parameter}
+    </select>
+	
+	<!-- 处理角色的权限问题 -->
+    <select id="findRolePerm" parameterType="map" resultType="map">
+        select * from ng_sys_role_perm
+        <where>
+			<if test="roleId != null and roleId != ''">
+				and roleId = #{roleId}
+			</if>
+			<if test="permId != null and permId != ''">
+				and permId = #{permId}
+			</if>
+		</where>
+    </select>
+    <insert id="saveRolePerm" parameterType="map">
+		insert into ng_sys_role_perm (roleId, permId) values (#{roleId}, #{permId})
+	</insert>
+	<delete id="deleteRolePerm" parameterType="map">
+		delete from ng_sys_role_perm
+		<where>
+			<if test="roleId != null and roleId != ''">
+				and roleId = #{roleId}
+			</if>
+			<if test="permId != null and permId != ''">
+				and permId = #{permId}
+			</if>
+		</where>
+	</delete>
+	
+</mapper>

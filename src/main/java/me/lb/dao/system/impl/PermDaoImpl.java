@@ -29,4 +29,9 @@ public class PermDaoImpl extends GenericDaoImpl<Perm> implements PermDao {
 		return sqlSessionTemplate.selectList(PKG + "findTops");
 	}
 
+	@Override
+	public List<Perm> findByRoleId(int roleId) {
+		return sqlSessionTemplate.selectList(PKG + "findByRoleId", roleId);
+	}
+
 }
