@@ -78,8 +78,8 @@ public class FooController {
 			// 将查询出的结果序列化为JSON并返回
 			// 这里可以使用filter方法，过滤不需要序列化的属性
 			// 如果没有需要过滤的话，仍需要调用filter，避免错误
-			return JsonWriter.getInstance().filter(Foo.class).getWriter()
-					.writeValueAsString(temp);
+			return JsonWriter.getInstance().filter(Foo.class)
+					.getWriter().writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -142,9 +142,8 @@ public class FooController {
 			result.put("rows", pm.getDatas());
 			// 这里可以使用filter方法，过滤不需要序列化的属性
 			// 如果没有需要过滤的话，仍需要调用filter，避免错误
-			return JsonWriter.getInstance()
-					.filter(Foo.class).getWriter()
-					.writeValueAsString(result);
+			return JsonWriter.getInstance().filter(Foo.class)
+					.getWriter().writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

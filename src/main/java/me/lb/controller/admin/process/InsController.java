@@ -8,6 +8,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import me.lb.model.system.Emp;
+import me.lb.model.system.User;
+import me.lb.service.system.EmpService;
+import me.lb.service.system.UserService;
 import me.lb.support.system.SystemContext;
 
 import org.activiti.bpmn.model.BpmnModel;
@@ -40,6 +44,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Controller
 @RequestMapping(value = "/admin/process/ins")
 public class InsController {
+	
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private EmpService empService;
 	
 	@Autowired
 	private RuntimeService runtimeService;
@@ -232,9 +241,13 @@ public class InsController {
 			ProcessDefinition pd = repositoryService.getProcessDefinition(hpi.getProcessDefinitionId());
 			on.put("processDefinitionKey", pd.getKey());
 			on.put("processDefinitionName", pd.getName());
-			// FIXME
-			// User user = userService.findById(Integer.valueOf(hpi.getStartUserId()));
-			// on.put("startUser", user.getEmp().getName());
+			User user = userService.findById(Integer.valueOf(hpi.getStartUserId()));
+			if (user.getEmpId() != null) {
+				Emp emp = empService.findById(user.getEmpId());
+				on.put("startUser", emp.getName());
+			} else {
+				on.put("startUser", "系统管理员");
+			}
 			arr.add(on);
 		}
 		return arr;
@@ -250,9 +263,14 @@ public class InsController {
 		for (HistoricTaskInstance hti : htis) {
 			ObjectNode on = (ObjectNode) om.readTree(om.writeValueAsString(hti));
 			if (!StringUtils.isEmpty(hti.getAssignee())) {
-				// FIXME
-				// User user = userService.findById(Integer.valueOf(hti.getAssignee()));
-				// on.put("assigneeName", user.getEmp().getName());
+				User user = userService.findById(Integer.valueOf(hti.getAssignee()));
+				if (user.getEmpId() != null) {
+					Emp emp = empService.findById(user.getEmpId());
+					on.put("assigneeName", emp.getName());
+				} else {
+					on.put("assigneeName", "系统管理员");
+				}
+				arr.add(on);
 			} else {
 				on.put("assigneeName", "");
 			}

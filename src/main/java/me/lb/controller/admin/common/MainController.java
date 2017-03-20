@@ -3,12 +3,14 @@ package me.lb.controller.admin.common;
 import javax.servlet.http.HttpSession;
 
 import me.lb.model.system.User;
+import me.lb.service.system.UserService;
 import me.lb.utils.MD5Util;
 import me.lb.utils.UserUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/admin/common")
 public class MainController {
+	
+	@Autowired
+	private UserService userService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/init/{type}")
@@ -51,9 +56,8 @@ public class MainController {
 			SecurityUtils.getSubject().login(token);
 			// 如果失败会抛出异常
 			// 如果成功，则记录用户的信息
-			// FIXME
-			// User user = userService.findByLoginName(loginName.trim());
-			// UserUtil.saveUserToSession(user, session);
+			User user = userService.findByLoginName(loginName.trim());
+			UserUtil.saveUserToSession(user, session);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -84,9 +88,8 @@ public class MainController {
 					// 旧密码正确才能继续操作
 					if (newPass.trim().equals(rePass.trim())) {
 						// 两次输入的密码一致
-						// FIXME
-						// user.setLoginPass(MD5Util.getValue(MD5Util.PREFIX + newPass.trim()));
-						// userService.update(user);
+						user.setLoginPass(MD5Util.getValue(MD5Util.PREFIX + newPass.trim()));
+						userService.update(user.getId(), user);
 						return "{ \"success\" : true }";
 					} else {
 						return "{ \"msg\" : \"两次输入的密码不一致！\" }";
@@ -110,9 +113,8 @@ public class MainController {
 			// 预留一个强制修改的路径，避免出现问题
 			User user = UserUtil.getUserFromSession(session);
 			if (user != null) {
-				// FIXME
-				// user.setLoginPass(MD5Util.getValue(MD5Util.PREFIX + newPass.trim()));
-				// userService.update(user);
+				user.setLoginPass(MD5Util.getValue(MD5Util.PREFIX + newPass.trim()));
+				userService.update(user.getId(), user);
 				return "{ \"success\" : true }";
 			} else {
 				return "{ \"msg\" : \"您没有登录！\" }";
