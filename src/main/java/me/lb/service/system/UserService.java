@@ -1,6 +1,7 @@
 package me.lb.service.system;
 
 import java.util.List;
+import java.util.Map;
 
 import me.lb.model.system.User;
 import me.lb.service.common.GenericService;
@@ -21,6 +22,30 @@ public interface UserService extends GenericService<User> {
 	 */
 	public User findByLoginName(String loginName);
 
+	// 处理中间表的方法
+
+	/**
+	 * 查询所有的用户、角色对应关系
+	 * @param userId 用户id（可为空）
+	 * @param roleId 角色id（可为空）
+	 * @return 用户id->角色id的map
+	 */
+	public List<Map<Integer, Integer>> findUserRole(Integer userId, Integer roleId);
+	
+	/**
+	 * 存储一个用户和角色的对应关系
+	 * @param userId 用户id
+	 * @param roleId 角色id
+	 */
+	public void saveUserRole(int userId, int roleId);
+	
+	/**
+	 * 删除用户和角色的对应关系
+	 * @param userId 用户id（可为空）
+	 * @param roleId 角色id（可为空）
+	 */
+	public void deleteUserRole(Integer userId, Integer roleId);
+	
 	/**
 	 * 为用户一次分配多个角色
 	 * @param userId 角色id

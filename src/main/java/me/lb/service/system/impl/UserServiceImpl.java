@@ -114,9 +114,30 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements
 	}
 
 	@Override
-	public void auth(int userId, List<Integer> roleIds) {
-		// TODO: 调整为用户分配角色的方法
+	public List<Map<Integer, Integer>> findUserRole(Integer userId, Integer roleId) {
+		return ((UserDao) dao).findUserRole(userId, roleId);
+	}
 
+	@Override
+	public void saveUserRole(int userId, int roleId) {
+		((UserDao) dao).saveUserRole(userId, roleId);
+	}
+
+	@Override
+	public void deleteUserRole(Integer userId, Integer roleId) {
+		((UserDao) dao).deleteUserRole(userId, roleId);
+	}
+	
+	
+	@Override
+	public void auth(int userId, List<Integer> roleIds) {
+		// 为用户分配角色，首先先将用户所有的旧角色删除
+		((UserDao) dao).deleteUserRole(userId, null);
+		// 然后将新的角色循环存储即可
+		for (int roleId : roleIds) {
+			((UserDao) dao).saveUserRole(userId, roleId);
+		}
+		
 		// 将用户-角色的关系同步到Activiti的用户-组关系上
 		// 每次都是先将所有的旧数据清除
 		List<Group> groups = identityService.createGroupQuery()

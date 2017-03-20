@@ -111,10 +111,35 @@ public class RoleServiceImpl extends GenericServiceImpl<Role> implements
 			return null;
 		}
 	}
+	
+	@Override
+	public List<Role> findByUserId(int userId) {
+		return ((RoleDao) dao).findByUserId(userId);
+	}
+
+	@Override
+	public List<Map<Integer, Integer>> findRolePerm(Integer roleId, Integer permId) {
+		return ((RoleDao) dao).findRolePerm(roleId, permId);
+	}
+
+	@Override
+	public void saveRolePerm(int roleId, int permId) {
+		((RoleDao) dao).saveRolePerm(roleId, permId);
+	}
+
+	@Override
+	public void deleteRolePerm(Integer roleId, Integer permId) {
+		((RoleDao) dao).deleteRolePerm(roleId, permId);
+	}
 
 	@Override
 	public void auth(int roleId, List<Integer> permIds) {
-		// TODO: 调整为角色授权的方法
+		// 为角色授权，首先先将角色所有的旧权限删除
+		((RoleDao) dao).deleteRolePerm(roleId, null);
+		// 然后将新的权限循环存储即可
+		for (int permId : permIds) {
+			((RoleDao) dao).saveRolePerm(roleId, permId);
+		}
 	}
 
 }
