@@ -1,14 +1,13 @@
-package me.lb.controller.admin.demo;
+package me.lb.controller.admin.system;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import me.lb.model.demo.Foo;
 import me.lb.model.pagination.Pagination;
-import me.lb.service.demo.FooService;
+import me.lb.model.system.Perm;
+import me.lb.service.system.PermService;
 import me.lb.support.jackson.JsonWriter;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,30 +24,32 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-@RequestMapping(value = "/admin/demo/foo")
-public class FooController {
+@RequestMapping(value = "/admin/system/perm")
+public class PermController {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private FooService fooService;
+	private PermService permService;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String listPage() {
-		// 跳转到列表页面的方法
 		logger.info("invoke" + getClass().getName() + "." + "list");
-		return "admin/demo/foo/list";
+		return "admin/system/perm/list";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
-	public String edit(@PathVariable int id, Foo temp) {
-		// 修改某个对象的方法
+	public String edit(@PathVariable int id, Perm temp) {
+		// 这里理论上应该使用put请求，但由于form标签不支持put方式，故使用post代替
 		try {
-			Foo obj = fooService.findById(id);
-			// TODO: 这里需要根据实际进行完善
-
-			fooService.update(id, obj);
+			Perm obj = permService.findById(id);
+			obj.setName(temp.getName());
+			obj.setToken(temp.getToken());
+			obj.setUrl(temp.getUrl());
+			// 修改父对象
+			obj.setParentId(temp.getParentId());
+			permService.update(id, obj);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,9 +60,8 @@ public class FooController {
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public String delete(@PathVariable int id) {
-		// 删除某个对象的方法
 		try {
-			fooService.delete(id);
+			permService.delete(id);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -72,14 +72,11 @@ public class FooController {
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String get(@PathVariable int id) {
-		// 查询某个对象的方法
 		try {
-			Foo temp = fooService.findById(id);
+			Perm temp = permService.findById(id);
 			// 将查询出的结果序列化为JSON并返回
-			// 这里可以使用filter方法，过滤不需要序列化的属性
-			// 如果没有需要过滤的话，仍需要调用filter，避免错误
-			return JsonWriter.getInstance().filter(Foo.class).getWriter()
-					.writeValueAsString(temp);
+			return JsonWriter.getInstance().filter(Perm.class, "children")
+					.getWriter().writeValueAsString(temp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{}";
@@ -88,15 +85,15 @@ public class FooController {
 
 	@ResponseBody
 	@RequestMapping(value = "/batch", method = RequestMethod.POST)
-	public String batch_add(String objs) {
-		// 批量插入的操作
+	public String batch_add(int parentId, String objs) {
 		try {
 			ObjectMapper om = new ObjectMapper();
-			List<Foo> list = om.readValue(objs, new TypeReference<List<Foo>>() {});
-			Iterator<Foo> it = list.iterator();
+			List<Perm> list = om.readValue(objs, new TypeReference<List<Perm>>() {});
+			Iterator<Perm> it = list.iterator();
 			while (it.hasNext()) {
-				Foo obj = it.next();
-				fooService.save(obj);
+				Perm obj = it.next();
+				obj.setParentId(parentId);
+				permService.save(obj);
 			}
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
@@ -108,14 +105,11 @@ public class FooController {
 	@ResponseBody
 	@RequestMapping(value = "/batch", method = RequestMethod.DELETE)
 	public String batch_delete(String ids) {
-		// 批量删除的操作
 		try {
-			List<Integer> list = new ArrayList<Integer>();
 			String[] temp = ids.split(",");
 			for (String id : temp) {
-				list.add(Integer.valueOf(id));
+				permService.delete(Integer.valueOf(id));
 			}
-			fooService.deleteAll(list);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,27 +118,38 @@ public class FooController {
 	}
 
 	@ResponseBody
+	@RequestMapping(value = "/tree", method = RequestMethod.GET)
+	public String tree() {
+		try {
+			List<Perm> list = permService.findTopPerms();
+			// 将查询出的结果序列化为JSON并返回
+			return JsonWriter.getInstance().filter(Perm.class)
+					.getWriter().writeValueAsString(list);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "[]";
+		}
+	}
+
+	@ResponseBody
 	@RequestMapping(value = "/data", method = RequestMethod.GET)
 	public String data(String params) {
-		// 查询数据集合的方法
 		try {
 			ObjectMapper om = new ObjectMapper();
-			Pagination<Foo> pm = null;
+			Pagination<Perm> pm = null;
 			if (!StringUtils.isEmpty(params)) {
+				// Perm vo = om.readValue(jsonParam, Perm.class);
 				Map<String, Object> map = om.readValue(params, new TypeReference<Map<String, Object>>() {});
-				pm = fooService.pagingQuery(map);
+				pm = permService.pagingQuery(map);
 			} else {
-				pm = fooService.pagingQuery();
+				pm = permService.pagingQuery();
 			}
 			// 序列化查询结果为JSON
 			Map<String, Object> result = new HashMap<String, Object>();
 			result.put("total", pm.getTotal());
 			result.put("rows", pm.getDatas());
-			// 这里可以使用filter方法，过滤不需要序列化的属性
-			// 如果没有需要过滤的话，仍需要调用filter，避免错误
-			return JsonWriter.getInstance()
-					.filter(Foo.class).getWriter()
-					.writeValueAsString(result);
+			return JsonWriter.getInstance().filter(Perm.class, "children")
+					.getWriter().writeValueAsString(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{ \"total\" : 0, \"rows\" : [] }";

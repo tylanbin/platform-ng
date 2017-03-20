@@ -18,6 +18,9 @@ public class User implements Serializable {
 	private Date createDate;
 	private int loginRange;
 
+	// 用于反序列化json，存储关联的角色信息
+	private String roleIds;
+
 	public User() {
 	}
 
@@ -80,6 +83,14 @@ public class User implements Serializable {
 
 	public void setLoginRange(int loginRange) {
 		this.loginRange = loginRange;
+	}
+
+	public String getRoleIds() {
+		return roleIds;
+	}
+
+	public void setRoleIds(String roleIds) {
+		this.roleIds = roleIds;
 	}
 
 }
