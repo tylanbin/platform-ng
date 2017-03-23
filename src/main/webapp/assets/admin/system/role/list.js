@@ -126,83 +126,104 @@ function removeLine() {
 }
 
 function dlg_add() {
-	$('#dg-add').datagrid({
-		striped : true,
-		border : true,
-		idField : 'id',
-		rownumbers : true,
-		fitColumns : true,
-		singleSelect : true,
-		columns : [[{
-					field : 'name',
-					width : 80,
-					title : '角色名称',
-					editor : {
-						type : 'textbox',
-						options : {
-							required : true,
-							validType : ['length[0, 10]']
+	if ($('#orgId-add').val()) {
+		$('#dg-add').datagrid({
+			striped : true,
+			border : true,
+			idField : 'id',
+			rownumbers : true,
+			fitColumns : true,
+			singleSelect : true,
+			columns : [[{
+						field : 'name',
+						width : 80,
+						title : '角色名称',
+						editor : {
+							type : 'textbox',
+							options : {
+								required : true,
+								validType : ['length[0, 10]']
+							}
 						}
-					}
-				}, {
-					field : 'description',
-					width : 150,
-					title : '角色描述',
-					editor : {
-						type : 'textbox',
-						options : {
-							validType : ['length[0, 100]']
+					}, {
+						field : 'description',
+						width : 150,
+						title : '角色描述',
+						editor : {
+							type : 'textbox',
+							options : {
+								validType : ['length[0, 100]']
+							}
 						}
-					}
-				}]],
-		loadMsg : '数据载入中...',
-		onClickRow : onClickRow
-	});
-	$('#dlg-add').dialog({
-		onResize : function() {
-			$('#dg-add').datagrid('resize');
-		},
-		onClose : function() {
-			editIndex = undefined;
-			$('#dg-add').datagrid('loadData', {
-				total : 0,
-				rows : []
-			});
-		}
-	}).dialog('open');
+					}]],
+			loadMsg : '数据载入中...',
+			onClickRow : onClickRow
+		});
+		$('#dlg-add').dialog({
+			onResize : function() {
+				$('#dg-add').datagrid('resize');
+			},
+			onClose : function() {
+				editIndex = undefined;
+				$('#dg-add').datagrid('loadData', {
+					total : 0,
+					rows : []
+				});
+			}
+		}).dialog('open');
+	} else {
+		$.messager.alert('提示', '请先选择机构！', 'info');
+	}
 }
 function func_add() {
 	if (endEditing()) {
 		$('#dg-add').datagrid('acceptChanges');
-		// 数据处理
-		var data = $('#dg-add').datagrid('getData');
-		$.ajax({
-			type : 'post',
-			url : 'admin/system/role/batch',
-			data : {
-				id : $('#orgId-add').val(),
-				objs : JSON.stringify(data.rows)
-			},
-			dataType : 'json',
-			async : true,
-			success : function(data) {
-				if (data.success) {
-					var node = $('#tree').tree('getSelected');
-					if (node) {
-						selected = node.id;
+		if ($('#orgId-add').val()) {
+			// 数据处理
+			var data = $('#dg-add').datagrid('getData');
+			$.ajax({
+				type : 'post',
+				url : 'admin/system/role/batch',
+				data : {
+					id : $('#orgId-add').val(),
+					objs : JSON.stringify(data.rows)
+				},
+				dataType : 'json',
+				async : true,
+				success : function(data) {
+					if (data.success) {
+						var node = $('#tree').tree('getSelected');
+						if (node) {
+							selected = node.id;
+						}
+						$('#tree').tree('reload');
+						$('#dg-list').datagrid('reload');
+						$('#dg-list').datagrid('clearSelections');
+						$('#dlg-add').dialog('close');
+					} else {
+						// 出错也需要重载，避免重复数据
+						$('#tree').tree('reload');
+						$('#dg-list').datagrid('reload');
+						$('#dg-list').datagrid('clearSelections');
+						$.messager.show({
+							title : '错误',
+							msg : data.msg,
+							showType : 'fade',
+							style : {
+								right : '',
+								bottom : ''
+							}
+						});
 					}
-					$('#tree').tree('reload');
-					$('#dg-list').datagrid('reload');
-					$('#dg-list').datagrid('clearSelections');
-					$('#dlg-add').dialog('close');
-				} else {
+				},
+				error : function() {
 					// 出错也需要重载，避免重复数据
 					$('#tree').tree('reload');
 					$('#dg-list').datagrid('reload');
 					$('#dg-list').datagrid('clearSelections');
 					$.messager.show({
 						title : '错误',
-						msg : data.msg,
+						msg : '服务器正忙，请稍后再试！',
 						showType : 'fade',
 						style : {
 							right : '',
@@ -210,23 +231,10 @@ function func_add() {
 						}
 					});
 				}
-			},
-			error : function() {
-				// 出错也需要重载，避免重复数据
-				$('#tree').tree('reload');
-				$('#dg-list').datagrid('reload');
-				$('#dg-list').datagrid('clearSelections');
-				$.messager.show({
-					title : '错误',
-					msg : '服务器正忙，请稍后再试！',
-					showType : 'fade',
-					style : {
-						right : '',
-						bottom : ''
-					}
-				});
-			}
-		});
+			});
+		} else {
+			$.messager.alert('提示', '员工必须添加在机构下！', 'info');
+		}
 	}
 }
 
