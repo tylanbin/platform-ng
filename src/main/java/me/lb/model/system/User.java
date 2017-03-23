@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 // 加入该注解，动态过滤属性
 @JsonFilter("me.lb.model.system.User")
@@ -15,6 +16,7 @@ public class User implements Serializable {
 	private String loginName;
 	private String loginPass;
 	private int enabled;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createDate;
 	private int loginRange;
 

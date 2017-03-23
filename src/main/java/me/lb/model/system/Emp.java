@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 // 加入该注解，动态过滤属性
 @JsonFilter("me.lb.model.system.Emp")
@@ -16,13 +17,17 @@ public class Emp implements Serializable {
 	private String gender;
 	private String job;
 	private String education;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date birthday;
 	private String contact;
 	private String idCard;
 	private String email;
 	private int isOnJob;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date dateOfEntry;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date dateOfConfirm;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date dateOfLeave;
 
 	public int getId() {

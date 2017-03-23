@@ -18,7 +18,8 @@
     
     <!-- 中间表的处理 -->
     <select id="findByRoleId" parameterType="int" resultType="Perm">
-        select ng_sys_perm.* from ng_sys_role_perm, ng_sys_perm where ng_sys_role_perm.roleId = #{_parameter}
+        select ng_sys_perm.* from ng_sys_role_perm, ng_sys_perm
+        where ng_sys_role_perm.permId = ng_sys_perm.id and ng_sys_role_perm.roleId = #{_parameter}
     </select>
 	
 </mapper>

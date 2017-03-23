@@ -7,17 +7,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import me.lb.dao.common.GenericDao;
-import me.lb.model.pagination.Pagination;
-import me.lb.support.jackson.JsonWriter;
-import me.lb.support.system.SystemContext;
-
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+
+import me.lb.dao.common.GenericDao;
+import me.lb.model.pagination.Pagination;
+import me.lb.support.jackson.JsonWriter;
+import me.lb.support.system.SystemContext;
 
 public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 	
@@ -61,10 +61,13 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 
 	@Override
 	public List<T> findAll(Map<String, Object> params) {
+		// 处理参数（区分是否是like）
+		Map<String, Object> likeParams = handleParams(params);
 		// 构造参数
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("name", getTableName());
 		map.put("params", params);
+		map.put("likeParams", likeParams);
 		List<Object> datas = sqlSessionTemplate.selectList(PKG + "find", map);
 		return convertMapToPojo(datas);
 	}
@@ -150,10 +153,13 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 
 	@Override
 	public Pagination<T> pagingQuery(Map<String, Object> params) {
+		// 处理参数（区分是否是like）
+		Map<String, Object> likeParams = handleParams(params);
 		// 先查询条数
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("name", getTableName());
 		map.put("params", params);
+		map.put("likeParams", likeParams);
 		int total = sqlSessionTemplate.selectOne(PKG + "pagingCount", map);
 		// 再分页查询
 		map.put("offset", SystemContext.getOffset());
@@ -161,7 +167,7 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 		List<Object> datas = sqlSessionTemplate.selectList(PKG + "pagingFind", map);
 		return new Pagination<T>(total, convertMapToPojo(datas));
 	}
-	
+
 	/**
 	 * 将实体对象转换为map
 	 * @param obj 实体对象
@@ -216,6 +222,28 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 			e.printStackTrace();
 		}
 		return objs;
+	}
+	
+	/**
+	 * 处理查询的参数，其中有可能有的参数以Like结尾，将其提出
+	 * @param params 原始的参数map
+	 * @return 使用like方式查询的参数map
+	 */
+	private Map<String, Object> handleParams(Map<String, Object> params) {
+		Map<String, Object> likeParams = new HashMap<String, Object>();
+		Iterator<Map.Entry<String, Object>> it = params.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Object> me = it.next();
+			if (me.getKey().endsWith("Like")) {
+				// 以Like结尾，将其从params中提取出
+				String key = me.getKey().substring(0, me.getKey().length() - 4);
+				likeParams.put(key, me.getValue());
+				it.remove();
+			} else {
+				// 不是则不需要处理
+			}
+		}
+		return likeParams;
 	}
 
 }
