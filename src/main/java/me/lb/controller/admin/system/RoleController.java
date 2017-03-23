@@ -52,7 +52,8 @@ public class RoleController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
 	public String edit(@PathVariable int id, Role temp) {
 		try {
-			if (!roleService.validate(temp.getName())) {
+			Role validate = roleService.findByName(temp.getName());
+			if (validate != null && validate.getId() != id) {
 				return "{ \"msg\" : \"" + temp.getName() + "与已有角色名冲突，请更换后重试！\" }";
 			}
 			Role obj = roleService.findById(id);
@@ -193,6 +194,7 @@ public class RoleController {
 	public String auth_get(@PathVariable int id) {
 		try {
 			List<Perm> perms = permService.findByRoleId(id);
+			System.out.println(perms);
 			// 将查询出的结果序列化为JSON并返回
 			return JsonWriter.getInstance().filter(Perm.class, "children")
 					.getWriter().writeValueAsString(perms);

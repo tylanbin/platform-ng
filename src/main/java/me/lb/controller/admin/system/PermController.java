@@ -85,7 +85,7 @@ public class PermController {
 
 	@ResponseBody
 	@RequestMapping(value = "/batch", method = RequestMethod.POST)
-	public String batch_add(int parentId, String objs) {
+	public String batch_add(Integer parentId, String objs) {
 		try {
 			ObjectMapper om = new ObjectMapper();
 			List<Perm> list = om.readValue(objs, new TypeReference<List<Perm>>() {});

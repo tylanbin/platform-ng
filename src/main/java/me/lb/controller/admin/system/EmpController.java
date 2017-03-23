@@ -57,6 +57,7 @@ public class EmpController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
 	public String edit(@PathVariable int id, Emp temp) {
 		try {
+			System.out.println(temp.getBirthday());
 			Emp obj = empService.findById(id);
 			obj.setName(temp.getName());
 			obj.setGender(temp.getGender());

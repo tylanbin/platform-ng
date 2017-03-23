@@ -5,7 +5,7 @@ $(function() {
 		method : 'get',
 		lines : true,
 		onSelect : function(node) {
-			var json = '{ "org.id" : ' + node.id + ' }';
+			var json = '{ "parentId" : ' + node.id + ' }';
 			$('#dg-list').datagrid('clearSelections');
 			$('#dg-list').datagrid('reload', {
 				params : json
@@ -37,7 +37,7 @@ $(function() {
 		pageList : [10, 15, 20],
 		url : 'admin/system/org/data',
 		queryParams : {
-			params : '{ "org.id" : -1 }'
+			params : '{ "parentId" : "isNull" }'
 		},
 		method : 'get',
 		frozenColumns : [[{
@@ -110,7 +110,7 @@ function func_add() {
 		type : 'post',
 		url : 'admin/system/org/batch',
 		data : {
-			id : $('#pid-add').val(),
+			parentId : $('#pid-add').val(),
 			objs : json
 		},
 		dataType : 'json',
@@ -265,6 +265,6 @@ function func_reload() {
 	$('#searchbox').searchbox('setValue', '');
 	$('#dg-list').datagrid('clearSelections');
 	$('#dg-list').datagrid('reload', {
-		params : '{ "org.id" : -1 }'
+		params : '{ "parentId" : "isNull" }'
 	});
 }

@@ -86,7 +86,7 @@ public class OrgController {
 
 	@ResponseBody
 	@RequestMapping(value = "/batch", method = RequestMethod.POST)
-	public String batch_add(int parentId, String objs) {
+	public String batch_add(Integer parentId, String objs) {
 		try {
 			ObjectMapper om = new ObjectMapper();
 			List<Org> list = om.readValue(objs, new TypeReference<List<Org>>() {});
