@@ -2,6 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.lb.model.system.Perm">
 
+	<!-- 增加缓存 -->
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+
 	<!-- 本文件中只包含特殊方法使用的sql -->
 	
 	<resultMap id="permMap" type="Perm">

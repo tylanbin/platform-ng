@@ -87,6 +87,17 @@
 			<artifactId>c3p0</artifactId>
 			<version>0.9.5.2</version>
 		</dependency>
+		<!-- EhCache -->
+		<dependency>
+		    <groupId>org.ehcache</groupId>
+		    <artifactId>ehcache</artifactId>
+		    <version>3.2.1</version>
+		</dependency>
+		<dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-ehcache</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
 		<!-- MySQL -->
 		<!-- 不能使用6.0.x，无法兼容 -->
