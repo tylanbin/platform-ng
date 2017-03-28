@@ -24,14 +24,14 @@ public class InitDB {
 
 	@Test
 	public void db_init() throws Exception {
-		// 处理系统的表
-		// FIXME
-		// 处理Activiti的表
-		InputStream input = this.getClass().getClassLoader().getResourceAsStream("sql/activiti.sql");
+		// 重建数据库表
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("sql/base.sql");
 		List<String> sqls = IOUtils.readLines(input, "utf-8");
-		if (!sqls.isEmpty()) {
-			jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
-		}
+		jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+		// 重建Activiti的表
+		input = this.getClass().getClassLoader().getResourceAsStream("sql/activiti.sql");
+		sqls = IOUtils.readLines(input, "utf-8");
+		jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
 	}
 
 	@Test
