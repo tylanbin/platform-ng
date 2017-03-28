@@ -27,11 +27,15 @@ public class InitDB {
 		// 重建数据库表
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream("sql/base.sql");
 		List<String> sqls = IOUtils.readLines(input, "utf-8");
-		jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+		if (!sqls.isEmpty()) {
+			jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+		}
 		// 重建Activiti的表
 		input = this.getClass().getClassLoader().getResourceAsStream("sql/activiti.sql");
 		sqls = IOUtils.readLines(input, "utf-8");
-		jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+		if (!sqls.isEmpty()) {
+			jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+		}
 	}
 
 	@Test
