@@ -55,12 +55,16 @@ public class MainController {
 				// 使用测试数据初始化
 				input = this.getClass().getClassLoader().getResourceAsStream("sql/test.sql");
 				sqls = IOUtils.readLines(input, "utf-8");
-				jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+				if (!sqls.isEmpty()) {
+					jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+				}
 			} else if ("normal".equals(type)) {
 				// 使用正式数据初始化
 				input = this.getClass().getClassLoader().getResourceAsStream("sql/normal.sql");
 				sqls = IOUtils.readLines(input, "utf-8");
-				jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+				if (!sqls.isEmpty()) {
+					jdbcTemplate.batchUpdate(sqls.toArray(new String[sqls.size()]));
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
