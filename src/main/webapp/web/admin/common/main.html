@@ -42,7 +42,7 @@
 		// 获取用户信息
 		$.ajax({
 			type : 'post',
-			url : 'getLoginInfo',
+			url : AppCore.baseUrl + 'getLoginInfo',
 			dataType : 'json',
 			async : true,
 			success : function(data) {
@@ -135,7 +135,7 @@
 	function func_logout() {
 		$.ajax({
 			type : 'post',
-			url : 'admin/common/logout',
+			url : AppCore.baseUrl + 'admin/common/logout',
 			dataType : 'json',
 			async : true,
 			success : function(data) {
