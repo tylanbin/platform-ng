@@ -63,7 +63,7 @@ public class ModelController {
 			json.put("resourceId", "canvas");
 			ObjectNode stencilset = om.createObjectNode();
 			stencilset.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-			json.put("stencilset", stencilset);
+			json.set("stencilset", stencilset);
 			// 这里存储的信息在流程部署时会使用
 			ObjectNode properties = om.createObjectNode();
 			properties.put("name", name);// 流程名称
@@ -71,7 +71,7 @@ public class ModelController {
 			// TODO: 流程Category
 			// properties.put("process_namespace", description);
 			properties.put("documentation", description);// 流程描述信息
-			json.put("properties", properties);
+			json.set("properties", properties);
 			// 存储流程模型的信息
 			repositoryService.saveModel(model);
 			repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));

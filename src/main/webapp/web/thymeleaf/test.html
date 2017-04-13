@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Thymeleaf</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<link rel="stylesheet" type="text/css" href="../../assets/common/jquery-easyui/themes/custom/easyui.css" th:href="@{/assets/common/jquery-easyui/themes/custom/easyui.css}">
+<link rel="stylesheet" type="text/css" href="../../assets/common/jquery-easyui/themes/icon.css" th:href="@{/assets/common/jquery-easyui/themes/icon.css}">
+<link rel="stylesheet" type="text/css" href="../../assets/common/jquery-easyui-custom/easyui.custom.css" th:href="@{/assets/common/jquery-easyui-custom/easyui.custom.css}">
+<!-- scripts -->
+<script type="text/javascript" src="../../assets/common/jquery-easyui/jquery-1.8.3.min.js" th:src="@{/assets/common/jquery-easyui/jquery-1.8.3.min.js}"></script>
+<script type="text/javascript" src="../../assets/common/jquery-easyui/jquery.easyui.min.js" th:src="@{/assets/common/jquery-easyui/jquery.easyui.min.js}"></script>
+<script type="text/javascript" src="../../assets/common/jquery-easyui/locale/easyui-lang-zh_CN.js" th:src="@{/assets/common/jquery-easyui/locale/easyui-lang-zh_CN.js}"></script>
+<script type="text/javascript" src="../../assets/common/jquery-easyui-custom/easyui.custom.js" th:src="@{/assets/common/jquery-easyui-custom/easyui.custom.js}"></script>
+<!-- page scripts -->
+<script type="text/javascript" th:inline="javascript">
+	$(function() {
+		if (top.location !== self.location) {
+			top.location = self.location;
+		}
+		window.onresize = function() {
+			$('#dlg').dialog('center');
+		}
+		$('#dlg #input1').textbox('textbox').focus();
+	});
+</script>
+</head>
+
+<body>
+	<div id="dlg" class="easyui-dialog" style="width:400px;height:250px;" data-options="title:'Test',closable:false,buttons:'#dlg-btn'">
+		<div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'center',border:false" style="padding:20px 30px;">
+				<form id="fm" method="post">
+					<div style="text-align:center;">
+						<table style="border-width:0;" align="center">
+							<tr>
+								<td style="text-align: right;">Input1：</td>
+								<td><input type="text" id="input1" class="easyui-textbox" th:value="${hello}" /></td>
+							</tr>
+							<tr>
+								<td style="text-align: right;">Input2：</td>
+								<td><input type="text" id="input2" class="easyui-textbox" /></td>
+							</tr>
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

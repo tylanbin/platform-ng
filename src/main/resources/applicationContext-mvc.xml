@@ -36,11 +36,30 @@
 	<mvc:resources mapping="/web/**" location="/web/" />
 	<mvc:resources mapping="/assets/**" location="/assets/" />
 
+	<!-- 传统的jsp+jstl -->
 	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/jsp/"></property>
 		<property name="suffix" value=".jsp"></property>
 	</bean> -->
+
+	<!-- thymeleaf -->
+	<bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+		<property name="templateEngine" ref="templateEngine" />
+		<property name="characterEncoding" value="utf-8" />
+	</bean>
+	<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+		<property name="templateResolver" ref="templateResolver" />
+		<!-- <property name="enableSpringELCompiler" value="true" /> -->
+	</bean>
+	<bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
+		<property name="prefix" value="/web/" />
+		<property name="suffix" value=".html" />
+		<property name="templateMode" value="HTML" />
+		<!-- Template cache is true by default. Set to false if you want -->
+		<!-- templates to be automatically updated when modified. -->
+		<property name="cacheable" value="false" />
+	</bean>
 	
 	<!-- 支持上传文件 -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
