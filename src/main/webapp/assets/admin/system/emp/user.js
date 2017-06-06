@@ -241,6 +241,12 @@ function dlg_user() {
 						hidden : true
 					}]],
 			loadMsg : '数据载入中...',
+			onLoadError : function() {
+				// 该方法会在请求失败后执行
+				// 这里使用测试数据填充DataGrid，便于调试页面
+				var tmp = [{"id":1,"loginName":"zhangsan","loginPass":"123456","enabled":1,"createDate":1486533755000,"loginRange":null,"roleIds":"2"}];
+				$(this).datagrid('loadData', tmp);
+			},
 			onClickRow : onClickUserRow
 		});
 		$('#empId-user').val(empId);

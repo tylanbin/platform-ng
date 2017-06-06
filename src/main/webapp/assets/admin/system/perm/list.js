@@ -20,6 +20,13 @@ $(function() {
 			if (selected) {
 				$(this).tree('expandTo', $(this).tree('find', selected).target);
 			}
+		},
+		onLoadError : function() {
+			// 该方法会在请求失败后执行
+			// 这里使用测试数据填充Tree，便于调试页面
+			var tmp = [
+			];
+			$(this).tree('loadData', tmp);
 		}
 	});
 	$('#dg-list').datagrid({
@@ -52,7 +59,14 @@ $(function() {
 					field : 'url',
 					title : '链接地址'
 				}]],
-		loadMsg : '数据载入中...'
+		loadMsg : '数据载入中...',
+		onLoadError : function() {
+			// 该方法会在请求失败后执行
+			// 这里使用测试数据填充DataGrid，便于调试页面
+			var tmp = [
+			];
+			$(this).datagrid('loadData', tmp);
+		}
 	});
 	$('#dg-list').datagrid('getPager').pagination({
 		beforePageText : '第',
