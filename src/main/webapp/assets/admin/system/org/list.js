@@ -22,7 +22,19 @@ $(function() {
 				$(this).tree('expandTo', $(this).tree('find', selected).target);
 				$(this).tree('select', $(this).tree('find', selected).target);
 			}
-		}
+		},
+		onLoadError : function() {
+			// 该方法会在请求失败后执行
+			// 这里使用测试数据填充Tree，便于调试页面
+			var tmp = [
+				{"id":1,"name":"示例公司","text":"示例公司","serialNum":"demo","workPlace":"","contact":"","leader":"","children":[
+					{"id":2,"name":"市场部","text":"市场部","serialNum":"demo-1","workPlace":"","contact":"","leader":"","children":[]},
+					{"id":3,"name":"行政部","text":"行政部","serialNum":"demo-2","workPlace":"","contact":"","leader":"","children":[]},
+					{"id":4,"name":"研发部","text":"研发部","serialNum":"demo-3","workPlace":"","contact":"","leader":"","children":[]}
+				]}
+			];
+			$(this).tree('loadData', tmp);
+ 		}
 	});
 	$('#dg-list').datagrid({
 		fit : true,
@@ -60,7 +72,17 @@ $(function() {
 					field : 'contact',
 					title : '联系电话'
 				}]],
-		loadMsg : '数据载入中...'
+		loadMsg : '数据载入中...',
+		onLoadError : function() {
+			// 该方法会在请求失败后执行
+			// 这里使用测试数据填充DataGrid，便于调试页面
+			var tmp = [
+				{"id":2,"org":{"id":1,"org":null,"name":"示例公司","serialNum":"demo","workPlace":"","contact":"","leader":"","text":"示例公司"},"name":"市场部","serialNum":"demo-1","workPlace":"","contact":"","leader":"","text":"市场部"},
+				{"id":3,"org":{"id":1,"org":null,"name":"示例公司","serialNum":"demo","workPlace":"","contact":"","leader":"","text":"示例公司"},"name":"行政部","serialNum":"demo-2","workPlace":"","contact":"","leader":"","text":"行政部"},
+				{"id":4,"org":{"id":1,"org":null,"name":"示例公司","serialNum":"demo","workPlace":"","contact":"","leader":"","text":"示例公司"},"name":"研发部","serialNum":"demo-3","workPlace":"","contact":"","leader":"","text":"研发部"}
+			];
+			$(this).datagrid('loadData', tmp);
+		}
 	});
 	$('#dg-list').datagrid('getPager').pagination({
 		beforePageText : '第',

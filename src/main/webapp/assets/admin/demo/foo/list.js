@@ -19,25 +19,35 @@ $(function() {
 					checkbox : true
 				}]],
 		columns : [[{
-					"field" : "col5",
-					"title" : "日期时间"
-				}, {
-					"field" : "col4",
-					"title" : "日期"
-				}, {
-					"field" : "col6",
-					"title" : "文本"
-				}, {
 					"field" : "col1",
 					"title" : "整型"
+				}, {
+					"field" : "col2",
+					"title" : "字符串"
 				}, {
 					"field" : "col3",
 					"title" : "小数"
 				}, {
-					"field" : "col2",
-					"title" : "字符串"
+					"field" : "col4",
+					"title" : "日期"
+				}, {
+					"field" : "col5",
+					"title" : "日期时间"
+				}, {
+					"field" : "col6",
+					"title" : "文本"
 				}]],
-		loadMsg : '数据载入中...'
+		loadMsg : '数据载入中...',
+		onLoadError : function() {
+			// 该方法会在请求失败后执行
+			// 这里使用测试数据填充DataGrid，便于调试页面
+			var tmp = [
+				{"col1":11,"col2":"A","col3":11.11,"col4":"2017-01-01","col5":"2017-01-01 12:00:00","col6":"temp text"},
+				{"col1":22,"col2":"B","col3":22.22,"col4":"2017-02-01","col5":"2017-02-01 12:00:00","col6":"temp text"},
+				{"col1":33,"col2":"C","col3":33.33,"col4":"2017-03-01","col5":"2017-03-01 12:00:00","col6":"temp text"}
+			];
+			$(this).datagrid('loadData', tmp);
+		}
 	});
 	$('#dg-list').datagrid('getPager').pagination({
 		beforePageText : '第',

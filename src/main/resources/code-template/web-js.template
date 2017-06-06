@@ -21,7 +21,14 @@ $(function() {
 		columns : [
 {ListJson}
 		],
-		loadMsg : '数据载入中...'
+		loadMsg : '数据载入中...',
+		onLoadError : function() {
+			// 该方法会在请求失败后执行
+			// 这里使用测试数据填充DataGrid，便于调试页面
+			var tmp = [
+			];
+			$(this).datagrid('loadData', tmp);
+		}
 	});
 	$('#dg-list').datagrid('getPager').pagination({
 		beforePageText : '第',
