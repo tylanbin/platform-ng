@@ -27,8 +27,8 @@ public class CodeUtil {
 		for (String folderStr : folders) {
 			// 各层的全路径
 			String path_model = basePath + "model/" + folderStr;
-			String path_Dao = basePath + "dao/" + folderStr;
-			String path_Service = basePath + "service/" + folderStr;
+			String path_dao = basePath + "dao/" + folderStr;
+			String path_service = basePath + "service/" + folderStr;
 			String path_controller = basePath + "controller/admin/" + folderStr;
 			// model的包名称，反射时使用
 			String packageName = "me.lb.model." + folderStr;
@@ -39,8 +39,8 @@ public class CodeUtil {
 				String fileName = pojo.getName();
 				String className = StringUtils.stripFilenameExtension(fileName);
 				// 先生成Dao、Service、Controller
-				generateDao(path_Dao, folderStr, className);
-				generateService(path_Service, folderStr, className);
+				generateDao(path_dao, folderStr, className);
+				generateService(path_service, folderStr, className);
 				generateController(path_controller, folderStr, className);
 				// 反射类，获取字段及对应中文
 				Map<String, String> fieldMap = new HashMap<String, String>();
@@ -60,18 +60,18 @@ public class CodeUtil {
 
 	private static void generateDao(String path, String category, String className) throws Exception {
 		File folder_interface = new File(path);
-		File folder_implclass = new File(path + "/impl");
+		File folder_implClass = new File(path + "/impl");
 		// 创建目录
 		if (!folder_interface.exists()) {
 			folder_interface.mkdirs();
 		}
-		if (!folder_implclass.exists()) {
-			folder_implclass.mkdirs();
+		if (!folder_implClass.exists()) {
+			folder_implClass.mkdirs();
 		}
 		// 创建文件
 		FileOutputStream output = null;
 		File file_interface = new File(path + "/" + className + "Dao.java");
-		File file_implclass = new File(path + "/impl/" + className + "DaoImpl.java");
+		File file_implClass = new File(path + "/impl/" + className + "DaoImpl.java");
 		// 写入interface
 		if (!file_interface.exists()) {
 			String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
@@ -80,9 +80,9 @@ public class CodeUtil {
 			IOUtils.write(content, output, "utf-8");
 		}
 		// 写入class
-		if (!file_implclass.exists()) {
+		if (!file_implClass.exists()) {
 			String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
-			output = new FileOutputStream(file_implclass);
+			output = new FileOutputStream(file_implClass);
 			String content = generateSrc(category, className, objName, "daoImpl.template");
 			IOUtils.write(content, output, "utf-8");
 		}
@@ -90,18 +90,18 @@ public class CodeUtil {
 
 	private static void generateService(String path, String category, String className) throws Exception {
 		File folder_interface = new File(path);
-		File folder_implclass = new File(path + "/impl");
+		File folder_implClass = new File(path + "/impl");
 		// 创建目录
 		if (!folder_interface.exists()) {
 			folder_interface.mkdirs();
 		}
-		if (!folder_implclass.exists()) {
-			folder_implclass.mkdirs();
+		if (!folder_implClass.exists()) {
+			folder_implClass.mkdirs();
 		}
 		// 创建文件
 		FileOutputStream output = null;
 		File file_interface = new File(path + "/" + className + "Service.java");
-		File file_implclass = new File(path + "/impl/" + className + "ServiceImpl.java");
+		File file_implClass = new File(path + "/impl/" + className + "ServiceImpl.java");
 		// 写入interface
 		if (!file_interface.exists()) {
 			String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
@@ -110,9 +110,9 @@ public class CodeUtil {
 			IOUtils.write(content, output, "utf-8");
 		}
 		// 写入class
-		if (!file_implclass.exists()) {
+		if (!file_implClass.exists()) {
 			String objName = className.substring(0, 1).toLowerCase() + className.substring(1);
-			output = new FileOutputStream(file_implclass);
+			output = new FileOutputStream(file_implClass);
 			String content = generateSrc(category, className, objName, "serviceImpl.template");
 			IOUtils.write(content, output, "utf-8");
 		}
