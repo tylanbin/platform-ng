@@ -110,7 +110,6 @@
 		</dependency>
 
 		<!-- Spring -->
-		<!-- 与Hibernate搭配，使用旧版 -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
