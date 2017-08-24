@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd">
-	<!-- 缓存位置可以是自定义的硬盘地址也可以是JVM默认使用的缓存地址 -->
+	<!-- set cache path -->
 	<diskStore path="java.io.tmpdir" />
 	<!-- <diskStore path="d:\cache"/> -->
 	<defaultCache
