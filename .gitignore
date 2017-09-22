@@ -8,6 +8,9 @@
 # java
 *.class
 
+# jrebel
+rebel.xml
+
 # Package Files #
 *.jar
 *.war
