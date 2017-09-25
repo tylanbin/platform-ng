@@ -135,7 +135,7 @@
 	function func_logout() {
 		$.ajax({
 			type : 'post',
-			url : AppCore.baseUrl + 'admin/common/logout',
+			url : 'admin/common/logout',
 			dataType : 'json',
 			async : true,
 			success : function(data) {
