@@ -51,7 +51,7 @@
 	</filter-mapping>
 
 	<!-- 设置Shiro安装框架的过滤器 -->
-	<!-- <filter>
+	<filter>
 		<filter-name>shiro</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 		<init-param>
@@ -62,7 +62,7 @@
 	<filter-mapping>
 		<filter-name>shiro</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping> -->
+	</filter-mapping>
 
 	<!-- 分页过滤器 -->
 	<filter>
