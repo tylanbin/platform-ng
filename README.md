@@ -121,6 +121,7 @@ public class Foo implements java.io.Serializable {
 * 执行数据库生成工具`me.lb.utils.InitDB`（src/test/java下），生成数据表及关联，并初始化数据（可选）
 * 调整代码生成工具`me.lb.utils.InitCode`（src/test/java下），列出自定义的POJO类所在的文件夹（可以多个）
 * 注意：
+	* 初始化数据时，需要先初始化表结构（db_init方法），再初始化数据（data_init方法）
 	* 在eclipse中，项目依赖的`activiti-modeler`可能与JUnit存在冲突，导致无法正常执行测试用例
 	* 如果出现冲突，需要通过执行mvn test来执行测试用例（mvn test -Dtest=类名#方法名）
 
