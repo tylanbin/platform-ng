@@ -6,15 +6,14 @@ import java.io.InputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import me.lb.model.system.Emp;
-import me.lb.model.system.User;
-import me.lb.support.jackson.JsonWriter;
-import me.lb.utils.UserUtil;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import me.lb.model.system.User;
+import me.lb.support.jackson.JsonWriter;
+import me.lb.utils.UserUtil;
 
 @Controller
 public class CommonController {
@@ -26,8 +25,7 @@ public class CommonController {
 			User user = UserUtil.getUserFromSession(session);
 			if (user != null) {
 				return JsonWriter.getInstance()
-						.filter(User.class, "roles")
-						.filter(Emp.class, "org", "users")
+						.filter(User.class)
 						.getWriter().writeValueAsString(user);
 			} else {
 				return "{}";
