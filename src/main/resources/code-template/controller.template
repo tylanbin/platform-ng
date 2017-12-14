@@ -40,11 +40,14 @@ public class {UpperCase}Controller {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
-	public String edit(@PathVariable int id, {UpperCase} temp) {
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public String edit(@PathVariable int id, String obj) {
 		// 修改某个对象的方法
 		try {
-			{UpperCase} obj = {LowerCase}Service.findById(id);
+			// 使用json的方式进行处理，避免参数为空的问题
+			ObjectMapper om = new ObjectMapper();
+			{UpperCase} temp = om.readValue(obj, {UpperCase}.class);
+			{UpperCase} old = {LowerCase}Service.findById(id);
 			// TODO: 这里需要根据实际进行完善
 
 			{LowerCase}Service.update(obj);

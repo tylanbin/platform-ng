@@ -15,28 +15,28 @@ $(function() {
 		queryParams : {},
 		method : 'get',
 		frozenColumns : [[{
-					field : 'ck',
-					checkbox : true
-				}]],
+			field : 'ck',
+			checkbox : true
+		}]],
 		columns : [[{
-					"field" : "col1",
-					"title" : "整型"
-				}, {
-					"field" : "col2",
-					"title" : "字符串"
-				}, {
-					"field" : "col3",
-					"title" : "小数"
-				}, {
-					"field" : "col4",
-					"title" : "日期"
-				}, {
-					"field" : "col5",
-					"title" : "日期时间"
-				}, {
-					"field" : "col6",
-					"title" : "文本"
-				}]],
+			"field" : "col1",
+			"title" : "整型"
+		}, {
+			"field" : "col2",
+			"title" : "字符串"
+		}, {
+			"field" : "col3",
+			"title" : "小数"
+		}, {
+			"field" : "col4",
+			"title" : "日期"
+		}, {
+			"field" : "col5",
+			"title" : "日期时间"
+		}, {
+			"field" : "col6",
+			"title" : "文本"
+		}]],
 		loadMsg : '数据载入中...',
 		onLoadError : function() {
 			// 该方法会在请求失败后执行
@@ -112,66 +112,66 @@ function dlg_add() {
 		singleSelect : true,
 		// 多行增加的列的列宽、控件类型需要后期修改
 		columns : [[{
-					"field" : "col5",
-					"title" : "日期时间",
-					"width" : 80,
-					"editor" : {
-						"type" : "textbox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col4",
-					"title" : "日期",
-					"width" : 80,
-					"editor" : {
-						"type" : "textbox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col6",
-					"title" : "文本",
-					"width" : 80,
-					"editor" : {
-						"type" : "textbox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col1",
-					"title" : "整型",
-					"width" : 80,
-					"editor" : {
-						"type" : "textbox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col3",
-					"title" : "小数",
-					"width" : 80,
-					"editor" : {
-						"type" : "textbox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}, {
-					"field" : "col2",
-					"title" : "字符串",
-					"width" : 80,
-					"editor" : {
-						"type" : "textbox",
-						"options" : {
-							"required" : true
-						}
-					}
-				}]],
+			"field" : "col5",
+			"title" : "日期时间",
+			"width" : 80,
+			"editor" : {
+				"type" : "textbox",
+				"options" : {
+					"required" : true
+				}
+			}
+		}, {
+			"field" : "col4",
+			"title" : "日期",
+			"width" : 80,
+			"editor" : {
+				"type" : "textbox",
+				"options" : {
+					"required" : true
+				}
+			}
+		}, {
+			"field" : "col6",
+			"title" : "文本",
+			"width" : 80,
+			"editor" : {
+				"type" : "textbox",
+				"options" : {
+					"required" : true
+				}
+			}
+		}, {
+			"field" : "col1",
+			"title" : "整型",
+			"width" : 80,
+			"editor" : {
+				"type" : "textbox",
+				"options" : {
+					"required" : true
+				}
+			}
+		}, {
+			"field" : "col3",
+			"title" : "小数",
+			"width" : 80,
+			"editor" : {
+				"type" : "textbox",
+				"options" : {
+					"required" : true
+				}
+			}
+		}, {
+			"field" : "col2",
+			"title" : "字符串",
+			"width" : 80,
+			"editor" : {
+				"type" : "textbox",
+				"options" : {
+					"required" : true
+				}
+			}
+		}]],
 		loadMsg : '数据载入中...',
 		onClickRow : onClickRow
 	});
@@ -252,23 +252,38 @@ function dlg_edit() {
 	}
 }
 function func_edit() {
-	// 这里是利用html中的form进行提交，所以需要加上项目路径AppCore.baseUrl
-	// 这里理论上应该使用put请求，但由于form标签不支持put方式，故使用post代替
-	$('#fm-edit').form('submit', {
-		url : AppCore.baseUrl + 'admin/demo/foo/' + $('#id-edit').val(),
-		onSubmit : function(param) {
-			return $(this).form('validate');
-		},
-		success : function(data) {
-			var data = eval('(' + data + ')');
-			if (data.success) {
-				$('#dg-list').datagrid('reload');
-				$('#dg-list').datagrid('clearSelections');
-				$('#dlg-edit').dialog('close');
-			} else {
+	// 将表单序列化为json对象
+	var data = $('#fm-edit').serializeObj();
+	if ($('#fm-edit').form('validate')) {
+		$.ajax({
+			type : 'put',
+			url : 'admin/demo/foo/' + $('#id-edit').val(),
+			data : {
+				obj : JSON.stringify(data)
+			},
+			dataType : 'json',
+			async : true,
+			success : function(data) {
+				if (data.success) {
+					$('#dg-list').datagrid('reload');
+					$('#dg-list').datagrid('clearSelections');
+					$('#dlg-edit').dialog('close');
+				} else {
+					$.messager.show({
+						title : '错误',
+						msg : data.msg,
+						showType : 'fade',
+						style : {
+							right : '',
+							bottom : ''
+						}
+					});
+				}
+			},
+			error : function() {
 				$.messager.show({
 					title : '错误',
-					msg : data.msg,
+					msg : '服务器正忙，请稍后再试！',
 					showType : 'fade',
 					style : {
 						right : '',
@@ -276,8 +291,8 @@ function func_edit() {
 					}
 				});
 			}
-		}
-	});
+		});
+	}
 }
 
 function func_del() {

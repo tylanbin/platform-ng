@@ -40,14 +40,22 @@ public class FooController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
-	public String edit(@PathVariable int id, Foo temp) {
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public String edit(@PathVariable int id, String obj) {
 		// 修改某个对象的方法
 		try {
-			Foo obj = fooService.findById(id);
+			// 使用json的方式进行处理，避免参数为空的问题
+			ObjectMapper om = new ObjectMapper();
+			Foo temp = om.readValue(obj, Foo.class);
+			Foo old = fooService.findById(id);
 			// TODO: 这里需要根据实际进行完善
-
-			fooService.update(obj);
+			old.setCol1(temp.getCol1());
+			old.setCol2(temp.getCol2());
+			old.setCol3(temp.getCol3());
+			old.setCol4(temp.getCol4());
+			old.setCol5(temp.getCol5());
+			old.setCol6(temp.getCol6());
+			fooService.update(old);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
 			e.printStackTrace();
