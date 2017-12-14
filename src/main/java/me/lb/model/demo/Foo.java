@@ -22,10 +22,10 @@ public class Foo implements Serializable {
 	private double col3;
 	// Date类型的属性需要添加@JsonFormat注解
 	@MetaData(chsName = "日期")
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	private Date col4;
 	@MetaData(chsName = "日期时间")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date col5;
 	@MetaData(chsName = "文本")
 	private String col6;
