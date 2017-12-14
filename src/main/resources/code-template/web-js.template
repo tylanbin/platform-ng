@@ -15,9 +15,9 @@ $(function() {
 		queryParams : {},
 		method : 'get',
 		frozenColumns : [[{
-					field : 'ck',
-					checkbox : true
-				}]],
+			field : 'ck',
+			checkbox : true
+		}]],
 		columns : [
 {ListJson}
 		],
@@ -175,23 +175,38 @@ function dlg_edit() {
 	}
 }
 function func_edit() {
-	// 这里是利用html中的form进行提交，所以需要加上项目路径AppCore.baseUrl
-	// 这里理论上应该使用put请求，但由于form标签不支持put方式，故使用post代替
-	$('#fm-edit').form('submit', {
-		url : AppCore.baseUrl + 'admin/{Category}/{LowerCase}/' + $('#id-edit').val(),
-		onSubmit : function(param) {
-			return $(this).form('validate');
-		},
-		success : function(data) {
-			var data = eval('(' + data + ')');
-			if (data.success) {
-				$('#dg-list').datagrid('reload');
-				$('#dg-list').datagrid('clearSelections');
-				$('#dlg-edit').dialog('close');
-			} else {
+	// 将表单序列化为json对象
+	var data = $('#fm-edit').serializeObj();
+	if ($('#fm-edit').form('validate')) {
+		$.ajax({
+			type : 'put',
+			url : 'admin/{Category}/{LowerCase}/' + $('#id-edit').val(),
+			data : {
+				obj : JSON.stringify(data)
+			},
+			dataType : 'json',
+			async : true,
+			success : function(data) {
+				if (data.success) {
+					$('#dg-list').datagrid('reload');
+					$('#dg-list').datagrid('clearSelections');
+					$('#dlg-edit').dialog('close');
+				} else {
+					$.messager.show({
+						title : '错误',
+						msg : data.msg,
+						showType : 'fade',
+						style : {
+							right : '',
+							bottom : ''
+						}
+					});
+				}
+			},
+			error : function() {
 				$.messager.show({
 					title : '错误',
-					msg : data.msg,
+					msg : '服务器正忙，请稍后再试！',
 					showType : 'fade',
 					style : {
 						right : '',
@@ -199,8 +214,8 @@ function func_edit() {
 					}
 				});
 			}
-		}
-	});
+		});
+	}
 }
 
 function func_del() {
