@@ -11,9 +11,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import me.lb.support.system.annotation.MetaData;
-
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import me.lb.support.system.annotation.MetaData;
 
 @Entity
 @Table(name = "ng_demo_foo")
@@ -31,9 +32,12 @@ public class Foo implements java.io.Serializable {
 	private String col2;
 	@MetaData(chsName = "小数")
 	private Double col3;
+	// Date类型的属性需要添加@JsonFormat注解
 	@MetaData(chsName = "日期")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	private Date col4;
 	@MetaData(chsName = "日期时间")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp col5;
 	@MetaData(chsName = "文本")
 	private String col6;
@@ -45,8 +49,7 @@ public class Foo implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Foo(Integer col1, String col2, Double col3, Date col4,
-			Timestamp col5, String col6) {
+	public Foo(Integer col1, String col2, Double col3, Date col4, Timestamp col5, String col6) {
 		this.col1 = col1;
 		this.col2 = col2;
 		this.col3 = col3;
