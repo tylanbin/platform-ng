@@ -55,7 +55,7 @@ public class ModelerController {
 				}
 				modelNode.put(ModelDataJsonConstants.MODEL_ID, model.getId());
 				ObjectNode jsonNode = (ObjectNode) om.readTree(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8"));
-				modelNode.put("model", jsonNode);
+				modelNode.set("model", jsonNode);
 				return om.writeValueAsString(modelNode);
 			} else {
 				return "{}";

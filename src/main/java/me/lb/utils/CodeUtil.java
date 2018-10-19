@@ -263,8 +263,8 @@ public class CodeUtil {
 			ObjectNode add_editor_options = om.createObjectNode();
 			add_editor_options.put("required", true);
 			add_editor.put("type", "textbox");
-			add_editor.put("options", add_editor_options);
-			obj_add.put("editor", add_editor);
+			add_editor.set("options", add_editor_options);
+			obj_add.set("editor", add_editor);
 			arr_add.add(obj_add);
 		}
 		// 处理模板
