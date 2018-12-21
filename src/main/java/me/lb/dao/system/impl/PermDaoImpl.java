@@ -21,7 +21,7 @@ public class PermDaoImpl extends GenericDaoImpl<Perm> implements PermDao {
 	
 	@Override
 	protected String[] getIgnored() {
-		return new String[] { "text", "children"};
+		return new String[] { "text", "children" };
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao {
 	
 	@Override
 	protected String[] getIgnored() {
-		return new String[] { "roleIds"};
+		return new String[] { "roleIds" };
 	}
 
 	@Override

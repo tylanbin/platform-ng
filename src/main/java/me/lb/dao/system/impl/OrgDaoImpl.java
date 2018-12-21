@@ -21,7 +21,7 @@ public class OrgDaoImpl extends GenericDaoImpl<Org> implements OrgDao {
 
 	@Override
 	protected String[] getIgnored() {
-		return new String[] { "text", "children"};
+		return new String[] { "text", "children" };
 	}
 
 	@Override

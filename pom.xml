@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.lb</groupId>
@@ -90,15 +92,15 @@
 		</dependency>
 		<!-- EhCache -->
 		<dependency>
-		    <groupId>org.ehcache</groupId>
-		    <artifactId>ehcache</artifactId>
-		    <version>3.6.1</version>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>3.6.1</version>
 		</dependency>
 		<dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-ehcache</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-ehcache</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<!-- MySQL -->
 		<!-- 不能使用6.0.x，无法兼容 -->
@@ -175,7 +177,7 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.9.7</version>
 		</dependency>
-		
+
 		<!-- Activiti -->
 		<!-- 为了与设计器兼容，使用旧版 -->
 		<dependency>
@@ -258,5 +260,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>

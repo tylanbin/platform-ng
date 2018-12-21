@@ -194,7 +194,6 @@ public class RoleController {
 	public String auth_get(@PathVariable int id) {
 		try {
 			List<Perm> perms = permService.findByRoleId(id);
-			System.out.println(perms);
 			// 将查询出的结果序列化为JSON并返回
 			return JsonWriter.getInstance().filter(Perm.class, "children")
 					.getWriter().writeValueAsString(perms);

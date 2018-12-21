@@ -2,9 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.lb.model.common">
 
-	<!-- 增加缓存 -->
-	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
-	
 	<insert id="save" parameterType="map" keyProperty="id" useGeneratedKeys="true">
 		insert into `${name}` (
 			<foreach item="col" index="i" collection="cols" open="" separator="," close="">
