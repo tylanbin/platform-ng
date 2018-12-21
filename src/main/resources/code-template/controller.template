@@ -50,7 +50,7 @@ public class {UpperCase}Controller {
 			{UpperCase} old = {LowerCase}Service.findById(id);
 			// TODO: 这里需要根据实际进行完善
 
-			{LowerCase}Service.update(obj);
+			{LowerCase}Service.update(old);
 			return "{ \"success\" : true }";
 		} catch (Exception e) {
 			e.printStackTrace();
