@@ -4,6 +4,7 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 * 该平台可以使用POJO类（自己实现或使用反向工具生成），一次性生成各层代码，只需要通过少量的调整，即可直接使用
 * 该平台已经完成了基础的用户-角色-权限控制（借助Shiro），并附带了组织/员工的基本管理
 * 该平台放弃了传统的JSP页面，转用HTML+AJAX的方式实现，旨在减少开发人员与美工之间的冲突
+* 该平台的[Spring Boot版本](https://github.com/tylanbin/platform-ng-springboot/)正在重写中...
 
 ## 目录
 * [框架介绍](#框架介绍)
@@ -69,7 +70,7 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 
 ## 注意事项
 * 需要Maven的支持，并需要计算机联网（下载Jar）
-* 如果项目部署路径修改（默认http://localhost/），需要修改全局的ajax设置js和错误页面：
+* 如果项目部署路径修改（默认localhost），需要修改全局的ajax设置js和错误页面：
 	* `src/main/webapp/assets/common/framework.js`中开头处的`baseUrl`属性
 	* `src/main/webapp/web/admin/common/404.html`中开头处的`base`标签
 	* `src/main/webapp/web/admin/common/500.html`中开头处的`base`标签
