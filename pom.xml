@@ -92,11 +92,10 @@
 		</dependency>
 
 		<!-- MySQL -->
-		<!-- 不能使用6.0.x，无法兼容 -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.47</version>
+			<version>8.0.20</version>
 		</dependency>
 
 		<!-- Spring -->
