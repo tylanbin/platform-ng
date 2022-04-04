@@ -1,19 +1,19 @@
 package me.lb.dao.system;
 
-import me.lb.model.system.Perm;
-import me.lb.support.jackson.JsonWriter;
-
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import me.lb.model.system.Perm;
+import me.lb.support.jackson.JsonWriter;
+
 @Transactional
-@TransactionConfiguration(defaultRollback = true)
+@Rollback(true)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext-orm.xml")
 public class PermDaoTest {
@@ -43,8 +43,7 @@ public class PermDaoTest {
 		Perm p142 = new Perm("导出数据", "user:list:export", "/user/list/export", id14);
 		permDao.save(p141);
 		permDao.save(p142);
-		System.out.println(JsonWriter.getInstance().filter(Perm.class).getWriter()
-				.withDefaultPrettyPrinter().writeValueAsString(permDao.findTopPerms()));
+		System.out.println(JsonWriter.getInstance().filter(Perm.class).getWriter().withDefaultPrettyPrinter().writeValueAsString(permDao.findTopPerms()));
 	}
 
 }

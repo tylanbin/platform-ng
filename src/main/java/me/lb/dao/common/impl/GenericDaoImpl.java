@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import me.lb.dao.common.GenericDao;
 import me.lb.model.pagination.Pagination;
@@ -216,6 +218,8 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 		List<T> objs = new ArrayList<T>();
 		try {
 			ObjectMapper om = new ObjectMapper();
+			om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+			om.registerModule(new JavaTimeModule());
 			String json = om.writeValueAsString(list);
 			objs = om.readValue(json, TypeFactory.defaultInstance().constructCollectionType(List.class, clazz));
 		} catch (Exception e) {
