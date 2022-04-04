@@ -19,9 +19,9 @@ NG开发平台是一个人使用的JavaWeb开发基础框架
 * [备注](#备注)
 
 ## 框架介绍
-* [MyBatis 3.4.x](http://www.mybatis.org/mybatis-3/zh/)
-* [Spring Framework 4.0.x](http://projects.spring.io/spring-framework/)
-* [Shiro 1.2.x](http://shiro.apache.org/)
+* [MyBatis 3.5.x](http://www.mybatis.org/mybatis-3/zh/)
+* [Spring Framework 5.x](http://projects.spring.io/spring-framework/)
+* [Shiro 1.9.x](http://shiro.apache.org/)
 * [jQuery 1.8.3](http://jquery.com/)
 * [jQuery EasyUI 1.4.x](http://www.jeasyui.com/)
 

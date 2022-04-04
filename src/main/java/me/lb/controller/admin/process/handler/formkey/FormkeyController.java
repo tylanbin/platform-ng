@@ -176,7 +176,6 @@ public class FormkeyController {
 	 * @param request 请求中包括了表单的参数
 	 */
 	@ResponseBody
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/process/{pdId}/start", method = RequestMethod.POST)
 	public String startProcess(@PathVariable String pdId, String piName, HttpServletRequest request) {
 		try {
@@ -315,7 +314,6 @@ public class FormkeyController {
 	 * @param request 请求中包括了表单的参数
 	 */
 	@ResponseBody
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/task/{taskId}/complete", method = RequestMethod.POST)
 	public String completeTask(@PathVariable String taskId, HttpServletRequest request) {
 		try {
