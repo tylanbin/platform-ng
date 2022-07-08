@@ -24748,7 +24748,7 @@ ORYX.Plugins.Save = Clazz.extend({
 				} else {						
 					params.id = modelMeta.modelId;
 					// Send the request out
-					this.sendSaveRequest('PUT', reqURI, params, false, successFn, failure);
+					this.sendSaveRequest('POST', reqURI, params, false, successFn, failure);
 				}
 		}.bind(this);
 			
