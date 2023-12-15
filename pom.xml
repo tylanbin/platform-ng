@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<!-- 注意，如果升级Spring，可能导致JRebel无法使用 -->
 		<spring.version>5.3.24</spring.version>
-		<shiro.version>1.12.0</shiro.version>
+		<shiro.version>1.13.0</shiro.version>
 		<activiti.version>5.16.6</activiti.version>
 		<batik.version>1.17</batik.version>
 		<thymeleaf.version>3.0.15.RELEASE</thymeleaf.version>
